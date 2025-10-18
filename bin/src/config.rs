@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use vfs::ReadOnlyVfs;
 
 #[derive(Parser, Debug)]
-#[clap(version, author, about)]
+#[clap(author, about)]
 pub struct Opts {
     #[clap(subcommand)]
     pub cmd: SubCommand,

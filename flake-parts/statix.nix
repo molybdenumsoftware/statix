@@ -1,6 +1,7 @@
 {
   lib,
   root,
+  self,
   ...
 }:
 {
@@ -10,7 +11,7 @@
       packages = {
         statix = pkgs.rustPlatform.buildRustPackage {
           pname = "statix";
-          inherit ((lib.importTOML (root + "/bin/Cargo.toml")).package) version;
+          version = self.lastModifiedDate;
 
           src = lib.fileset.toSource {
             inherit root;

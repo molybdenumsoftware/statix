@@ -60,6 +60,12 @@ Install with [brew/linuxbrew](https://brew.sh)
 brew install statix
 ```
 
+## No releases
+
+Even though some releases were made,
+no more are intended.
+Instead, this project is meant to be used from HEAD.
+
 ## Usage
 
 Basic usage is as simple as:

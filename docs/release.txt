@@ -1,7 +1,0 @@
-Release checklist:
-
-- bump version in Cargo.toml
-- run `cargo build --release` to bump Cargo.lock
-- run nix-build and update cachix cache
-- tag commit with latest version
-- push tag and commit to all remotes

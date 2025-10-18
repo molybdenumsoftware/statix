@@ -671,7 +671,7 @@ checksum = "2e24979f63a11545f5f2c60141afe249d4f19f84581ea2138065e400941d83d3"
 
 [[package]]
 name = "statix"
-version = "0.5.8"
+version = "0.6.0"
 dependencies = [
  "anyhow",
  "ariadne",
