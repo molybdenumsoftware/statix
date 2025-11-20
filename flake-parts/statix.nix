@@ -1,7 +1,6 @@
 {
   lib,
   root,
-  self,
   ...
 }:
 {
@@ -11,7 +10,9 @@
       packages = {
         statix = pkgs.rustPlatform.buildRustPackage {
           pname = "statix";
-          version = self.lastModifiedDate;
+          version = builtins.substring 0 8 (
+            builtins.hashString "sha256" (builtins.readFile (root + "/Cargo.lock"))
+          );
 
           src = lib.fileset.toSource {
             inherit root;
