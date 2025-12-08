@@ -2,7 +2,7 @@
 let
   filePaths = {
     check = ".github/workflows/check.yaml";
-    updateFlakeLock = ".github/workflows/update-flake-lock.yaml";
+    updateFlakeInputs = ".github/workflows/update-flake-inputs.yaml";
   };
 
   ids = {
@@ -10,7 +10,10 @@ let
       getCheckNames = "get-check-names";
       check = "check";
     };
-    steps.getCheckNames = "get-check-names";
+    steps = {
+      getCheckNames = "get-check-names";
+      appToken = "app-token";
+    };
     outputs = {
       jobs.getCheckNames = "checks";
       steps.getCheckNames = "checks";
@@ -96,9 +99,8 @@ in
             };
           }
           {
-            path_ = filePaths.updateFlakeLock;
-            drv = pkgs.writers.writeJSON "update-flake-lock.yaml" {
-              name = "Update flake.lock";
+            path_ = filePaths.updateFlakeInputs;
+            drv = pkgs.writers.writeJSON "update-flake-inputs.yaml" {
               on = {
                 workflow_dispatch = { };
                 schedule = [ { cron = "0 0 * * 5"; } ];
@@ -106,20 +108,28 @@ in
               jobs.nix-flake-update = {
                 permissions = {
                   contents = "write";
-                  id-token = "write";
-                  issues = "write";
                   pull-requests = "write";
                 };
                 runs-on = runner.name;
                 steps = [
-                  steps.checkout
+                  {
+                    id = ids.steps.appToken;
+                    uses = "actions/create-github-app-token@v1";
+                    "with" = {
+                      app-id = "\${{ secrets.APP_ID }}";
+                      private-key = "\${{ secrets.APP_PRIVATE_KEY }}";
+                    };
+                  }
+                  (
+                    steps.checkout
+                    // {
+                      "with".token = "\${{ steps.${ids.steps.appToken}.outputs.token }}";
+                    }
+                  )
                   steps.cachixInstallNix
                   {
-                    uses = "DeterminateSystems/update-flake-lock@main";
-                    "with" = {
-                      commit-msg = "chore(flake): bump inputs";
-                      pr-title = "chore(flake): bump inputs";
-                    };
+                    uses = "mic92/update-flake-inputs@main";
+                    "with".github-token = "\${{ steps.${ids.steps.appToken}.outputs.token }}";
                   }
                 ];
               };
