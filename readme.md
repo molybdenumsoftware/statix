@@ -2,6 +2,8 @@
 
 > Lints and suggestions for the Nix programming language.
 
+Forked from [oppiliappan/statix](https://github.com/oppiliappan/statix)
+
 `statix check` highlights antipatterns in Nix code. `statix
 fix` can fix several such occurrences.
 
