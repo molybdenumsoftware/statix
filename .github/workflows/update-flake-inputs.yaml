@@ -24,7 +24,14 @@
         {
           "uses": "nixbuild/nix-quick-install-action@master",
           "with": {
-            "github_access_token": "${{ secrets.GITHUB_TOKEN }}"
+            "github_access_token": "${{ secrets.GITHUB_TOKEN }}",
+            "nix_conf": "keep-env-derivations = true\nkeep-outputs = true\n"
+          }
+        },
+        {
+          "uses": "nix-community/cache-nix-action@main",
+          "with": {
+            "primary-key": "nix-${{ runner.os }}"
           }
         },
         {
