@@ -128,7 +128,7 @@ in
                   )
                   steps.cachixInstallNix
                   {
-                    uses = "mic92/update-flake-inputs@main";
+                    uses = "mic92/update-flake-inputs@subdir";
                     "with" = {
                       github-token = "\${{ steps.${ids.steps.appToken}.outputs.token }}";
                       commit-message = "chore(flake): update {{input}}{{in}}";
