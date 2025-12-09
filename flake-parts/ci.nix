@@ -33,7 +33,17 @@ let
     checkout.uses = "actions/checkout@v4";
     installNix = {
       uses = "nixbuild/nix-quick-install-action@master";
-      "with".github_access_token = "\${{ secrets.GITHUB_TOKEN }}";
+      "with" = {
+        nix_conf = ''
+          keep-env-derivations = true
+          keep-outputs = true
+        '';
+        github_access_token = "\${{ secrets.GITHUB_TOKEN }}";
+      };
+    };
+    cacheNix = {
+      uses = "nix-community/cache-nix-action@main";
+      "with".primary-key = "nix-\${{ runner.os }}";
     };
   };
 in
@@ -60,6 +70,7 @@ in
                   steps = [
                     steps.checkout
                     steps.installNix
+                    steps.cacheNix
                     {
                       id = ids.steps.getCheckNames;
                       run = ''
@@ -78,6 +89,7 @@ in
                   steps = [
                     steps.checkout
                     steps.installNix
+                    steps.cacheNix
                     {
                       run = ''
                         nix ${nixArgs} build '.#checks.${runner.system}."''${{ matrix.${matrixParam} }}"'
@@ -92,6 +104,7 @@ in
                   steps = [
                     steps.checkout
                     steps.installNix
+                    steps.cacheNix
                     { run = "nix-env --install --file default.nix"; }
                   ];
                 };
@@ -127,6 +140,7 @@ in
                     }
                   )
                   steps.installNix
+                  steps.cacheNix
                   {
                     uses = "mic92/update-flake-inputs@subdir";
                     "with" = {
