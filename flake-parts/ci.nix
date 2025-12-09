@@ -129,7 +129,10 @@ in
                   steps.cachixInstallNix
                   {
                     uses = "mic92/update-flake-inputs@main";
-                    "with".github-token = "\${{ steps.${ids.steps.appToken}.outputs.token }}";
+                    "with" = {
+                      github-token = "\${{ steps.${ids.steps.appToken}.outputs.token }}";
+                      commit-message = "chore(flake): update {{input}}{{in}}";
+                    };
                   }
                 ];
               };

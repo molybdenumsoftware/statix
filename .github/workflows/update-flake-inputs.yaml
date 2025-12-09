@@ -30,6 +30,7 @@
         {
           "uses": "mic92/update-flake-inputs@main",
           "with": {
+            "commit-message": "chore(flake): update {{input}}{{in}}",
             "github-token": "${{ steps.app-token.outputs.token }}"
           }
         }
