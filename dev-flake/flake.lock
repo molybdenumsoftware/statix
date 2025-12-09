@@ -2,11 +2,11 @@
   "nodes": {
     "files": {
       "locked": {
-        "lastModified": 1750263550,
-        "narHash": "sha256-EW/QJ8i/13GgiynBb6zOMxhLU1uEkRqmzbIDEP23yVA=",
+        "lastModified": 1762767848,
+        "narHash": "sha256-trF2WXzH57uSkA1zeI8FTz8tU6vPYrklkTjh/7DZy/M=",
         "owner": "mightyiam",
         "repo": "files",
-        "rev": "5f4ef1fd1f9012354a9748be093e277675d10f07",
+        "rev": "2d9d4937e94006ad8f165dfab9dff87cfab7eb2b",
         "type": "github"
       },
       "original": {
