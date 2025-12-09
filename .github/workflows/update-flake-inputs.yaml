@@ -22,7 +22,7 @@
           }
         },
         {
-          "uses": "cachix/install-nix-action@v31",
+          "uses": "nixbuild/nix-quick-install-action@master",
           "with": {
             "github_access_token": "${{ secrets.GITHUB_TOKEN }}"
           }
