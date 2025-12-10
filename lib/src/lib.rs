@@ -105,9 +105,9 @@ impl Report {
             | ParseError::UnexpectedWanted(_, at, _)
             | ParseError::UnexpectedDoubleBind(at)
             | ParseError::DuplicatedArgs(at, _) => at,
-            ParseError::UnexpectedEOF | ParseError::UnexpectedEOFWanted(_) => {
-                &TextRange::empty(0u32.into())
-            }
+            ParseError::UnexpectedEOF
+            | ParseError::UnexpectedEOFWanted(_)
+            | ParseError::RecursionLimitExceeded => &TextRange::empty(0u32.into()),
             _ => panic!("report a bug, pepper forgot to handle a parse error"),
         };
         let mut message = err.to_string();
