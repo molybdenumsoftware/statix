@@ -108,7 +108,9 @@ impl Report {
             ParseError::UnexpectedEOF
             | ParseError::UnexpectedEOFWanted(_)
             | ParseError::RecursionLimitExceeded => &TextRange::empty(0u32.into()),
-            _ => panic!("report a bug, pepper forgot to handle a parse error"),
+            _ => panic!(
+                "if this happened to you, please report an issue titled \"wild ParseError variant appeared\""
+            ),
         };
         let mut message = err.to_string();
         message
