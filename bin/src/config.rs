@@ -157,8 +157,8 @@ pub struct Single {
     pub target: Option<PathBuf>,
 
     /// Position to attempt a fix at
-    #[clap(short, long, parse(try_from_str = parse_line_col))]
-    pub position: (usize, usize),
+    #[clap(short, long)]
+    pub position: Position,
 
     /// Do not fix files in place, display a diff instead
     #[clap(short, long = "dry-run")]
@@ -306,19 +306,29 @@ impl ConfFile {
     }
 }
 
-fn parse_line_col(src: &str) -> Result<(usize, usize), ConfigErr> {
-    let parts = src.split(',');
-    match parts.collect::<Vec<_>>().as_slice() {
-        [line, col] => {
-            let do_parse = |val: &str| {
-                val.parse::<usize>()
-                    .map_err(|_| ConfigErr::InvalidPosition(src.to_owned()))
-            };
-            let l = do_parse(line)?;
-            let c = do_parse(col)?;
-            Ok((l, c))
+#[derive(Debug, Clone, Copy)]
+pub struct Position {
+    pub line: usize,
+    pub col: usize,
+}
+
+impl FromStr for Position {
+    type Err = ConfigErr;
+
+    fn from_str(src: &str) -> Result<Self, Self::Err> {
+        let parts = src.split(',');
+        match parts.collect::<Vec<_>>().as_slice() {
+            [line, col] => {
+                let do_parse = |val: &str| {
+                    val.parse::<usize>()
+                        .map_err(|_| ConfigErr::InvalidPosition(src.to_owned()))
+                };
+                let l = do_parse(line)?;
+                let c = do_parse(col)?;
+                Ok(Self { line: l, col: c })
+            }
+            _ => Err(ConfigErr::InvalidPosition(src.to_owned())),
         }
-        _ => Err(ConfigErr::InvalidPosition(src.to_owned())),
     }
 }
 

@@ -90,9 +90,11 @@ pub mod main {
         let entry = vfs.iter().next().unwrap();
         let path = entry.file_path.display().to_string();
         let original_src = entry.contents;
-        let (line, col) = single_config.position;
 
-        match (single_config.out(), super::single(line, col, original_src)) {
+        match (
+            single_config.out(),
+            super::single(single_config.position, original_src),
+        ) {
             (FixOut::Diff, single_result) => {
                 let fixed_src = single_result
                     .map(|r| r.src)
