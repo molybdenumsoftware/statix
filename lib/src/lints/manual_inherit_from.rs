@@ -61,6 +61,9 @@ impl Rule for ManualInherit {
         let Some(Expr::Select(value)) = key_value_stmt.value() else {
             return None;
         };
+        if value.or_token().is_some() {
+            return None;
+        }
         let select_attrpath = value.attrpath()?;
         let mut select_attrpath_attrs = select_attrpath.attrs();
         let first_attr = select_attrpath_attrs.next()?;
