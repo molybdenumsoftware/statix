@@ -116,7 +116,7 @@ in
             drv = pkgs.writers.writeJSON "update-flake-inputs.yaml" {
               on = {
                 workflow_dispatch = { };
-                schedule = [ { cron = "0 0 * * 5"; } ];
+                schedule = [ { cron = "0 0/6 * * *"; } ];
               };
               jobs.nix-flake-update = {
                 permissions = {
