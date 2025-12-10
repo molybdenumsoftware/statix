@@ -32,10 +32,6 @@ pub fn quote(node: &SyntaxNode) -> ast::Str {
     ast_from_text(&format!("\"{node}\""))
 }
 
-pub fn unary_not(node: &SyntaxNode) -> ast::UnaryOp {
-    ast_from_text(&format!("!{node}"))
-}
-
 pub fn inherit_stmt<'a>(nodes: impl IntoIterator<Item = &'a ast::Ident>) -> ast::Inherit {
     let inherited_idents = nodes
         .into_iter()

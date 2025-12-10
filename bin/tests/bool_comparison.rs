@@ -5,26 +5,22 @@ use macros::generate_tests;
 generate_tests! {
     rule: bool_comparison,
     expressions: [
-        // trivial
-        "a == true",
-        "b == true",
-        "true == c",
-        "true == d",
-        // not equals
-        "e != true",
-        "f != false",
-        "true != g",
-        "false != h",
         // non-matches
         "i == j",
         "k != l",
-        // both sides bool
+        "a == false",
+        "b == true",
+        "false != c",
+        "true == d",
+
+        // matches
+        "false != false",
+        "false != true",
+        "true != false",
+        "true != true",
         "false == false",
         "false == true",
         "true == false",
         "true == true",
-        // has attr
-        "false == m ? n",
-        "true == o ? p",
     ],
 }

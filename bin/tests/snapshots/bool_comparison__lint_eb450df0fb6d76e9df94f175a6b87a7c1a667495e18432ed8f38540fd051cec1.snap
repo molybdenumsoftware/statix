@@ -2,10 +2,10 @@
 source: bin/tests/bool_comparison.rs
 expression: "\"true == false\""
 ---
-[W01] Warning: Unnecessary comparison with boolean
+[W01] Warning: Equality comparison between boolean literals
    ╭─[<temp_file_path>:1:1]
    │
  1 │ true == false
    · ──────┬──────  
-   ·       ╰──────── Comparing false with boolean literal true
+   ·       ╰──────── Equality comparison between boolean literals
 ───╯

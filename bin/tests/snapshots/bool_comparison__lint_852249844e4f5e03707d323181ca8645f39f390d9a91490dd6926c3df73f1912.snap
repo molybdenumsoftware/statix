@@ -1,11 +1,11 @@
 ---
 source: bin/tests/bool_comparison.rs
-expression: "\"true == true\""
+expression: "\"true != true\""
 ---
 [W01] Warning: Equality comparison between boolean literals
    ╭─[<temp_file_path>:1:1]
    │
- 1 │ true == true
+ 1 │ true != true
    · ──────┬─────  
    ·       ╰─────── Equality comparison between boolean literals
 ───╯

@@ -1,5 +1,5 @@
 ---
 source: bin/tests/bool_comparison.rs
-expression: "\"b == true\""
+expression: "\"false != true\""
 ---
 
