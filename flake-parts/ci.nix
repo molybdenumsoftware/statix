@@ -114,6 +114,7 @@ in
           {
             path_ = filePaths.updateFlakeInputs;
             drv = pkgs.writers.writeJSON "update-flake-inputs.yaml" {
+              name = "Update flake inputs";
               on = {
                 workflow_dispatch = { };
                 schedule = [ { cron = "0 0/6 * * *"; } ];
