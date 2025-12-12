@@ -205,8 +205,7 @@ impl Single {
 #[derive(Parser, Debug)]
 pub struct Explain {
     /// Warning code to explain
-    #[clap(parse(try_from_str = parse_warning_code))]
-    pub target: u32,
+    pub target: WarningCode,
 }
 
 #[derive(Parser, Debug)]
@@ -332,18 +331,26 @@ impl FromStr for Position {
     }
 }
 
-fn parse_warning_code(src: &str) -> Result<u32, ConfigErr> {
-    let mut char_stream = src.chars();
-    let severity = char_stream
-        .next()
-        .ok_or_else(|| ConfigErr::InvalidWarningCode(src.to_owned()))?
-        .to_ascii_lowercase();
-    match severity {
-        'w' => char_stream
-            .collect::<String>()
-            .parse::<u32>()
-            .map_err(|_| ConfigErr::InvalidWarningCode(src.to_owned())),
-        _ => Ok(0),
+#[derive(Debug, Clone, Copy)]
+pub struct WarningCode(pub u32);
+
+impl FromStr for WarningCode {
+    type Err = ConfigErr;
+
+    fn from_str(src: &str) -> Result<Self, Self::Err> {
+        let mut char_stream = src.chars();
+        let severity = char_stream
+            .next()
+            .ok_or_else(|| ConfigErr::InvalidWarningCode(src.to_owned()))?
+            .to_ascii_lowercase();
+        match severity {
+            'w' => char_stream
+                .collect::<String>()
+                .parse::<u32>()
+                .map(Self)
+                .map_err(|_| ConfigErr::InvalidWarningCode(src.to_owned())),
+            _ => Ok(Self(0)),
+        }
     }
 }
 

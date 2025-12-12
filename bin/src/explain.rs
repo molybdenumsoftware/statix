@@ -1,15 +1,15 @@
-use crate::{err::ExplainErr, utils};
+use crate::{config::WarningCode, err::ExplainErr, utils};
 
-pub fn explain(code: u32) -> Result<&'static str, ExplainErr> {
+pub fn explain(code: WarningCode) -> Result<&'static str, ExplainErr> {
     let lints = utils::lint_map();
-    match code {
+    match code.0 {
         0 => Ok("syntax error"),
         _ => lints
             .values()
             .flatten()
-            .find(|l| l.code() == code)
+            .find(|l| l.code() == code.0)
             .map(|l| l.explanation())
-            .ok_or(ExplainErr::LintNotFound(code)),
+            .ok_or(ExplainErr::LintNotFound(code.0)),
     }
 }
 
