@@ -38,7 +38,7 @@ pub enum SubCommand {
 #[derive(Parser, Debug)]
 pub struct Check {
     /// File or directory to run check on
-    #[clap(default_value = ".", parse(from_os_str))]
+    #[clap(default_value = ".")]
     target: PathBuf,
 
     /// Globs of file patterns to skip
@@ -52,7 +52,7 @@ pub struct Check {
     /// Output format.
     #[cfg_attr(feature = "json", doc = "Supported values: stderr, errfmt, json")]
     #[cfg_attr(not(feature = "json"), doc = "Supported values: stderr, errfmt")]
-    #[clap(short = 'o', long, default_value_t, parse(try_from_str))]
+    #[clap(short = 'o', long, default_value_t)]
     pub format: OutFormat,
 
     /// Path to statix.toml or its parent directory
@@ -87,7 +87,7 @@ impl Check {
 #[derive(Parser, Debug)]
 pub struct Fix {
     /// File or directory to run fix on
-    #[clap(default_value = ".", parse(from_os_str))]
+    #[clap(default_value = ".")]
     target: PathBuf,
 
     /// Globs of file patterns to skip
@@ -153,7 +153,6 @@ impl Fix {
 #[derive(Parser, Debug)]
 pub struct Single {
     /// File to run single-fix on
-    #[clap(parse(from_os_str))]
     pub target: Option<PathBuf>,
 
     /// Position to attempt a fix at
