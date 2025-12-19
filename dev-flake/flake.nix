@@ -12,7 +12,7 @@
       url = "github:nicknovitski/make-shell";
       inputs.flake-compat.follows = "flake-compat_dedupe";
     };
-    nixpkgs_dedupe.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs_dedupe.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
     files.url = "github:mightyiam/files";
     flake-compat_dedupe.url = "github:edolstra/flake-compat";
     gitignore_dedupe = {
