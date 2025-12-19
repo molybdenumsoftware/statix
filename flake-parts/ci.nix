@@ -143,7 +143,7 @@ in
                   steps.installNix
                   steps.cacheNix
                   {
-                    uses = "mic92/update-flake-inputs@subdir";
+                    uses = "mic92/update-flake-inputs@main";
                     "with" = {
                       github-token = "\${{ steps.${ids.steps.appToken}.outputs.token }}";
                       commit-message = "chore(flake): update {{input}}{{in}}";
