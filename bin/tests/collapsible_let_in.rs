@@ -1,9 +1,6 @@
 mod _utils;
-
 use indoc::indoc;
-
 use macros::generate_tests;
-
 generate_tests! {
     rule: collapsible_let_in,
     expressions: [
@@ -17,6 +14,18 @@ generate_tests! {
                 d = 6;
               in
               a + b + c + d
-        "}
+        "},
+        indoc! {r"
+            {
+              pkgs ? import <nixpkgs> { },
+            }:
+            let
+              pkgs' = pkgs.extend (import ./overlay.nix);
+            in
+            let
+              pkgs = pkgs';
+            in
+            pkgs
+        "},
     ],
 }
