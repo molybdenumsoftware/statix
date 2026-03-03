@@ -1,0 +1,15 @@
+---
+source: bin/tests/collapsible_let_in.rs
+expression: "\"let\\n  a.b = 1;\\nin\\nlet\\n  c = 2;\\nin\\nc\\n\""
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1,8 +1,7 @@
+ let
+   a.b = 1;
+-in
+-let
++
+   c = 2;
+ in
+ c
