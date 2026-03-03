@@ -1,0 +1,15 @@
+---
+source: bin/tests/collapsible_let_in.rs
+expression: "\"let\\n  a = 2;\\n  b = 3;\\nin\\nlet\\n  c = 5;\\n  d = 6;\\nin\\na + b + c + d\\n\""
+---
+[W06] Warning: These let-in expressions are collapsible
+   ╭─[<temp_file_path>:1:1]
+   │
+ 1 │ ╭───▶ let
+ 5 │ │ ╭─▶ let
+ 9 │ │ ├─▶ a + b + c + d
+   · │ │               │   
+   · │ ╰─────────────────── This let in expression is nested
+   · │                 │   
+   · ╰─────────────────┴─── This let in expression contains a nested let in expression
+───╯
