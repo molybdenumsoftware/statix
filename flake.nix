@@ -11,11 +11,6 @@
     };
 
     nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
-
-    systems = {
-      url = "github:nix-systems/default";
-      flake = false;
-    };
   };
   outputs =
     inputs:
@@ -23,7 +18,6 @@
       { lib, ... }:
       {
         _module.args.root = ./.;
-        systems = import inputs.systems;
 
         imports = [
           inputs.flake-parts.flakeModules.partitions
@@ -41,6 +35,7 @@
           ./flake-parts/overlay.nix
           ./flake-parts/rust.nix
           ./flake-parts/statix.nix
+          ./flake-parts/systems.nix
           ./vim-plugin/flake-part.nix
         ];
 
