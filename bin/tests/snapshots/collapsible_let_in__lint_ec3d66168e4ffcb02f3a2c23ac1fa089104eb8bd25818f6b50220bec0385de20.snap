@@ -1,0 +1,5 @@
+---
+source: bin/tests/collapsible_let_in.rs
+expression: "\"let\\n  inherit (foo) bar;\\nin\\nlet\\n  bar = 1;\\nin\\nbar\\n\""
+---
+

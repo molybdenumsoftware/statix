@@ -3,7 +3,7 @@ use crate::{Metadata, Report, Rule, Suggestion};
 use macros::lint;
 use rnix::{
     NodeOrToken, SyntaxElement, SyntaxKind, TextRange,
-    ast::{Expr, LetIn},
+    ast::{Attr, Entry, Expr, HasEntry, LetIn},
 };
 use rowan::{Direction, ast::AstNode as _};
 
@@ -43,6 +43,60 @@ use rowan::{Direction, ast::AstNode as _};
 )]
 struct CollapsibleLetIn;
 
+fn defined_names(let_expr: &LetIn) -> Vec<String> {
+    let_expr
+        .entries()
+        .flat_map(|entry| match entry {
+            Entry::AttrpathValue(b) => b
+                .attrpath()
+                .into_iter()
+                .flat_map(|a| a.attrs())
+                .filter_map(|attr| {
+                    if let Attr::Ident(ident) = attr {
+                        ident.ident_token().map(|t| t.text().to_string())
+                    } else {
+                        None
+                    }
+                })
+                .take(1)
+                .collect::<Vec<_>>(),
+            Entry::Inherit(i) => i
+                .attrs()
+                .filter_map(|attr| {
+                    if let Attr::Ident(ident) = attr {
+                        ident.ident_token().map(|t| t.text().to_string())
+                    } else {
+                        None
+                    }
+                })
+                .collect::<Vec<_>>(),
+        })
+        .collect()
+}
+
+fn value_ident_names(let_expr: &LetIn) -> Vec<String> {
+    let_expr
+        .attrpath_values()
+        .filter_map(|b| b.value())
+        .flat_map(|v| {
+            v.syntax()
+                .descendants()
+                .filter(|n| {
+                    n.parent()
+                        .map_or(true, |p| p.kind() != SyntaxKind::NODE_ATTRPATH)
+                })
+                .filter_map(Expr::cast)
+                .filter_map(|expr| {
+                    if let Expr::Ident(ident) = expr {
+                        ident.ident_token().map(|t| t.text().to_string())
+                    } else {
+                        None
+                    }
+                })
+        })
+        .collect()
+}
+
 impl Rule for CollapsibleLetIn {
     fn validate(&self, node: &SyntaxElement) -> Option<Report> {
         let NodeOrToken::Node(node) = node else {
@@ -52,9 +106,20 @@ impl Rule for CollapsibleLetIn {
         let let_in_expr = LetIn::cast(node.clone())?;
         let body = let_in_expr.body()?;
 
-        let Expr::LetIn(_) = body else {
+        let Expr::LetIn(inner_let) = &body else {
             return None;
         };
+
+        let outer_names = defined_names(&let_in_expr);
+        let inner_names = defined_names(inner_let);
+        let outer_value_names = value_ident_names(&let_in_expr);
+
+        if inner_names
+            .iter()
+            .any(|n| outer_names.contains(n) || outer_value_names.contains(n))
+        {
+            return None;
+        }
 
         let first_annotation = node.text_range();
         let first_message = "This `let in` expression contains a nested `let in` expression";

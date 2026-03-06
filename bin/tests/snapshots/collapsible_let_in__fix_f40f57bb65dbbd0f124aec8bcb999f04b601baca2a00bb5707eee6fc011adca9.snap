@@ -1,0 +1,4 @@
+---
+source: bin/tests/collapsible_let_in.rs
+expression: "\"{\\n  pkgs ? import <nixpkgs> { },\\n}:\\nlet\\n  pkgs' = pkgs.extend (import ./overlay.nix);\\nin\\nlet\\n  pkgs = pkgs';\\nin\\npkgs\\n\""
+---
