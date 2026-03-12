@@ -10,6 +10,7 @@
             pkgs.bacon
             pkgs.cargo-insta
             pkgs.rust-analyzer
+            pkgs.rustfmt
           ];
           env = {
             RUST_LOG = "info";
