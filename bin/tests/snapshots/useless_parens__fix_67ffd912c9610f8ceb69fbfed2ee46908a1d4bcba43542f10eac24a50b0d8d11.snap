@@ -1,5 +1,7 @@
 ---
 source: bin/tests/useless_parens.rs
-expression: "\"[(builtins.pam or map)]\""
+expression: snapshot
 ---
-
+expression:
+[(builtins.pam or map)]
+---

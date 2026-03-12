@@ -1,6 +1,9 @@
 ---
 source: bin/tests/useless_parens.rs
-expression: "\"[(builtins.map)]\""
+expression: snapshot
+---
+expression:
+[(builtins.map)]
 ---
 [W08] Warning: These parentheses can be omitted
    ╭─[<temp_file_path>:1:2]

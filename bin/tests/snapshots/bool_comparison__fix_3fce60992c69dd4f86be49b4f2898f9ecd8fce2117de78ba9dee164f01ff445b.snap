@@ -1,5 +1,7 @@
 ---
 source: bin/tests/bool_comparison.rs
-expression: "\"false != true\""
+expression: snapshot
 ---
-
+expression:
+false != true
+---

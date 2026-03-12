@@ -15,7 +15,7 @@ hex = "*"
 ignore = "*"
 indexmap = "*"
 indoc = "*"
-insta = { features = ["filters"], version = "*" }
+insta = { features = ["filters"], version = "1.46.3" }
 lazy_static = "*"
 lib.path = "./lib"
 macros.path = "./macros"
