@@ -1,6 +1,9 @@
 ---
 source: bin/tests/bool_simplification.rs
-expression: "\"!(a == b)\""
+expression: snapshot
+---
+expression:
+!(a == b)
 ---
 [W18] Warning: This boolean expression can be simplified
    ╭─[<temp_file_path>:1:1]

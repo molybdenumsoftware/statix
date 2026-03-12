@@ -1,5 +1,7 @@
 ---
 source: bin/tests/bool_comparison.rs
-expression: "\"k != l\""
+expression: snapshot
 ---
-
+expression:
+k != l
+---

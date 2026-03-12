@@ -1,5 +1,7 @@
 ---
 source: bin/tests/eta_reduction.rs
-expression: "\"let f = { double = x: x *2; val = 2; }; in map (f: {inherit f;}.double f.val) [ f ]\""
+expression: snapshot
 ---
-
+expression:
+let f = { double = x: x *2; val = 2; }; in map (f: {inherit f;}.double f.val) [ f ]
+---

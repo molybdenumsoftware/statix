@@ -1,6 +1,9 @@
 ---
 source: bin/tests/useless_parens.rs
-expression: "\"({ f = 2; })\""
+expression: snapshot
+---
+expression:
+({ f = 2; })
 ---
 --- <temp_file_path>
 +++ <temp_file_path> [fixed]

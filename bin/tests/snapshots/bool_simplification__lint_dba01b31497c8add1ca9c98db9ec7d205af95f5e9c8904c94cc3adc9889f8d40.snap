@@ -1,5 +1,7 @@
 ---
 source: bin/tests/bool_simplification.rs
-expression: "\"a != b\""
+expression: snapshot
 ---
-
+expression:
+a != b
+---

@@ -1,5 +1,7 @@
 ---
 source: bin/tests/repeated_keys.rs
-expression: "\"{ foo.bar = 1; }\""
+expression: snapshot
 ---
-
+expression:
+{ foo.bar = 1; }
+---
