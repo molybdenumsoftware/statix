@@ -1,6 +1,9 @@
 ---
 source: bin/tests/deprecated_to_path.rs
-expression: "\"builtins.toPath x\""
+expression: snapshot
+---
+expression:
+builtins.toPath x
 ---
 [W17] Warning: Found usage of deprecated builtin toPath
    ╭─[<temp_file_path>:1:1]

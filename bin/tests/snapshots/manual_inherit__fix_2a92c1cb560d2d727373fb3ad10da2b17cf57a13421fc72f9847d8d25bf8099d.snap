@@ -1,6 +1,9 @@
 ---
 source: bin/tests/manual_inherit.rs
-expression: "\"let a = 2; in { a = a; }\""
+expression: snapshot
+---
+expression:
+let a = 2; in { a = a; }
 ---
 --- <temp_file_path>
 +++ <temp_file_path> [fixed]

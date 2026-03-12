@@ -1,5 +1,7 @@
 ---
 source: bin/tests/deprecated_to_path.rs
-expression: "\"toPath x\""
+expression: snapshot
 ---
-
+expression:
+toPath x
+---

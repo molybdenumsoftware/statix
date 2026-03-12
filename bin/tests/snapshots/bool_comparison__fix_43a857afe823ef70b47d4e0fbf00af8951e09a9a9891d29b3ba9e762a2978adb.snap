@@ -1,5 +1,7 @@
 ---
 source: bin/tests/bool_comparison.rs
-expression: "\"true == d\""
+expression: snapshot
 ---
-
+expression:
+true == d
+---

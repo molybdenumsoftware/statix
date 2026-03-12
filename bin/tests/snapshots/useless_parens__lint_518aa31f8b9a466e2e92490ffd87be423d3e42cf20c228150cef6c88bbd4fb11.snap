@@ -1,6 +1,9 @@
 ---
 source: bin/tests/useless_parens.rs
-expression: "\"let h = ({ inherit (builtins) map; }); in null\""
+expression: snapshot
+---
+expression:
+let h = ({ inherit (builtins) map; }); in null
 ---
 [W08] Warning: These parentheses can be omitted
    ╭─[<temp_file_path>:1:9]

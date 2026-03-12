@@ -1,5 +1,7 @@
 ---
 source: bin/tests/manual_inherit_from.rs
-expression: "\"let a.b = 2; in { b = a.c; }\""
+expression: snapshot
 ---
-
+expression:
+let a.b = 2; in { b = a.c; }
+---

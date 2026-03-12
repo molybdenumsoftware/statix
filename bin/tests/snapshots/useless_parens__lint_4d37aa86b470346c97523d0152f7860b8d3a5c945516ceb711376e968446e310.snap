@@ -1,6 +1,9 @@
 ---
 source: bin/tests/useless_parens.rs
-expression: "\"let a = (1 + 2); in null\""
+expression: snapshot
+---
+expression:
+let a = (1 + 2); in null
 ---
 [W08] Warning: These parentheses can be omitted
    ╭─[<temp_file_path>:1:9]
