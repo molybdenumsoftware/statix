@@ -1,8 +1,15 @@
-use std::{io::Write, process::Command};
+use std::{collections::HashMap, io::Write, process::Command};
 
 use tempfile::NamedTempFile;
 
-pub fn test_cli(expression: &str, args: &[&str]) -> anyhow::Result<String> {
+pub fn test_cli(
+    expression: &str,
+    args: &[&str],
+    envs: HashMap<&str, &str>,
+    output_processing: OutputProcessing,
+) -> anyhow::Result<String>
+where
+{
     let mut fixture = NamedTempFile::with_suffix(".nix")?;
     fixture.write_all(expression.as_bytes())?;
     fixture.write_all(b"\n")?; // otherwise diff says there's no newline at end of file
@@ -12,11 +19,21 @@ pub fn test_cli(expression: &str, args: &[&str]) -> anyhow::Result<String> {
         .arg("--")
         .args(args)
         .arg(fixture.path())
+        .envs(envs)
         .output()?;
 
-    let stdout = strip_ansi_escapes::strip(output.stdout)?;
+    let stdout = match output_processing {
+        OutputProcessing::Unchanged => output.stdout,
+        OutputProcessing::StripAnsi => strip_ansi_escapes::strip(output.stdout)?,
+    };
     let stdout = String::from_utf8(stdout)?;
     let stdout = stdout.replace(fixture.path().to_str().unwrap(), "<temp_file_path>");
 
     Ok(stdout)
+}
+
+#[allow(unused)]
+pub enum OutputProcessing {
+    Unchanged,
+    StripAnsi,
 }
