@@ -95,8 +95,12 @@ fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2
     quote! {
         #[test]
         fn #test_ident() {
+            use std::collections::HashMap;
+            use crate::_utils::OutputProcessing;
+
             let expression = #nix_expression;
-            let stdout = _utils::test_cli(expression, #args).unwrap();
+            let env = HashMap::new();
+            let stdout = _utils::test_cli(expression, #args, OutputProcessing::StripAnsi, env).unwrap();
             insta::assert_snapshot!(#snap_name, stdout, &format!("{expression:?}"));
         }
     }

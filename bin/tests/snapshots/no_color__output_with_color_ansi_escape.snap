@@ -1,0 +1,11 @@
+---
+source: bin/tests/no_color.rs
+expression: "\"let in null\""
+---
+[33m[W02] Warning:[0m Useless let-in expression
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m<temp_file_path>:1:1[38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m1 │[0m [35ml[0m[35me[0m[35mt[0m[35m [0m[35mi[0m[35mn[0m[35m [0m[35mn[0m[35mu[0m[35ml[0m[35ml[0m
+ [38;5;246m  ·[0m [35m─[0m[35m─[0m[35m─[0m[35m─[0m[35m─[0m[35m┬[0m[35m─[0m[35m─[0m[35m─[0m[35m─[0m[35m─[0m  
+ [38;5;246m  ·[0m      [35m╰[0m[35m─[0m[35m─[0m[35m─[0m[35m─[0m[35m─[0m[35m─[0m[35m─[0m This let-in expression has no entries
+[38;5;246m───╯[0m

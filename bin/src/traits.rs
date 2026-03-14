@@ -1,4 +1,5 @@
 use std::{
+    env,
     io::{self, Write},
     str,
 };
@@ -46,6 +47,7 @@ fn write_stderr<T: Write>(
     lint_result: &LintResult,
     vfs: &ReadOnlyVfs,
 ) -> io::Result<()> {
+    let no_color = env::var("NO_COLOR").is_ok();
     let file_id = lint_result.file_id;
     let src = str::from_utf8(vfs.get(file_id)).unwrap();
     let path = vfs.file_path(file_id);
@@ -70,6 +72,7 @@ fn write_stderr<T: Write>(
                 CliReport::build(report_kind, src_id, offset)
                     .with_config(
                         CliConfig::default()
+                            .with_color(!no_color)
                             .with_cross_gap(true)
                             .with_multiline_arrows(false)
                             .with_label_attach(LabelAttach::Middle)
@@ -78,11 +81,16 @@ fn write_stderr<T: Write>(
                     .with_message(report.note)
                     .with_code(report.code),
                 |cli_report, diagnostic| {
-                    cli_report.with_label(
-                        Label::new((src_id, range(diagnostic.at)))
+                    let mut label = Label::new((src_id, range(diagnostic.at)));
+                    if no_color {
+                        label =
+                            label.with_message(diagnostic.message.split('`').collect::<String>());
+                    } else {
+                        label = label
                             .with_message(colorize(&diagnostic.message))
-                            .with_color(Color::Magenta),
-                    )
+                            .with_color(Color::Magenta);
+                    }
+                    cli_report.with_label(label)
                 },
             )
             .finish()
