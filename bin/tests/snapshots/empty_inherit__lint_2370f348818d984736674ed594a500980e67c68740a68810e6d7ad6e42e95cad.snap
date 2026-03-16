@@ -1,6 +1,5 @@
 ---
 source: bin/tests/empty_inherit.rs
-expression: snapshot
 ---
 expression:
 { inherit; }

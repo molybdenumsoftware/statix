@@ -1,6 +1,5 @@
 ---
 source: bin/tests/redundant_pattern_bind.rs
-expression: snapshot
 ---
 expression:
 { ... } @ inputs: null

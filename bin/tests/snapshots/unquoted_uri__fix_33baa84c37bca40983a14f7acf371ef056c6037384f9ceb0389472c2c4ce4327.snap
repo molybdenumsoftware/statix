@@ -1,6 +1,5 @@
 ---
 source: bin/tests/unquoted_uri.rs
-expression: snapshot
 ---
 expression:
 github:nerdypepper/statix

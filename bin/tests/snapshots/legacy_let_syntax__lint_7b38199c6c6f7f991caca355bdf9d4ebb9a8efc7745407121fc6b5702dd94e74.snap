@@ -1,6 +1,5 @@
 ---
 source: bin/tests/legacy_let_syntax.rs
-expression: snapshot
 ---
 expression:
 let {

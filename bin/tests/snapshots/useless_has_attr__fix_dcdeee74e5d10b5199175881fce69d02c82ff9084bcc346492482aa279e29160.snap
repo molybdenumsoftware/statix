@@ -1,6 +1,5 @@
 ---
 source: bin/tests/useless_has_attr.rs
-expression: snapshot
 ---
 expression:
 if x.a ? b then x.a.b else default

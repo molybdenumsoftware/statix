@@ -1,6 +1,5 @@
 ---
 source: bin/tests/empty_let_in.rs
-expression: snapshot
 ---
 expression:
 let

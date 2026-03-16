@@ -1,6 +1,5 @@
 ---
 source: bin/tests/useless_parens.rs
-expression: snapshot
 ---
 expression:
 let h = ({ inherit (builtins) map; }); in null

@@ -1,6 +1,5 @@
 ---
 source: bin/tests/empty_pattern.rs
-expression: snapshot
 ---
 expression:
 ({ ... } @ inputs: inputs)

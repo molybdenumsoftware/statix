@@ -1,6 +1,5 @@
 ---
 source: bin/tests/manual_inherit.rs
-expression: snapshot
 ---
 expression:
 let a = 2; in { a = a; }
