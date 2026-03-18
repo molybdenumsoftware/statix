@@ -1,7 +1,6 @@
 ---
 source: bin/tests/redundant_pattern_bind.rs
 ---
-expression:
 { ... } @ inputs: null
 ---
 --- <temp_file_path>

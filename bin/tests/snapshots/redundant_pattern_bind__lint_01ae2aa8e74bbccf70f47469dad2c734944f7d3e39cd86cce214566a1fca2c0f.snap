@@ -1,7 +1,6 @@
 ---
 source: bin/tests/redundant_pattern_bind.rs
 ---
-expression:
 { ... } @ inputs: null
 ---
 [W11] Warning: Found redundant pattern bind in function argument

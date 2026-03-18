@@ -1,7 +1,6 @@
 ---
 source: bin/tests/empty_let_in.rs
 ---
-expression:
 let in null
 ---
 [W02] Warning: Useless let-in expression

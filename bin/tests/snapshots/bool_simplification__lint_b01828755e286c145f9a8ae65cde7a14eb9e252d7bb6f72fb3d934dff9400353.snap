@@ -1,7 +1,6 @@
 ---
 source: bin/tests/bool_simplification.rs
 ---
-expression:
 !(a == b)
 ---
 [W18] Warning: This boolean expression can be simplified

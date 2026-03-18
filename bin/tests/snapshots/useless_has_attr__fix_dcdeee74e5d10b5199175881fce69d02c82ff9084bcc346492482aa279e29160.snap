@@ -1,7 +1,6 @@
 ---
 source: bin/tests/useless_has_attr.rs
 ---
-expression:
 if x.a ? b then x.a.b else default
 ---
 --- <temp_file_path>

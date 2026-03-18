@@ -1,7 +1,6 @@
 ---
 source: bin/tests/manual_inherit.rs
 ---
-expression:
 let a = 2; in { a = a; }
 ---
 [W03] Warning: Assignment instead of inherit

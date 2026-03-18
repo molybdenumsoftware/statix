@@ -1,7 +1,6 @@
 ---
 source: bin/tests/unquoted_uri.rs
 ---
-expression:
 github:nerdypepper/statix
 ---
 --- <temp_file_path>

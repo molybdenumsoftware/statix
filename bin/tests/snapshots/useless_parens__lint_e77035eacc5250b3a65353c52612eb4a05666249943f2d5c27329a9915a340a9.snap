@@ -1,7 +1,6 @@
 ---
 source: bin/tests/useless_parens.rs
 ---
-expression:
 ({ f = 2; })
 ---
 [W08] Warning: These parentheses can be omitted

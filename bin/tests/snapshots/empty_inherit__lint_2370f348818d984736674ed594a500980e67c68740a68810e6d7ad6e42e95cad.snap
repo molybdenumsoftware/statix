@@ -1,7 +1,6 @@
 ---
 source: bin/tests/empty_inherit.rs
 ---
-expression:
 { inherit; }
 ---
 [W14] Warning: Found empty inherit statement

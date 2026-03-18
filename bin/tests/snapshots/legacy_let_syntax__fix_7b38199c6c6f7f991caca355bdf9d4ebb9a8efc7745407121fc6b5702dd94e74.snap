@@ -1,7 +1,6 @@
 ---
 source: bin/tests/legacy_let_syntax.rs
 ---
-expression:
 let {
   body = x + y;
   x = "hello,";

@@ -1,7 +1,6 @@
 ---
 source: bin/tests/repeated_keys.rs
 ---
-expression:
 {
   foo.bar = 1;
   foo.bar."hello" = 1;

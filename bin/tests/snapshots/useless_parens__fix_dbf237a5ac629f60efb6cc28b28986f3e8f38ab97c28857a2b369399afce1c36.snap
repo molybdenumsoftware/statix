@@ -1,7 +1,6 @@
 ---
 source: bin/tests/useless_parens.rs
 ---
-expression:
 [(builtins.map)]
 ---
 --- <temp_file_path>

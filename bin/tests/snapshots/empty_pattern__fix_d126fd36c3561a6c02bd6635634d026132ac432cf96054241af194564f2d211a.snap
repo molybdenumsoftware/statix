@@ -1,7 +1,6 @@
 ---
 source: bin/tests/empty_pattern.rs
 ---
-expression:
 ({ ... }: 42)
 ---
 --- <temp_file_path>

@@ -1,7 +1,6 @@
 ---
 source: bin/tests/useless_has_attr.rs
 ---
-expression:
 if x ? a then x.a else if b then c else d
 ---
 [W19] Warning: This `if` expression can be simplified with `or`

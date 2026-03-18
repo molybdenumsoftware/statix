@@ -97,7 +97,7 @@ fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2
         fn #test_ident() {
             let expression = #nix_expression;
             let stdout = _utils::test_cli(expression, #args).unwrap();
-            let snapshot = format!("expression:\n{expression}\n---\n{stdout}");
+            let snapshot = format!("{expression}\n---\n{stdout}");
             insta::with_settings!({omit_expression => true}, {
                 insta::assert_snapshot!(#snap_name, snapshot);
             });

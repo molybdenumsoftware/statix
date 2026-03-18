@@ -1,7 +1,6 @@
 ---
 source: bin/tests/useless_parens.rs
 ---
-expression:
 let b = 0; in (b)
 ---
 --- <temp_file_path>

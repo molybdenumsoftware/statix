@@ -1,7 +1,6 @@
 ---
 source: bin/tests/collapsible_let_in.rs
 ---
-expression:
 let
   a = 2;
   b = 3;

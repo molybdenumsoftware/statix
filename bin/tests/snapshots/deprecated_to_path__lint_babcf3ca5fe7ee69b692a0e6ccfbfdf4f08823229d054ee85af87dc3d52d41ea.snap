@@ -1,7 +1,6 @@
 ---
 source: bin/tests/deprecated_to_path.rs
 ---
-expression:
 toPath "/abc/def"
 ---
 [W17] Warning: Found usage of deprecated builtin toPath

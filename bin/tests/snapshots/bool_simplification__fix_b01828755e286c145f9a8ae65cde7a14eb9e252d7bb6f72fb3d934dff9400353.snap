@@ -1,7 +1,6 @@
 ---
 source: bin/tests/bool_simplification.rs
 ---
-expression:
 !(a == b)
 ---
 --- <temp_file_path>

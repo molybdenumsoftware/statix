@@ -1,7 +1,6 @@
 ---
 source: bin/tests/repeated_keys.rs
 ---
-expression:
 rec {
   foo.x = foo.y;
   foo.y = 2;

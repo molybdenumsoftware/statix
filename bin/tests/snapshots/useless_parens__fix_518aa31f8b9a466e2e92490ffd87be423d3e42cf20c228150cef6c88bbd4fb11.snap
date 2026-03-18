@@ -1,7 +1,6 @@
 ---
 source: bin/tests/useless_parens.rs
 ---
-expression:
 let h = ({ inherit (builtins) map; }); in null
 ---
 --- <temp_file_path>

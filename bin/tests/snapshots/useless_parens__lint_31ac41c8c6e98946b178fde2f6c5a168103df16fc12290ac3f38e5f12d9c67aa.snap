@@ -1,7 +1,6 @@
 ---
 source: bin/tests/useless_parens.rs
 ---
-expression:
 ("hello")
 ---
 [W08] Warning: These parentheses can be omitted

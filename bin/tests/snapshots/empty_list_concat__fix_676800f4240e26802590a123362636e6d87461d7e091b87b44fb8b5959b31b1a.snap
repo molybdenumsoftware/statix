@@ -1,7 +1,6 @@
 ---
 source: bin/tests/empty_list_concat.rs
 ---
-expression:
 [1 2 3] ++ []
 ---
 --- <temp_file_path>
