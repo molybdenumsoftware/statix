@@ -1,6 +1,7 @@
 ---
 source: bin/tests/empty_pattern.rs
-expression: "\"({ ... } @ inputs: inputs)\""
+---
+({ ... } @ inputs: inputs)
 ---
 [W11] Warning: Found redundant pattern bind in function argument
    ╭─[<temp_file_path>:1:2]

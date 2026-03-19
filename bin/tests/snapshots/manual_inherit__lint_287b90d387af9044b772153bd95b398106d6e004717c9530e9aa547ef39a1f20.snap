@@ -1,5 +1,5 @@
 ---
 source: bin/tests/manual_inherit.rs
-expression: "\"let y = 2; in { x.y = y; }\""
 ---
-
+let y = 2; in { x.y = y; }
+---

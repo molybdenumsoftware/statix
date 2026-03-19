@@ -1,5 +1,5 @@
 ---
 source: bin/tests/useless_parens.rs
-expression: "\"[(builtins.pam or map)]\""
 ---
-
+[(builtins.pam or map)]
+---

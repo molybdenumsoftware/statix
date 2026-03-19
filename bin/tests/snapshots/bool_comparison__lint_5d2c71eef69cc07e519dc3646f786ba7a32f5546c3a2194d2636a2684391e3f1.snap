@@ -1,6 +1,7 @@
 ---
 source: bin/tests/bool_comparison.rs
-expression: "\"false == false\""
+---
+false == false
 ---
 [W01] Warning: Equality comparison between boolean literals
    ╭─[<temp_file_path>:1:1]

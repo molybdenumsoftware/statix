@@ -1,6 +1,7 @@
 ---
 source: bin/tests/useless_has_attr.rs
-expression: "\"if x ? a then x.a else b.c\""
+---
+if x ? a then x.a else b.c
 ---
 --- <temp_file_path>
 +++ <temp_file_path> [fixed]

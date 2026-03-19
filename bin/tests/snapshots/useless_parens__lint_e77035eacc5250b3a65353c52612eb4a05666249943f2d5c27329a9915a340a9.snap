@@ -1,6 +1,7 @@
 ---
 source: bin/tests/useless_parens.rs
-expression: "\"({ f = 2; })\""
+---
+({ f = 2; })
 ---
 [W08] Warning: These parentheses can be omitted
    ╭─[<temp_file_path>:1:1]

@@ -1,5 +1,5 @@
 ---
 source: bin/tests/bool_simplification.rs
-expression: "\"a != b\""
 ---
-
+a != b
+---

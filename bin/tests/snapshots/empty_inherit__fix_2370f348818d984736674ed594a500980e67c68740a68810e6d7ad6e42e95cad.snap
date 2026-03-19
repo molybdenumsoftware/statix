@@ -1,6 +1,7 @@
 ---
 source: bin/tests/empty_inherit.rs
-expression: "\"{ inherit; }\""
+---
+{ inherit; }
 ---
 --- <temp_file_path>
 +++ <temp_file_path> [fixed]

@@ -1,6 +1,7 @@
 ---
 source: bin/tests/empty_list_concat.rs
-expression: "\"[] ++ [1 2 3]\""
+---
+[] ++ [1 2 3]
 ---
 [W23] Warning: Unnecessary concatenation with empty list
    ╭─[<temp_file_path>:1:1]

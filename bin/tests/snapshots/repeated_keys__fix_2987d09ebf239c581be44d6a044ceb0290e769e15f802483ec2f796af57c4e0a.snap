@@ -1,5 +1,5 @@
 ---
 source: bin/tests/repeated_keys.rs
-expression: "\"{ foo.bar = 1; }\""
 ---
-
+{ foo.bar = 1; }
+---
