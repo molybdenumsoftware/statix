@@ -1,6 +1,14 @@
 ---
 source: bin/tests/collapsible_let_in.rs
-expression: "\"let\\n  x = a.b;\\nin\\nlet\\n  b = 1;\\nin\\nx\\n\""
+---
+let
+  x = a.b;
+in
+let
+  b = 1;
+in
+x
+
 ---
 [W06] Warning: These let-in expressions are collapsible
    ╭─[<temp_file_path>:1:1]
