@@ -2,6 +2,7 @@ use std::{
     default::Default,
     fmt, fs,
     path::{Path, PathBuf},
+    slice,
     str::FromStr,
 };
 
@@ -77,8 +78,7 @@ impl Check {
             Ok(ReadOnlyVfs::singleton("<stdin>", src.as_bytes()))
         } else {
             let all_ignores = [self.ignore.as_slice(), extra_ignores].concat();
-            let ignore = dirs::build_ignore_set(&all_ignores, &self.target, self.unrestricted)?;
-            let files = dirs::walk_nix_files(ignore, &self.target)?;
+            let files = dirs::walk_nix_files(&all_ignores, slice::from_ref(&self.target), self.unrestricted)?;
             Ok(vfs(&files.collect::<Vec<_>>()))
         }
     }
@@ -130,8 +130,7 @@ impl Fix {
             Ok(ReadOnlyVfs::singleton("<stdin>", src.as_bytes()))
         } else {
             let all_ignores = [self.ignore.as_slice(), extra_ignores].concat();
-            let ignore = dirs::build_ignore_set(&all_ignores, &self.target, self.unrestricted)?;
-            let files = dirs::walk_nix_files(ignore, &self.target)?;
+            let files = dirs::walk_nix_files(&all_ignores, slice::from_ref(&self.target), self.unrestricted)?;
             Ok(vfs(&files.collect::<Vec<_>>()))
         }
     }
