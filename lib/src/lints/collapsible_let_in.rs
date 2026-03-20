@@ -83,7 +83,7 @@ fn value_ident_names(let_expr: &LetIn) -> Vec<String> {
                 .descendants()
                 .filter(|n| {
                     n.parent()
-                        .map_or(true, |p| p.kind() != SyntaxKind::NODE_ATTRPATH)
+                        .is_none_or(|p| p.kind() != SyntaxKind::NODE_ATTRPATH)
                 })
                 .filter_map(Expr::cast)
                 .filter_map(|expr| {
