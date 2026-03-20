@@ -2,7 +2,6 @@ use std::{
     default::Default,
     fmt, fs,
     path::{Path, PathBuf},
-    slice,
     str::FromStr,
 };
 
@@ -40,7 +39,7 @@ pub enum SubCommand {
 pub struct Check {
     /// File or directory to run check on
     #[clap(default_value = ".")]
-    target: PathBuf,
+    target: Vec<PathBuf>,
 
     /// Globs of file patterns to skip
     #[clap(short, long)]
@@ -78,7 +77,7 @@ impl Check {
             Ok(ReadOnlyVfs::singleton("<stdin>", src.as_bytes()))
         } else {
             let all_ignores = [self.ignore.as_slice(), extra_ignores].concat();
-            let files = dirs::walk_nix_files(&all_ignores, slice::from_ref(&self.target), self.unrestricted)?;
+            let files = dirs::walk_nix_files(&all_ignores, &self.target, self.unrestricted)?;
             Ok(vfs(&files.collect::<Vec<_>>()))
         }
     }
@@ -88,7 +87,7 @@ impl Check {
 pub struct Fix {
     /// File or directory to run fix on
     #[clap(default_value = ".")]
-    target: PathBuf,
+    target: Vec<PathBuf>,
 
     /// Globs of file patterns to skip
     #[clap(short, long)]
@@ -130,7 +129,7 @@ impl Fix {
             Ok(ReadOnlyVfs::singleton("<stdin>", src.as_bytes()))
         } else {
             let all_ignores = [self.ignore.as_slice(), extra_ignores].concat();
-            let files = dirs::walk_nix_files(&all_ignores, slice::from_ref(&self.target), self.unrestricted)?;
+            let files = dirs::walk_nix_files(&all_ignores, &self.target, self.unrestricted)?;
             Ok(vfs(&files.collect::<Vec<_>>()))
         }
     }
