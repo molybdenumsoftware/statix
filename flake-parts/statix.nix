@@ -25,12 +25,24 @@
                 ]
               ) root)
               (root + "/Cargo.lock")
+              (root + "/insta.yaml")
             ];
           };
           cargoLock.lockFile = root + "/Cargo.lock";
           buildFeatures = [ "json" ];
           RUSTFLAGS = "--deny warnings";
-          nativeCheckInputs = [ pkgs.clippy ];
+          nativeCheckInputs = [
+            pkgs.cargo-insta
+            pkgs.clippy
+          ];
+
+          checkPhase = ''
+            runHook preCheck
+
+            cargo insta test
+
+            runHook postCheck
+          '';
 
           postCheck = ''
             echo "Starting postCheck"
