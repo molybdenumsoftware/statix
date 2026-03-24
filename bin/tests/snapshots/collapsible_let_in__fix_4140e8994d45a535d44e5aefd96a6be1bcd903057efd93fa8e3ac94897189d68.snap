@@ -1,0 +1,12 @@
+---
+source: bin/tests/collapsible_let_in.rs
+---
+let
+  x = f a;
+in
+let
+  a = 1;
+in
+x
+
+---

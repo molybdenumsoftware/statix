@@ -3,7 +3,7 @@ use crate::{Metadata, Report, Rule, Suggestion};
 use macros::lint;
 use rnix::{
     NodeOrToken, SyntaxElement, SyntaxKind, TextRange,
-    ast::{Attr, Entry, Expr, HasEntry, LetIn},
+    ast::{Attr, Entry, Expr, HasEntry, Ident, LetIn},
 };
 use rowan::{Direction, ast::AstNode as _};
 
@@ -43,28 +43,31 @@ use rowan::{Direction, ast::AstNode as _};
 )]
 struct CollapsibleLetIn;
 
-fn defined_names(let_expr: &LetIn) -> Vec<String> {
+fn defined_names(let_expr: &LetIn) -> Vec<Ident> {
     let_expr
         .entries()
         .flat_map(|entry| match entry {
-            Entry::AttrpathValue(b) => b
-                .attrpath()
-                .into_iter()
-                .flat_map(|a| a.attrs())
-                .filter_map(|attr| {
-                    if let Attr::Ident(ident) = attr {
-                        ident.ident_token().map(|t| t.text().to_string())
-                    } else {
-                        None
-                    }
-                })
-                .take(1)
-                .collect::<Vec<_>>(),
+            Entry::AttrpathValue(b) => {
+                let Some(attrpath) = b.attrpath() else {
+                    return vec![];
+                };
+                attrpath
+                    .attrs()
+                    .filter_map(|attr| {
+                        if let Attr::Ident(ident) = attr {
+                            Some(ident)
+                        } else {
+                            None
+                        }
+                    })
+                    .take(1)
+                    .collect::<Vec<_>>()
+            }
             Entry::Inherit(i) => i
                 .attrs()
                 .filter_map(|attr| {
                     if let Attr::Ident(ident) = attr {
-                        ident.ident_token().map(|t| t.text().to_string())
+                        Some(ident)
                     } else {
                         None
                     }
@@ -74,7 +77,7 @@ fn defined_names(let_expr: &LetIn) -> Vec<String> {
         .collect()
 }
 
-fn value_ident_names(let_expr: &LetIn) -> Vec<String> {
+fn value_ident_names<T: HasEntry>(let_expr: &T) -> Vec<Ident> {
     let_expr
         .attrpath_values()
         .filter_map(|b| b.value())
@@ -88,13 +91,17 @@ fn value_ident_names(let_expr: &LetIn) -> Vec<String> {
                 .filter_map(Expr::cast)
                 .filter_map(|expr| {
                     if let Expr::Ident(ident) = expr {
-                        ident.ident_token().map(|t| t.text().to_string())
+                        Some(ident)
                     } else {
                         None
                     }
                 })
         })
         .collect()
+}
+
+fn ident_eq(a: &Ident, b: &Ident) -> bool {
+    a.ident_token().map(|t| t.text().to_string()) == b.ident_token().map(|t| t.text().to_string())
 }
 
 impl Rule for CollapsibleLetIn {
@@ -114,10 +121,10 @@ impl Rule for CollapsibleLetIn {
         let inner_names = defined_names(inner_let);
         let outer_value_names = value_ident_names(&let_in_expr);
 
-        if inner_names
-            .iter()
-            .any(|n| outer_names.contains(n) || outer_value_names.contains(n))
-        {
+        if inner_names.iter().any(|n| {
+            outer_names.iter().any(|o| ident_eq(o, n))
+                || outer_value_names.iter().any(|o| ident_eq(o, n))
+        }) {
             return None;
         }
 

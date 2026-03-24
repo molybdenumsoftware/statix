@@ -12,11 +12,41 @@ generate_tests! {
               a = 2;
               b = 3;
             in
+              let
+                c = 5;
+                d = 6;
+              in
+              a + b + c + d
+        "},
+
+        indoc! {r"
             let
-              c = 5;
-              d = 6;
+              x = f a;
             in
-            a + b + c + d
+            let
+              a = 1;
+            in
+            x
+        "},
+
+        indoc! {r"
+            let
+              xs = [a b c ];
+            in
+            let
+              a = 1;
+            in
+            xs
+        "},
+
+        indoc! {r"
+            let
+              x = f y;
+            in
+            let
+              z = 1;
+            in
+            x
         "},
         indoc! {r"
             {
