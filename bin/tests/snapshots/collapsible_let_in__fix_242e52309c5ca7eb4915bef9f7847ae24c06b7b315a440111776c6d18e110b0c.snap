@@ -1,5 +1,6 @@
 ---
 source: bin/tests/collapsible_let_in.rs
+assertion_line: 7
 ---
 let
   xs = [a b c ];
