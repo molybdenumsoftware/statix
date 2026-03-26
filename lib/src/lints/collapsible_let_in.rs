@@ -51,17 +51,13 @@ fn defined_names(let_expr: &LetIn) -> Vec<Ident> {
                 let Some(attrpath) = b.attrpath() else {
                     return vec![];
                 };
-                attrpath
-                    .attrs()
-                    .filter_map(|attr| {
-                        if let Attr::Ident(ident) = attr {
-                            Some(ident)
-                        } else {
-                            None
-                        }
-                    })
-                    .take(1)
-                    .collect::<Vec<_>>()
+                let Some(first_attr) = attrpath.attrs().next() else {
+                    return vec![];
+                };
+                let Attr::Ident(ident) = first_attr else {
+                    return vec![];
+                };
+                vec![ident]
             }
             Entry::Inherit(i) => i
                 .attrs()
@@ -77,31 +73,22 @@ fn defined_names(let_expr: &LetIn) -> Vec<Ident> {
         .collect()
 }
 
-fn value_ident_names<T: HasEntry>(let_expr: &T) -> Vec<Ident> {
-    let_expr
-        .attrpath_values()
-        .filter_map(|b| b.value())
-        .flat_map(|v| {
-            v.syntax()
-                .descendants()
-                .filter(|n| {
-                    n.parent()
-                        .is_none_or(|p| p.kind() != SyntaxKind::NODE_ATTRPATH)
-                })
-                .filter_map(Expr::cast)
-                .filter_map(|expr| {
-                    if let Expr::Ident(ident) = expr {
-                        Some(ident)
-                    } else {
-                        None
-                    }
-                })
+fn value_ident_names(expr: &Expr) -> Vec<Ident> {
+    expr.syntax()
+        .descendants()
+        .filter(|n| {
+            n.parent()
+                .is_none_or(|p| p.kind() != SyntaxKind::NODE_ATTRPATH)
+        })
+        .filter_map(Expr::cast)
+        .filter_map(|expr| {
+            if let Expr::Ident(ident) = expr {
+                Some(ident)
+            } else {
+                None
+            }
         })
         .collect()
-}
-
-fn ident_eq(a: &Ident, b: &Ident) -> bool {
-    a.ident_token().map(|t| t.text().to_string()) == b.ident_token().map(|t| t.text().to_string())
 }
 
 impl Rule for CollapsibleLetIn {
@@ -119,12 +106,16 @@ impl Rule for CollapsibleLetIn {
 
         let outer_names = defined_names(&let_in_expr);
         let inner_names = defined_names(inner_let);
-        let outer_value_names = value_ident_names(&let_in_expr);
+        let outer_value_names: Vec<Ident> = let_in_expr
+            .attrpath_values()
+            .filter_map(|b| b.value())
+            .flat_map(|v| value_ident_names(&v))
+            .collect();
 
-        if inner_names.iter().any(|n| {
-            outer_names.iter().any(|o| ident_eq(o, n))
-                || outer_value_names.iter().any(|o| ident_eq(o, n))
-        }) {
+        if inner_names
+            .iter()
+            .any(|n| outer_names.contains(n) || outer_value_names.contains(n))
+        {
             return None;
         }
 
