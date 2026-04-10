@@ -98,11 +98,11 @@
     },
     "nixpkgs_dedupe": {
       "locked": {
-        "lastModified": 1772479524,
-        "narHash": "sha256-U+hMRvavBzJYhdWCWGRHCK3bpcKjqTJAnyii3y09uT8=",
-        "rev": "4215e62dc2cd3bc705b0a423b9719ff6be378a43",
+        "lastModified": 1775793324,
+        "narHash": "sha256-CTk9hS2DaQySciFGYaEx3/XwlK6nz6DYidAtK+aD0eQ=",
+        "rev": "9d29d5f667d7467f98efc31881e824fa586c927e",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixpkgs/nixpkgs-26.05pre957146.4215e62dc2cd/nixexprs.tar.xz"
+        "url": "https://releases.nixos.org/nixpkgs/nixpkgs-26.05pre977964.9d29d5f667d7/nixexprs.tar.xz"
       },
       "original": {
         "type": "tarball",
