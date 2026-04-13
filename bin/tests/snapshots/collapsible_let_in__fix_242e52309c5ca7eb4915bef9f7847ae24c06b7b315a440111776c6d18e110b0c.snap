@@ -10,14 +10,3 @@ in
 xs
 
 ---
---- <temp_file_path>
-+++ <temp_file_path> [fixed]
-@@ -1,8 +1,7 @@
- let
-   xs = [a b c ];
--in
--let
-+
-   a = 1;
- in
- xs

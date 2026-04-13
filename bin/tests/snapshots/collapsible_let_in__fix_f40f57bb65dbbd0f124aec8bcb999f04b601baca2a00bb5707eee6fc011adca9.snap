@@ -13,16 +13,3 @@ in
 pkgs
 
 ---
---- <temp_file_path>
-+++ <temp_file_path> [fixed]
-@@ -2,10 +2,9 @@
-   pkgs ? import <nixpkgs> { },
- }:
- let
-   pkgs' = pkgs.extend (import ./overlay.nix);
--in
--let
-+
-   pkgs = pkgs';
- in
- pkgs

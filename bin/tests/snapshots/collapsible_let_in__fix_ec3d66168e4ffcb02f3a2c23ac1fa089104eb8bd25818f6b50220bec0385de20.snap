@@ -10,14 +10,3 @@ in
 bar
 
 ---
---- <temp_file_path>
-+++ <temp_file_path> [fixed]
-@@ -1,8 +1,7 @@
- let
-   inherit (foo) bar;
--in
--let
-+
-   bar = 1;
- in
- bar

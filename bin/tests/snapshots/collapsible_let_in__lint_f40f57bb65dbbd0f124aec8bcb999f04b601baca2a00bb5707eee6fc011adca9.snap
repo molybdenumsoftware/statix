@@ -13,14 +13,3 @@ in
 pkgs
 
 ---
-[W06] Warning: These let-in expressions are collapsible
-    ╭─[<temp_file_path>:4:1]
-    │
-  4 │ ╭───▶ let
-  7 │ │ ╭─▶ let
- 10 │ │ ├─▶ pkgs
-    · │ │      │   
-    · │ ╰────────── This let in expression is nested
-    · │        │   
-    · ╰────────┴─── This let in expression contains a nested let in expression
-────╯

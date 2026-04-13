@@ -10,14 +10,3 @@ in
 x
 
 ---
-[W06] Warning: These let-in expressions are collapsible
-   ╭─[<temp_file_path>:1:1]
-   │
- 1 │ ╭───▶ let
- 4 │ │ ╭─▶ let
- 7 │ │ ├─▶ x
-   · │ │   │   
-   · │ ╰─────── This let in expression is nested
-   · │     │   
-   · ╰─────┴─── This let in expression contains a nested let in expression
-───╯

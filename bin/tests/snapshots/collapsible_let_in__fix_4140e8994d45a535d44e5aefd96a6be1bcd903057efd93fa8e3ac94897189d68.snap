@@ -10,14 +10,3 @@ in
 x
 
 ---
---- <temp_file_path>
-+++ <temp_file_path> [fixed]
-@@ -1,8 +1,7 @@
- let
-   x = f a;
--in
--let
-+
-   a = 1;
- in
- x

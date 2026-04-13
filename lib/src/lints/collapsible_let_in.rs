@@ -3,7 +3,7 @@ use crate::{Metadata, Report, Rule, Suggestion};
 use macros::lint;
 use rnix::{
     NodeOrToken, SyntaxElement, SyntaxKind, TextRange,
-    ast::{Attr, Entry, Expr, HasEntry, Ident, LetIn},
+    ast::{Attr, Entry, Expr, HasEntry, LetIn},
 };
 use rowan::{Direction, ast::AstNode as _};
 
@@ -43,7 +43,7 @@ use rowan::{Direction, ast::AstNode as _};
 )]
 struct CollapsibleLetIn;
 
-fn defined_names(let_expr: &LetIn) -> Vec<Ident> {
+fn defined_names(let_expr: &LetIn) -> Vec<String> {
     let_expr
         .entries()
         .flat_map(|entry| match entry {
@@ -57,13 +57,17 @@ fn defined_names(let_expr: &LetIn) -> Vec<Ident> {
                 let Attr::Ident(ident) = first_attr else {
                     return vec![];
                 };
-                vec![ident]
+                ident
+                    .ident_token()
+                    .map(|t| t.text().to_string())
+                    .into_iter()
+                    .collect()
             }
             Entry::Inherit(i) => i
                 .attrs()
                 .filter_map(|attr| {
                     if let Attr::Ident(ident) = attr {
-                        Some(ident)
+                        ident.ident_token().map(|t| t.text().to_string())
                     } else {
                         None
                     }
@@ -73,7 +77,7 @@ fn defined_names(let_expr: &LetIn) -> Vec<Ident> {
         .collect()
 }
 
-fn value_ident_names(expr: &Expr) -> Vec<Ident> {
+fn value_ident_names(expr: &Expr) -> Vec<String> {
     expr.syntax()
         .descendants()
         .filter(|n| {
@@ -83,7 +87,7 @@ fn value_ident_names(expr: &Expr) -> Vec<Ident> {
         .filter_map(Expr::cast)
         .filter_map(|expr| {
             if let Expr::Ident(ident) = expr {
-                Some(ident)
+                ident.ident_token().map(|t| t.text().to_string())
             } else {
                 None
             }
@@ -106,7 +110,7 @@ impl Rule for CollapsibleLetIn {
 
         let outer_names = defined_names(&let_in_expr);
         let inner_names = defined_names(inner_let);
-        let outer_value_names: Vec<Ident> = let_in_expr
+        let outer_value_names: Vec<String> = let_in_expr
             .attrpath_values()
             .filter_map(|b| b.value())
             .flat_map(|v| value_ident_names(&v))
