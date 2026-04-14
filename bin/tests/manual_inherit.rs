@@ -6,8 +6,8 @@ generate_tests! {
     rule: manual_inherit,
     expressions: [
         // trivial
-        "let a = 2; in { a = a; }",
+        "let a = 2; in { a = a; }\n",
         // don't lint
-        "let y = 2; in { x.y = y; }",
+        "let y = 2; in { x.y = y; }\n",
     ],
 }

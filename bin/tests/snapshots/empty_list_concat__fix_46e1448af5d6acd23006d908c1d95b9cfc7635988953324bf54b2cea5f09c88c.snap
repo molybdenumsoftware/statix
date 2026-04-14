@@ -1,0 +1,6 @@
+---
+source: bin/tests/empty_list_concat.rs
+---
+[1 2] ++ [3 4]
+
+---

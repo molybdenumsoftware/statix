@@ -5,15 +5,15 @@ use macros::generate_tests;
 generate_tests! {
     rule: eta_reduction,
     expressions: [
-        "let double = x: x * 2; in map (x: double x) [1 2 3]",
+        "let double = x: x * 2; in map (x: double x) [1 2 3]\n",
 
         // don't lint on non-free exprs
-        "let f = { double = x: x *2; val = 2; }; in map (f: f.double f.val) [ f ]",
+        "let f = { double = x: x *2; val = 2; }; in map (f: f.double f.val) [ f ]\n",
 
         // other non-free forms
-        "let f = { double = x: x *2; val = 2; }; in map (f: {inherit f;}.double f.val) [ f ]",
+        "let f = { double = x: x *2; val = 2; }; in map (f: {inherit f;}.double f.val) [ f ]\n",
 
         // don't reduce on more complex lambda bodies
-        "map (x: builtins.div 3 x) [1 2 3]",
+        "map (x: builtins.div 3 x) [1 2 3]\n",
     ],
 }

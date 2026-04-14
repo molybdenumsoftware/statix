@@ -1,5 +1,0 @@
----
-source: bin/tests/eta_reduction.rs
----
-map (x: builtins.div 3 x) [1 2 3]
----

@@ -1,5 +1,0 @@
----
-source: bin/tests/manual_inherit_from.rs
----
-let foo = { }; in { x = foo.x or false; }
----

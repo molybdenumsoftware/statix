@@ -1,5 +1,0 @@
----
-source: bin/tests/deprecated_to_path.rs
----
-builtins.toPath x
----

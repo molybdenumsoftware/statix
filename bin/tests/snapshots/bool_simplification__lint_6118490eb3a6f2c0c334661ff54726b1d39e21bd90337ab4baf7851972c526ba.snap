@@ -1,0 +1,6 @@
+---
+source: bin/tests/bool_simplification.rs
+---
+a != b
+
+---

@@ -1,0 +1,11 @@
+---
+source: bin/tests/empty_inherit.rs
+---
+{ inherit; }
+
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1 +1 @@
+-{ inherit; }
++{ }

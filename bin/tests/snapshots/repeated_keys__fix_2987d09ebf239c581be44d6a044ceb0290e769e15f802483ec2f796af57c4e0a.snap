@@ -1,5 +1,0 @@
----
-source: bin/tests/repeated_keys.rs
----
-{ foo.bar = 1; }
----

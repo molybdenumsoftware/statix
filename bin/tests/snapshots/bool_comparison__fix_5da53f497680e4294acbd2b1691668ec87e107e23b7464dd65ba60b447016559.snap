@@ -1,0 +1,6 @@
+---
+source: bin/tests/bool_comparison.rs
+---
+false != c
+
+---
