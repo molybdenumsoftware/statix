@@ -6,7 +6,6 @@ let {
   x = "hello,";
   y = " world!";
 }
-
 ---
 [W05] Warning: Using undocumented `let` syntax
    ╭─[<temp_file_path>:1:1]

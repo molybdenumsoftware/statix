@@ -2,7 +2,6 @@
 source: bin/tests/useless_parens.rs
 ---
 ("hello")
-
 ---
 [W08] Warning: These parentheses can be omitted
    ╭─[<temp_file_path>:1:1]

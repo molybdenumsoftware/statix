@@ -1,6 +1,0 @@
----
-source: bin/tests/empty_pattern.rs
----
-({ a, ... }: a)
-
----

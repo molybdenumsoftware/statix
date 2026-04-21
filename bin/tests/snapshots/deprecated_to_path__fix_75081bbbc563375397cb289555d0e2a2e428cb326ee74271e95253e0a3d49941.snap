@@ -2,5 +2,4 @@
 source: bin/tests/deprecated_to_path.rs
 ---
 toPath "/abc/def"
-
 ---

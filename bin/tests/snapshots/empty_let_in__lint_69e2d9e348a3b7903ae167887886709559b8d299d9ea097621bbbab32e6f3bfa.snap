@@ -6,7 +6,6 @@ let
   # raise the lint though
 in
 null
-
 ---
 [W02] Warning: Useless let-in expression
    ╭─[<temp_file_path>:1:1]

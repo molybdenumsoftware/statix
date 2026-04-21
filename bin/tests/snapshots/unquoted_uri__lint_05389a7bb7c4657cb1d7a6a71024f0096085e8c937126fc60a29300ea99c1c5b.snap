@@ -2,7 +2,6 @@
 source: bin/tests/unquoted_uri.rs
 ---
 github:nerdypepper/statix
-
 ---
 [W12] Warning: Found unquoted URI expression
    ╭─[<temp_file_path>:1:1]

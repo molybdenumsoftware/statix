@@ -6,13 +6,13 @@ generate_tests! {
     rule: empty_pattern,
     expressions: [
         // match
-        "({ ... }: 42)\n",
-        "({ ... } @ inputs: inputs)\n",
+        "({ ... }: 42)",
+        "({ ... } @ inputs: inputs)",
 
         // don't match
-        "({ a, ... }: a)\n",
+        "({ a, ... }: a)",
 
         // nixos module, don't match
-        "({ ... }: { imports = []; })\n",
+        "({ ... }: { imports = []; })",
     ],
 }

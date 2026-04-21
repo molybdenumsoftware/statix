@@ -2,7 +2,6 @@
 source: bin/tests/empty_inherit.rs
 ---
 { inherit; }
-
 ---
 [W14] Warning: Found empty inherit statement
    ╭─[<temp_file_path>:1:3]

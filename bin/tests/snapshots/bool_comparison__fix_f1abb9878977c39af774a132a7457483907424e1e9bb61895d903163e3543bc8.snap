@@ -1,6 +1,0 @@
----
-source: bin/tests/bool_comparison.rs
----
-k != l
-
----

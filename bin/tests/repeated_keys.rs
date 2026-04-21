@@ -8,7 +8,7 @@ generate_tests! {
     rule: repeated_keys,
     expressions: [
         // fine
-        "{ foo.bar = 1; }\n",
+        "{ foo.bar = 1; }",
 
         // do not raise on rec
         indoc! {"

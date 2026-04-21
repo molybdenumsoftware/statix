@@ -7,7 +7,7 @@ use macros::generate_tests;
 generate_tests! {
     rule: empty_let_in,
     expressions: [
-        "let in null\n",
+        "let in null",
         indoc! {"
             let
               # don't fix this, we have a comment

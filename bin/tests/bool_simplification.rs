@@ -5,10 +5,10 @@ use macros::generate_tests;
 generate_tests! {
     rule: bool_simplification,
     expressions: [
-        "!(a == b)\n",
+        "!(a == b)",
 
         // non-matches
-        "!(a != b)\n",
-        "a != b\n",
+        "!(a != b)",
+        "a != b",
     ],
 }

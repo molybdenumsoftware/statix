@@ -1,0 +1,12 @@
+---
+source: bin/tests/bool_simplification.rs
+---
+!(a == b)
+---
+[W18] Warning: This boolean expression can be simplified
+   ╭─[<temp_file_path>:1:1]
+   │
+ 1 │ !(a == b)
+   · ────┬────  
+   ·     ╰────── Try != instead of !(... == ...)
+───╯
