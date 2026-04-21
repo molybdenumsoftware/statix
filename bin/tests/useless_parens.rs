@@ -6,8 +6,7 @@ generate_tests! {
     rule: useless_parens,
     expressions: [
         // parens around primitives
-        r#"("hello")
-"#,
+        r#"("hello")"#,
         "let b = 0; in (b)",
         "({ f = 2; })",
 

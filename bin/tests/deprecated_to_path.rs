@@ -7,9 +7,7 @@ generate_tests! {
     expressions: [
         "builtins.toPath x",
         "toPath x",
-        r#"toPath "/abc/def"
-"#,
-        r#"builtins.toPath "/some/path"
-"#,
+        r#"toPath "/abc/def""#,
+        r#"builtins.toPath "/some/path""#,
     ],
 }
