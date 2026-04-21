@@ -6,5 +6,4 @@ source: bin/tests/repeated_keys.rs
   foo.bar."hello" = 1;
   foo.again = 1;
 }
-
 ---

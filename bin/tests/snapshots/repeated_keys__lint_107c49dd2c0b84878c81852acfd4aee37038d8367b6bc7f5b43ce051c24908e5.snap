@@ -6,7 +6,6 @@ source: bin/tests/repeated_keys.rs
   foo.bar."hello" = 1;
   foo.again = 1;
 }
-
 ---
 [W20] Warning: Avoid repeated keys in attribute sets
    ╭─[<temp_file_path>:2:3]

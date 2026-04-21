@@ -10,7 +10,6 @@ in
     d = 6;
   in
   a + b + c + d
-
 ---
 [W06] Warning: These let-in expressions are collapsible
    ╭─[<temp_file_path>:1:1]

@@ -5,7 +5,6 @@ use tempfile::NamedTempFile;
 pub fn test_cli(expression: &str, args: &[&str]) -> anyhow::Result<String> {
     let mut fixture = NamedTempFile::with_suffix(".nix")?;
     fixture.write_all(expression.as_bytes())?;
-    fixture.write_all(b"\n")?; // otherwise diff says there's no newline at end of file
 
     let output = Command::new("cargo")
         .arg("run")

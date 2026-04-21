@@ -96,8 +96,14 @@ fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2
         #[test]
         fn #test_ident() {
             let expression = #nix_expression;
-            let stdout = _utils::test_cli(expression, #args).unwrap();
-            let snapshot = format!("{expression}\n---\n{stdout}");
+            let expression: &str = expression.as_ref();
+            let expression = if expression.ends_with('\n') {
+                std::borrow::Cow::Borrowed(expression)
+            } else {
+                std::borrow::Cow::Owned(format!("{expression}\n"))
+            };
+            let stdout = _utils::test_cli(expression.as_ref(), #args).unwrap();
+            let snapshot = format!("{expression}---\n{stdout}");
             insta::with_settings!({omit_expression => true}, {
                 insta::assert_snapshot!(#snap_name, snapshot);
             });

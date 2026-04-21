@@ -8,5 +8,4 @@ source: bin/tests/repeated_keys.rs
   foo.baz.bar4 = 4;
   foo.baz.bar5 = 5;
 }
-
 ---
