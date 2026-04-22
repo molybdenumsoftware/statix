@@ -57,20 +57,21 @@ fn defined_names(let_expr: &LetIn) -> Vec<String> {
                 let Attr::Ident(ident) = first_attr else {
                     return vec![];
                 };
-                ident
-                    .ident_token()
-                    .map(|t| t.text().to_string())
-                    .into_iter()
-                    .collect()
+                let Some(token) = ident.ident_token() else {
+                    return vec![];
+                };
+                vec![token.text().to_string()]
             }
             Entry::Inherit(i) => i
                 .attrs()
                 .filter_map(|attr| {
-                    if let Attr::Ident(ident) = attr {
-                        ident.ident_token().map(|t| t.text().to_string())
-                    } else {
-                        None
-                    }
+                    let Attr::Ident(ident) = attr else {
+                        return None;
+                    };
+                    let Some(token) = ident.ident_token() else {
+                        return None;
+                    };
+                    Some(token.text().to_string())
                 })
                 .collect::<Vec<_>>(),
         })
@@ -80,17 +81,20 @@ fn defined_names(let_expr: &LetIn) -> Vec<String> {
 fn value_ident_names(expr: &Expr) -> Vec<String> {
     expr.syntax()
         .descendants()
-        .filter(|n| {
-            n.parent()
-                .is_none_or(|p| p.kind() != SyntaxKind::NODE_ATTRPATH)
-        })
-        .filter_map(Expr::cast)
-        .filter_map(|expr| {
-            if let Expr::Ident(ident) = expr {
-                ident.ident_token().map(|t| t.text().to_string())
-            } else {
-                None
+        .filter_map(|n| {
+            // Exclude idents that are attribute path selectors (e.g. the `b`
+            // in `a.b`), which are not variable references.
+            if n.parent()
+                .is_some_and(|p| p.kind() == SyntaxKind::NODE_ATTRPATH)
+            {
+                return None;
             }
+            let expr = Expr::cast(n)?;
+            let Expr::Ident(ident) = expr else {
+                return None;
+            };
+            let token = ident.ident_token()?;
+            Some(token.text().to_string())
         })
         .collect()
 }
