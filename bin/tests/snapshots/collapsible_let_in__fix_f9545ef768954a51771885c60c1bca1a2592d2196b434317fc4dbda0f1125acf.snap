@@ -8,11 +8,10 @@ let
   c = 2;
 in
 c
-
 ---
 --- <temp_file_path>
 +++ <temp_file_path> [fixed]
-@@ -1,8 +1,7 @@
+@@ -1,7 +1,6 @@
  let
    a.b = 1;
 -in

@@ -8,7 +8,6 @@ let
   b = 1;
 in
 x
-
 ---
 [W06] Warning: These let-in expressions are collapsible
    ╭─[<temp_file_path>:1:1]

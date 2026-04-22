@@ -8,5 +8,4 @@ let
   bar = 1;
 in
 bar
-
 ---
