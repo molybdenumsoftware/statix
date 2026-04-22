@@ -51,10 +51,7 @@ fn defined_names(let_expr: &LetIn) -> Vec<String> {
                 let Some(attrpath) = b.attrpath() else {
                     return vec![];
                 };
-                let Some(first_attr) = attrpath.attrs().next() else {
-                    return vec![];
-                };
-                let Attr::Ident(ident) = first_attr else {
+                let Some(Attr::Ident(ident)) = attrpath.attrs().next() else {
                     return vec![];
                 };
                 let Some(token) = ident.ident_token() else {
@@ -76,7 +73,7 @@ fn defined_names(let_expr: &LetIn) -> Vec<String> {
         .collect()
 }
 
-fn value_ident_names(expr: &Expr) -> Vec<String> {
+fn referenced_names(expr: &Expr) -> Vec<String> {
     expr.syntax()
         .descendants()
         .filter_map(|n| {
@@ -87,8 +84,7 @@ fn value_ident_names(expr: &Expr) -> Vec<String> {
             {
                 return None;
             }
-            let expr = Expr::cast(n)?;
-            let Expr::Ident(ident) = expr else {
+            let Expr::Ident(ident) = Expr::cast(n)? else {
                 return None;
             };
             let token = ident.ident_token()?;
@@ -115,7 +111,7 @@ impl Rule for CollapsibleLetIn {
         let outer_value_names: Vec<String> = let_in_expr
             .attrpath_values()
             .filter_map(|b| b.value())
-            .flat_map(|v| value_ident_names(&v))
+            .flat_map(|v| referenced_names(&v))
             .collect();
 
         if inner_names
