@@ -68,9 +68,7 @@ fn defined_names(let_expr: &LetIn) -> Vec<String> {
                     let Attr::Ident(ident) = attr else {
                         return None;
                     };
-                    let Some(token) = ident.ident_token() else {
-                        return None;
-                    };
+                    let token = ident.ident_token()?;
                     Some(token.text().to_string())
                 })
                 .collect::<Vec<_>>(),
