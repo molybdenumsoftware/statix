@@ -3,7 +3,7 @@ source: bin/tests/repeated_keys.rs
 ---
 {
   foo.bar = 1;
-  foo.bar."hello" = 1;
+  foo.baz."hello" = 1;
   foo.again = 1;
 }
 ---

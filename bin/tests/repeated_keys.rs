@@ -23,7 +23,7 @@ generate_tests! {
         indoc! {r#"
             {
               foo.bar = 1;
-              foo.bar."hello" = 1;
+              foo.baz."hello" = 1;
               foo.again = 1;
             }
         "#},
