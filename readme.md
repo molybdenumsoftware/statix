@@ -2,7 +2,9 @@
 
 > Lints and suggestions for the Nix programming language.
 
-Forked from [oppiliappan/statix](https://github.com/oppiliappan/statix)
+Reluctantly forked from [oppiliappan/statix](https://github.com/oppiliappan/statix)
+because I wanted to maintain and could not obtain some repository permission bits.
+I still hope to unfork.
 
 `statix check` highlights antipatterns in Nix code. `statix
 fix` can fix several such occurrences.
