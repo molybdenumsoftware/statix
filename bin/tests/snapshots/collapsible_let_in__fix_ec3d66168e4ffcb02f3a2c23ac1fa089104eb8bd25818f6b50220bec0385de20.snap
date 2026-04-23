@@ -1,0 +1,11 @@
+---
+source: bin/tests/collapsible_let_in.rs
+---
+let
+  inherit (foo) bar;
+in
+let
+  bar = 1;
+in
+bar
+---

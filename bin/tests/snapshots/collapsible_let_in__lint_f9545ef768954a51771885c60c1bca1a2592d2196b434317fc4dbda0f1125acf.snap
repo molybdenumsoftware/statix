@@ -1,0 +1,22 @@
+---
+source: bin/tests/collapsible_let_in.rs
+---
+let
+  a.b = 1;
+in
+let
+  c = 2;
+in
+c
+---
+[W06] Warning: These let-in expressions are collapsible
+   ╭─[<temp_file_path>:1:1]
+   │
+ 1 │ ╭───▶ let
+ 4 │ │ ╭─▶ let
+ 7 │ │ ├─▶ c
+   · │ │   │   
+   · │ ╰─────── This let in expression is nested
+   · │     │   
+   · ╰─────┴─── This let in expression contains a nested let in expression
+───╯
