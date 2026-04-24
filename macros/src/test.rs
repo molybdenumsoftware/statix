@@ -83,9 +83,9 @@ fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2
         TestKind::Fix => "fix",
     };
 
-    let test_name = format!("{rule}_{kind_str}_{expression_hash}");
+    let test_name = format!("{rule}_{expression_hash}_{kind_str}");
     let test_ident = Ident::new(&test_name, nix_expression.span());
-    let snap_name = format!("{kind_str}_{expression_hash}");
+    let snap_name = format!("{expression_hash}_{kind_str}");
 
     let args = match kind {
         TestKind::Lint => quote! {&["check"]},
