@@ -76,7 +76,7 @@ enum TestKind {
 
 fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2::TokenStream {
     let expression_hash = Sha256::digest(nix_expression.to_token_stream().to_string());
-    let expression_hash = hex::encode(expression_hash);
+    let expression_hash = hex::encode(&expression_hash[..16]);
 
     let kind_str = match kind {
         TestKind::Lint => "lint",
