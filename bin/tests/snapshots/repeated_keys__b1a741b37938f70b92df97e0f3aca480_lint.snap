@@ -7,16 +7,16 @@ source: bin/tests/repeated_keys.rs
   foo.again = 1;
 }
 ---
-[W20] Warning: Avoid repeated keys in attribute sets
-   ╭─[<temp_file_path>:2:3]
+[20] Warning: Avoid repeated keys in attribute sets
+   ╭─[ <temp_file_path>:2:3 ]
    │
  2 │   foo.bar = 1;
-   ·   ───┬───  
-   ·      ╰───── The key foo is first assigned here ...
+   │   ───┬───  
+   │      ╰───── The key foo is first assigned here ...
  3 │   foo.baz."hello" = 1;
-   ·   ───────┬───────  
-   ·          ╰───────── ... repeated here ...
+   │   ───────┬───────  
+   │          ╰───────── ... repeated here ...
  4 │   foo.again = 1;
-   ·   ────┬────  
-   ·       ╰────── ... and here. Try foo = { bar=...; baz."hello"=...; again=...; } instead.
+   │   ────┬────  
+   │       ╰────── ... and here. Try foo = { bar=...; baz."hello"=...; again=...; } instead.
 ───╯

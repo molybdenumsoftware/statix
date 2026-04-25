@@ -3,10 +3,10 @@ source: bin/tests/eta_reduction.rs
 ---
 let double = x: x * 2; in map (x: double x) [1 2 3]
 ---
-[W07] Warning: This function expression is eta reducible
-   ╭─[<temp_file_path>:1:32]
+[07] Warning: This function expression is eta reducible
+   ╭─[ <temp_file_path>:1:32 ]
    │
  1 │ let double = x: x * 2; in map (x: double x) [1 2 3]
-   ·                                ─────┬─────  
-   ·                                     ╰─────── Found eta-reduction: double
+   │                                ─────┬─────  
+   │                                     ╰─────── Found eta-reduction: double
 ───╯
