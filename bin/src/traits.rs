@@ -67,7 +67,7 @@ fn write_stderr<T: Write>(
             .diagnostics
             .iter()
             .fold(
-                CliReport::build(report_kind, src_id, offset)
+                CliReport::build(report_kind, (src_id, offset..offset))
                     .with_config(
                         CliConfig::default()
                             .with_cross_gap(true)
