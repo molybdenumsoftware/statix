@@ -52,12 +52,10 @@ fn write_stderr<T: Write>(
     let range = |at: TextRange| at.start().into()..at.end().into();
     let src_id = path.to_str().unwrap_or("<unknown>");
     for report in &lint_result.reports {
-        let offset = report
-            .diagnostics
-            .iter()
-            .map(|d| d.at.start().into())
-            .min()
-            .unwrap_or(0usize);
+        let report_range = report
+            .total_diagnostic_range()
+            .map(range)
+            .unwrap_or(0usize..0usize);
         let report_kind = match report.severity {
             Severity::Warn => CliReportKind::Warning,
             Severity::Error => CliReportKind::Error,
@@ -67,7 +65,7 @@ fn write_stderr<T: Write>(
             .diagnostics
             .iter()
             .fold(
-                CliReport::build(report_kind, (src_id, offset..offset))
+                CliReport::build(report_kind, (src_id, report_range))
                     .with_config(
                         CliConfig::default()
                             .with_cross_gap(true)
