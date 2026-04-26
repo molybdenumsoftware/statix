@@ -7,11 +7,12 @@ let {
   y = " world!";
 }
 ---
-[W05] Warning: Using undocumented `let` syntax
-   ╭─[<temp_file_path>:1:1]
+[05] Warning: Using undocumented `let` syntax
+   ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ ╭─▶ let {
+   ┆ ┆   
  5 │ ├─▶ }
-   · │       
-   · ╰─────── Prefer rec over undocumented let syntax
+   │ │       
+   │ ╰─────── Prefer rec over undocumented let syntax
 ───╯

@@ -7,11 +7,12 @@ let
 in
 null
 ---
-[W02] Warning: Useless let-in expression
-   ╭─[<temp_file_path>:1:1]
+[02] Warning: Useless let-in expression
+   ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ ╭─▶ let
+   ┆ ┆   
  5 │ ├─▶ null
-   · │          
-   · ╰────────── This let-in expression has no entries
+   │ │          
+   │ ╰────────── This let-in expression has no entries
 ───╯

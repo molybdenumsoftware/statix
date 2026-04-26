@@ -11,14 +11,16 @@ in
   in
   a + b + c + d
 ---
-[W06] Warning: These let-in expressions are collapsible
-   ╭─[<temp_file_path>:1:1]
+[06] Warning: These let-in expressions are collapsible
+   ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ ╭───▶ let
+   ┆ ┆     
  5 │ │ ╭─▶   let
+   ┆ ┆ ┆   
  9 │ │ ├─▶   a + b + c + d
-   · │ │                 │   
-   · │ ╰───────────────────── This let in expression is nested
-   · │                   │   
-   · ╰───────────────────┴─── This let in expression contains a nested let in expression
+   │ │ │                 │   
+   │ │ ╰───────────────────── This let in expression is nested
+   │ │                   │   
+   │ ╰───────────────────┴─── This let in expression contains a nested let in expression
 ───╯

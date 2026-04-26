@@ -3,10 +3,10 @@ source: bin/tests/useless_has_attr.rs
 ---
 if x ? a.b then x.a.b else default
 ---
-[W19] Warning: This `if` expression can be simplified with `or`
-   ╭─[<temp_file_path>:1:1]
+[19] Warning: This `if` expression can be simplified with `or`
+   ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ if x ? a.b then x.a.b else default
-   · ─────────────────┬────────────────  
-   ·                  ╰────────────────── Consider using x.a.b or default instead of this if expression
+   │ ─────────────────┬────────────────  
+   │                  ╰────────────────── Consider using x.a.b or default instead of this if expression
 ───╯

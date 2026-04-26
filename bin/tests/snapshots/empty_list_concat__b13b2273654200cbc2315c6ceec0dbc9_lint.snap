@@ -3,17 +3,17 @@ source: bin/tests/empty_list_concat.rs
 ---
 [] ++ [] ++ []
 ---
-[W23] Warning: Unnecessary concatenation with empty list
-   ╭─[<temp_file_path>:1:1]
+[23] Warning: Unnecessary concatenation with empty list
+   ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ [] ++ [] ++ []
-   · ───────┬──────  
-   ·        ╰──────── Concatenation with the empty list, [], is a no-op
+   │ ───────┬──────  
+   │        ╰──────── Concatenation with the empty list, [], is a no-op
 ───╯
-[W23] Warning: Unnecessary concatenation with empty list
-   ╭─[<temp_file_path>:1:7]
+[23] Warning: Unnecessary concatenation with empty list
+   ╭─[ <temp_file_path>:1:7 ]
    │
  1 │ [] ++ [] ++ []
-   ·       ────┬───  
-   ·           ╰───── Concatenation with the empty list, [], is a no-op
+   │       ────┬───  
+   │           ╰───── Concatenation with the empty list, [], is a no-op
 ───╯
