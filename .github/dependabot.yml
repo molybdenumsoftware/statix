@@ -17,6 +17,20 @@
       "schedule": {
         "interval": "daily"
       }
+    },
+    {
+      "commit-message": {
+        "include": "scope",
+        "prefix": "chore"
+      },
+      "directories": [
+        "/",
+        "/dev-flake"
+      ],
+      "package-ecosystem": "nix",
+      "schedule": {
+        "interval": "daily"
+      }
     }
   ],
   "version": 2

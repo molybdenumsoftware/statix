@@ -22,6 +22,18 @@ in
                     include = "scope";
                   };
                 }
+                {
+                  package-ecosystem = "nix";
+                  directories = [
+                    "/"
+                    "/dev-flake"
+                  ];
+                  schedule.interval = "daily";
+                  commit-message = {
+                    prefix = "chore";
+                    include = "scope";
+                  };
+                }
               ];
             };
           }
