@@ -2,7 +2,6 @@
 let
   filePaths = {
     check = ".github/workflows/check.yaml";
-    updateFlakeInputs = ".github/workflows/update-flake-inputs.yaml";
   };
 
   ids = {
@@ -108,48 +107,6 @@ in
                     { run = "nix-env --install --file default.nix"; }
                   ];
                 };
-              };
-            };
-          }
-          {
-            path_ = filePaths.updateFlakeInputs;
-            drv = pkgs.writers.writeJSON "update-flake-inputs.yaml" {
-              name = "Update flake inputs";
-              on = {
-                workflow_dispatch = { };
-                schedule = [ { cron = "0 0/6 * * *"; } ];
-              };
-              jobs.nix-flake-update = {
-                permissions = {
-                  contents = "write";
-                  pull-requests = "write";
-                };
-                runs-on = runner.name;
-                steps = [
-                  {
-                    id = ids.steps.appToken;
-                    uses = "actions/create-github-app-token@v1";
-                    "with" = {
-                      app-id = "\${{ secrets.APP_ID }}";
-                      private-key = "\${{ secrets.APP_PRIVATE_KEY }}";
-                    };
-                  }
-                  (
-                    steps.checkout
-                    // {
-                      "with".token = "\${{ steps.${ids.steps.appToken}.outputs.token }}";
-                    }
-                  )
-                  steps.installNix
-                  steps.cacheNix
-                  {
-                    uses = "mic92/update-flake-inputs@main";
-                    "with" = {
-                      github-token = "\${{ steps.${ids.steps.appToken}.outputs.token }}";
-                      commit-message = "chore(flake): update {{input}}{{in}}";
-                    };
-                  }
-                ];
               };
             };
           }
