@@ -6,13 +6,6 @@
         "prefix": "chore"
       },
       "directory": "/",
-      "groups": {
-        "everything": {
-          "patterns": [
-            "*"
-          ]
-        }
-      },
       "package-ecosystem": "cargo",
       "schedule": {
         "interval": "daily"
