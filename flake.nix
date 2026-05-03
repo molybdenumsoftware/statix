@@ -36,7 +36,7 @@
           ./flake-parts/rust.nix
           ./flake-parts/statix.nix
           ./flake-parts/systems.nix
-          ./vim-plugin/flake-part.nix
+          ./flake-parts/vim-plugin.nix
         ];
 
         partitionedAttrs = lib.genAttrs [

@@ -1,14 +1,17 @@
-{ lib, ... }:
+{ lib, root, ... }:
 {
   perSystem =
     { pkgs, ... }:
+    let
+      pluginRoot = root + "/vim-plugin";
+    in
     {
       packages.statix-vim = pkgs.vimUtils.buildVimPlugin {
         pname = "statix-vim";
         version = "0.1.0";
         src = lib.fileset.toSource {
-          root = ./.;
-          fileset = lib.fileset.union ./plugin/statix.vim ./ftplugin/nix.vim;
+          root = pluginRoot;
+          fileset = lib.fileset.union (pluginRoot + "/plugin/statix.vim") (pluginRoot + "/ftplugin/nix.vim");
         };
       };
     };
