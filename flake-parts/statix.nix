@@ -1,7 +1,6 @@
 {
   lib,
   root,
-  self,
   ...
 }:
 {
@@ -11,7 +10,7 @@
       packages = {
         statix = pkgs.rustPlatform.buildRustPackage {
           pname = "statix";
-          version = self.lastModifiedDate;
+          version = "0.6.0-git";
 
           src = lib.fileset.toSource {
             inherit root;
