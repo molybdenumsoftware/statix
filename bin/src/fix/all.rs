@@ -1,7 +1,7 @@
 use std::borrow::Cow;
 
 use lib::Report;
-use rnix::{Root, WalkEvent, parser::ParseError as RnixParseErr};
+use rnix::{ParseError, Root, WalkEvent};
 use rowan::ast::AstNode as _;
 
 use crate::{
@@ -9,7 +9,7 @@ use crate::{
     fix::{FixResult, Fixed},
 };
 
-fn collect_fixes(source: &str, lints: &LintMap) -> Result<Vec<Report>, RnixParseErr> {
+fn collect_fixes(source: &str, lints: &LintMap) -> Result<Vec<Report>, ParseError> {
     let parsed = Root::parse(source).ok()?;
 
     Ok(parsed

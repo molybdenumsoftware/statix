@@ -14,7 +14,7 @@ pub fn test_cli(expression: &str, args: &[&str]) -> anyhow::Result<String> {
         .arg(fixture.path())
         .output()?;
 
-    let stdout = strip_ansi_escapes::strip(output.stdout)?;
+    let stdout = strip_ansi_escapes::strip(output.stdout);
     let stdout = String::from_utf8(stdout)?;
     let stdout = stdout.replace(fixture.path().to_str().unwrap(), "<temp_file_path>");
 
@@ -38,7 +38,7 @@ pub fn test_cli_stdin(input: &str, args: &[&str]) -> anyhow::Result<String> {
         .write_all(input.as_bytes())?;
 
     let output = child.wait_with_output()?;
-    let stdout = strip_ansi_escapes::strip(output.stdout)?;
+    let stdout = strip_ansi_escapes::strip(output.stdout);
 
     Ok(String::from_utf8(stdout)?)
 }

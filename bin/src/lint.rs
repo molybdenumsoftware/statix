@@ -16,10 +16,7 @@ pub fn lint_with(vfs_entry: &VfsEntry, lints: &LintMap) -> LintResult {
     let source = vfs_entry.contents;
     let parsed = Root::parse(source);
 
-    let error_reports = parsed
-        .errors()
-        .iter()
-        .map(|err: &rnix::parser::ParseError| Report::from_parse_err(err));
+    let error_reports = parsed.errors().iter().map(Report::from_parse_err);
     let reports = parsed
         .syntax()
         .preorder_with_tokens()

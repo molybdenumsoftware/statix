@@ -5,7 +5,7 @@ mod utils;
 
 pub use lints::LINTS;
 
-use rnix::{SyntaxElement, SyntaxKind, TextRange, parser::ParseError};
+use rnix::{ParseError, SyntaxElement, SyntaxKind, TextRange};
 use std::{convert::Into, default::Default};
 
 #[cfg(feature = "json-out")]
