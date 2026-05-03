@@ -28,10 +28,7 @@ in
                     "/dev-flake"
                   ];
                   schedule.interval = "daily";
-                  commit-message = {
-                    prefix = "chore";
-                    include = "scope";
-                  };
+                  commit-message.prefix = "chore";
                 }
               ];
             };

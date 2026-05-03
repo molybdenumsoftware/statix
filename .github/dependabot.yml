@@ -13,7 +13,6 @@
     },
     {
       "commit-message": {
-        "include": "scope",
         "prefix": "chore"
       },
       "directories": [
