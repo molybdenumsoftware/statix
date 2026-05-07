@@ -1,7 +1,7 @@
 { lib, root, ... }:
 {
   partitions.dev.module.perSystem =
-    psArgs@{ pkgs, ... }:
+    { pkgs, ... }:
     let
       src = lib.fileset.toSource {
         inherit root;
@@ -9,12 +9,10 @@
       };
     in
     {
-      checks.dogfood =
-        pkgs.runCommand "dogfood" { nativeBuildInputs = [ psArgs.config.packages.default ]; }
-          ''
-            cd ${src}
-            statix check --ignore /bin/tests/data
-            touch $out
-          '';
+      checks.dogfood = pkgs.runCommand "dogfood" { nativeBuildInputs = [ pkgs.statix ]; } ''
+        cd ${src}
+        statix check --ignore /bin/tests/data
+        touch $out
+      '';
     };
 }

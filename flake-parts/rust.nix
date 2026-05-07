@@ -2,10 +2,10 @@
   partitions.dev.module = {
     gitignore = [ "/target" ];
     perSystem =
-      psArgs@{ pkgs, ... }:
+      { pkgs, ... }:
       {
         make-shells.default = {
-          inputsFrom = [ psArgs.config.packages.default ];
+          inputsFrom = [ pkgs.statix ];
           packages = [
             pkgs.bacon
             pkgs.cargo-insta
