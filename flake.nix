@@ -32,7 +32,7 @@
           ./flake-parts/git-hooks.nix
           ./flake-parts/git-ignore.nix
           ./flake-parts/license.nix
-          ./flake-parts/overlay.nix
+          ./flake-parts/nixpkgs.nix
           ./flake-parts/rust.nix
           ./flake-parts/statix.nix
           ./flake-parts/systems.nix
