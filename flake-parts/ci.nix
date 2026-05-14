@@ -96,17 +96,6 @@ in
                     }
                   ];
                 };
-
-                legacy = {
-                  name = "Build statix via flake-compat and install it using `nix-env`";
-                  runs-on = runner.name;
-                  steps = [
-                    steps.checkout
-                    steps.installNix
-                    steps.cacheNix
-                    { run = "nix-env --install --file default.nix"; }
-                  ];
-                };
               };
             };
           }
