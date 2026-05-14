@@ -15,10 +15,6 @@
       "commit-message": {
         "prefix": "chore"
       },
-      "directories": [
-        "/",
-        "/dev-flake"
-      ],
       "package-ecosystem": "nix",
       "schedule": {
         "interval": "daily"

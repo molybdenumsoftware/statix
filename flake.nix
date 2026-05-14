@@ -11,6 +11,20 @@
     };
 
     nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+    make-shell = {
+      url = "github:nicknovitski/make-shell";
+    };
+    files.url = "github:mightyiam/files";
+    treefmt = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     inputs:
@@ -20,7 +34,6 @@
         _module.args.root = ./.;
 
         imports = [
-          inputs.flake-parts.flakeModules.partitions
           ./docs/flake-part.nix
           ./flake-parts/cachix.nix
           ./flake-parts/ci.nix
@@ -38,13 +51,6 @@
           ./flake-parts/systems.nix
           ./flake-parts/vim-plugin.nix
         ];
-
-        partitionedAttrs = lib.genAttrs [
-          "checks"
-          "apps"
-        ] (_: "dev");
-
-        partitions.dev.extraInputsFlake = ./dev-flake;
       }
     );
 }

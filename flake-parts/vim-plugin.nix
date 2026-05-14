@@ -1,5 +1,5 @@
 {
-  partitions.dev.module.perSystem =
+  perSystem =
     { pkgs, ... }:
     {
       treefmt.settings.global.excludes = [ "*.vim" ];
