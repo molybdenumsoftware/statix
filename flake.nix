@@ -15,16 +15,24 @@
       url = "github:cachix/git-hooks.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        gitignore.follows = "gitignore_dedupe";
+        flake-compat.follows = "flake-compat_dedupe";
       };
     };
     make-shell = {
       url = "github:nicknovitski/make-shell";
+      inputs.flake-compat.follows = "flake-compat_dedupe";
     };
     files.url = "github:mightyiam/files";
     treefmt = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    gitignore_dedupe = {
+      url = "github:hercules-ci/gitignore.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    flake-compat_dedupe.url = "github:edolstra/flake-compat";
   };
   outputs =
     inputs:
