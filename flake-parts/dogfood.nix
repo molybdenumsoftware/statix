@@ -1,6 +1,6 @@
 { lib, root, ... }:
 {
-  partitions.dev.module.perSystem =
+  perSystem =
     { pkgs, ... }:
     let
       src = lib.fileset.toSource {

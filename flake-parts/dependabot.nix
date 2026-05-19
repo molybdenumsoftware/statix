@@ -2,39 +2,33 @@ let
   filePath = ".github/dependabot.yml";
 in
 {
-  partitions.dev.module = {
-    perSystem =
-      { pkgs, ... }:
-      {
-        files.files = [
-          {
-            path_ = filePath;
-            drv = pkgs.writers.writeJSON "dependabot.yml" {
-              version = 2;
-              updates = [
-                {
-                  package-ecosystem = "cargo";
-                  directory = "/";
-                  schedule.interval = "daily";
-                  commit-message = {
-                    prefix = "chore";
-                    include = "scope";
-                  };
-                }
-                {
-                  package-ecosystem = "nix";
-                  directories = [
-                    "/"
-                    "/dev-flake"
-                  ];
-                  schedule.interval = "daily";
-                  commit-message.prefix = "chore";
-                }
-              ];
-            };
-          }
-        ];
-        treefmt.settings.global.excludes = [ filePath ];
-      };
-  };
+  perSystem =
+    { pkgs, ... }:
+    {
+      files.files = [
+        {
+          path_ = filePath;
+          drv = pkgs.writers.writeJSON "dependabot.yml" {
+            version = 2;
+            updates = [
+              {
+                package-ecosystem = "cargo";
+                directory = "/";
+                schedule.interval = "daily";
+                commit-message = {
+                  prefix = "chore";
+                  include = "scope";
+                };
+              }
+              {
+                package-ecosystem = "nix";
+                schedule.interval = "daily";
+                commit-message.prefix = "chore";
+              }
+            ];
+          };
+        }
+      ];
+      treefmt.settings.global.excludes = [ filePath ];
+    };
 }
