@@ -15,7 +15,7 @@
       {
         files.files = [
           {
-            path_ = ".gitignore";
+            path = ".gitignore";
             drv = pkgs.writeText ".gitignore" config.gitignore;
           }
         ];

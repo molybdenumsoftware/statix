@@ -52,7 +52,7 @@ in
     {
       files.files = [
         {
-          path_ = filePaths.check;
+          path = filePaths.check;
           drv = pkgs.writers.writeJSON "gh-actions-workflow-check.yaml" {
             name = "Check";
             on = {

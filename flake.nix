@@ -23,7 +23,10 @@
       url = "github:nicknovitski/make-shell";
       inputs.flake-compat.follows = "flake-compat_dedupe";
     };
-    files.url = "github:mightyiam/files";
+    files = {
+      url = "github:mightyiam/files";
+      flake = false;
+    };
     treefmt = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";

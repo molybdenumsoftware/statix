@@ -7,7 +7,7 @@ in
     {
       files.files = [
         {
-          path_ = filePath;
+          path = filePath;
           drv = pkgs.writers.writeJSON "dependabot.yml" {
             version = 2;
             updates = [
