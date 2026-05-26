@@ -50,55 +50,50 @@ in
   perSystem =
     { pkgs, ... }:
     {
-      files.files = [
-        {
-          path = filePaths.check;
-          drv = pkgs.writers.writeJSON "gh-actions-workflow-check.yaml" {
-            name = "Check";
-            on = {
-              pull_request = { };
-              push = { };
-              workflow_dispatch = { };
-            };
-            jobs = {
-              ${ids.jobs.getCheckNames} = {
-                runs-on = runner.name;
-                outputs.${ids.outputs.jobs.getCheckNames} =
-                  "\${{ steps.${ids.steps.getCheckNames}.outputs.${ids.outputs.steps.getCheckNames} }}";
-                steps = [
-                  steps.checkout
-                  steps.installNix
-                  steps.cacheNix
-                  {
-                    id = ids.steps.getCheckNames;
-                    run = ''
-                      checks="$(nix ${nixArgs} eval --json .#checks.${runner.system} --apply builtins.attrNames)"
-                      echo "${ids.outputs.steps.getCheckNames}=$checks" >> $GITHUB_OUTPUT
-                    '';
-                  }
-                ];
-              };
-
-              ${ids.jobs.check} = {
-                needs = ids.jobs.getCheckNames;
-                runs-on = runner.name;
-                strategy.matrix.${matrixParam} =
-                  "\${{ fromJson(needs.${ids.jobs.getCheckNames}.outputs.${ids.outputs.jobs.getCheckNames}) }}";
-                steps = [
-                  steps.checkout
-                  steps.installNix
-                  steps.cacheNix
-                  {
-                    run = ''
-                      nix ${nixArgs} build '.#checks.${runner.system}."''${{ matrix.${matrixParam} }}"'
-                    '';
-                  }
-                ];
-              };
-            };
+      files.file.${filePaths.check}.source = pkgs.writers.writeJSON "gh-actions-workflow-check.yaml" {
+        name = "Check";
+        on = {
+          pull_request = { };
+          push = { };
+          workflow_dispatch = { };
+        };
+        jobs = {
+          ${ids.jobs.getCheckNames} = {
+            runs-on = runner.name;
+            outputs.${ids.outputs.jobs.getCheckNames} =
+              "\${{ steps.${ids.steps.getCheckNames}.outputs.${ids.outputs.steps.getCheckNames} }}";
+            steps = [
+              steps.checkout
+              steps.installNix
+              steps.cacheNix
+              {
+                id = ids.steps.getCheckNames;
+                run = ''
+                  checks="$(nix ${nixArgs} eval --json .#checks.${runner.system} --apply builtins.attrNames)"
+                  echo "${ids.outputs.steps.getCheckNames}=$checks" >> $GITHUB_OUTPUT
+                '';
+              }
+            ];
           };
-        }
-      ];
+
+          ${ids.jobs.check} = {
+            needs = ids.jobs.getCheckNames;
+            runs-on = runner.name;
+            strategy.matrix.${matrixParam} =
+              "\${{ fromJson(needs.${ids.jobs.getCheckNames}.outputs.${ids.outputs.jobs.getCheckNames}) }}";
+            steps = [
+              steps.checkout
+              steps.installNix
+              steps.cacheNix
+              {
+                run = ''
+                  nix ${nixArgs} build '.#checks.${runner.system}."''${{ matrix.${matrixParam} }}"'
+                '';
+              }
+            ];
+          };
+        };
+      };
 
       treefmt.settings.global.excludes = lib.attrValues filePaths;
     };
