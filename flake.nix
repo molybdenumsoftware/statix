@@ -10,32 +10,30 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
+    nixpkgs = {
+      url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
+      flake = false;
+    };
+
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        gitignore.follows = "gitignore_dedupe";
-        flake-compat.follows = "flake-compat_dedupe";
-      };
+      flake = false;
     };
+
     make-shell = {
       url = "github:nicknovitski/make-shell";
-      inputs.flake-compat.follows = "flake-compat_dedupe";
+      flake = false;
     };
+
     files = {
       url = "github:mightyiam/files";
       flake = false;
     };
+
     treefmt = {
       url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
-    gitignore_dedupe = {
-      url = "github:hercules-ci/gitignore.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    flake-compat_dedupe.url = "github:edolstra/flake-compat";
   };
   outputs =
     inputs:

@@ -16,21 +16,6 @@
         "type": "github"
       }
     },
-    "flake-compat_dedupe": {
-      "locked": {
-        "lastModified": 1767039857,
-        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
-        "type": "github"
-      },
-      "original": {
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -52,17 +37,7 @@
       }
     },
     "git-hooks": {
-      "inputs": {
-        "flake-compat": [
-          "flake-compat_dedupe"
-        ],
-        "gitignore": [
-          "gitignore_dedupe"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
+      "flake": false,
       "locked": {
         "lastModified": 1778507602,
         "narHash": "sha256-kTwur1wV+01SdqskVMSo6JMEpg71ps3HpbFY2GsflKs=",
@@ -77,32 +52,8 @@
         "type": "github"
       }
     },
-    "gitignore_dedupe": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1762808025,
-        "narHash": "sha256-XmjITeZNMTQXGhhww6ed/Wacy2KzD6svioyCX7pkUu4=",
-        "owner": "hercules-ci",
-        "repo": "gitignore.nix",
-        "rev": "cb5e3fdca1de58ccbc3ef53de65bd372b48f567c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "gitignore.nix",
-        "type": "github"
-      }
-    },
     "make-shell": {
-      "inputs": {
-        "flake-compat": [
-          "flake-compat_dedupe"
-        ]
-      },
+      "flake": false,
       "locked": {
         "lastModified": 1733933815,
         "narHash": "sha256-9JjM7eT66W4NJAXpGUsdyAFXhBxFWR2Z9LZwUa7Hli0=",
@@ -133,21 +84,15 @@
     "root": {
       "inputs": {
         "files": "files",
-        "flake-compat_dedupe": "flake-compat_dedupe",
         "flake-parts": "flake-parts",
         "git-hooks": "git-hooks",
-        "gitignore_dedupe": "gitignore_dedupe",
         "make-shell": "make-shell",
         "nixpkgs": "nixpkgs",
         "treefmt": "treefmt"
       }
     },
     "treefmt": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
+      "flake": false,
       "locked": {
         "lastModified": 1780220602,
         "narHash": "sha256-eynAfOmbmxJnkp7YewvCEbShNnnYJ9gLLqkzsYtBPeM=",
