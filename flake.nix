@@ -19,7 +19,6 @@
       url = "github:cachix/git-hooks.nix";
       flake = false;
     };
-
     make-shell = {
       url = "github:nicknovitski/make-shell";
       flake = false;
