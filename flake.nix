@@ -29,7 +29,6 @@
       url = "github:mightyiam/files";
       flake = false;
     };
-
     treefmt = {
       url = "github:numtide/treefmt-nix";
       flake = false;
