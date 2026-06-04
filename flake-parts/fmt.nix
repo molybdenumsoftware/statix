@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  imports = [ inputs.treefmt.flakeModule ];
+  imports = [ "${inputs.treefmt}/flake-module.nix" ];
 
   perSystem =
     psArgs@{ pkgs, ... }:
