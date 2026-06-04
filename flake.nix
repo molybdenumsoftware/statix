@@ -23,7 +23,6 @@
       url = "github:nicknovitski/make-shell";
       flake = false;
     };
-
     files = {
       url = "github:mightyiam/files";
       flake = false;
