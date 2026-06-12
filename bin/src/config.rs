@@ -280,6 +280,11 @@ impl ConfFile {
                 return Self::from_path(statix_toml_path);
             }
         }
+        if let Some(statix_toml_path) =
+            xdg::BaseDirectories::with_prefix("statix").find_config_file("statix.toml")
+        {
+            return Self::from_path(statix_toml_path);
+        }
         Ok(Self::default())
     }
     #[must_use]
