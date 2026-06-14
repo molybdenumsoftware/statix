@@ -1,6 +1,6 @@
 use std::{
     default::Default,
-    fmt, fs,
+    env, fmt, fs,
     path::{Path, PathBuf},
     str::FromStr,
 };
@@ -276,6 +276,25 @@ impl ConfFile {
             } else {
                 p.to_path_buf()
             };
+            if statix_toml_path.exists() {
+                return Self::from_path(statix_toml_path);
+            }
+        }
+        let xdg_config_home = env::var_os("XDG_CONFIG_HOME")
+            .filter(|s| !s.is_empty())
+            .map(PathBuf::from)
+            .or_else(|| Some(env::home_dir()?.join(".config")));
+        if let Some(xdg_config_home) = xdg_config_home {
+            let statix_toml_path = xdg_config_home.join("statix/statix.toml");
+            if statix_toml_path.exists() {
+                return Self::from_path(statix_toml_path);
+            }
+        }
+        let xdg_config_dirs = env::var_os("XDG_CONFIG_DIRS")
+            .filter(|s| !s.is_empty())
+            .unwrap_or("/etx/xdg".into());
+        for p in env::split_paths(&xdg_config_dirs) {
+            let statix_toml_path = p.join("statix/statix.toml");
             if statix_toml_path.exists() {
                 return Self::from_path(statix_toml_path);
             }
