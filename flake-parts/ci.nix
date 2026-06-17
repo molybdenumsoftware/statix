@@ -18,9 +18,9 @@ in
             steps = [
               { uses = "actions/checkout@v4"; }
               {
-                uses = "nixbuild/nix-quick-install-action@master";
+                uses = "cachix/install-nix-action@master";
                 "with" = {
-                  nix_conf = ''
+                  extra_nix_config = ''
                     keep-env-derivations = true
                     keep-outputs = true
                   '';
