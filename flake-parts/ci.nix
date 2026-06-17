@@ -1,56 +1,11 @@
-{ lib, ... }:
 let
-  filePaths = {
-    check = ".github/workflows/check.yaml";
-  };
-
-  ids = {
-    jobs = {
-      getCheckNames = "get-check-names";
-      check = "check";
-    };
-    steps = {
-      getCheckNames = "get-check-names";
-      appToken = "app-token";
-    };
-    outputs = {
-      jobs.getCheckNames = "checks";
-      steps.getCheckNames = "checks";
-    };
-  };
-
-  matrixParam = "checks";
-
-  nixArgs = "--accept-flake-config";
-
-  runner = {
-    name = "ubuntu-latest";
-    system = "x86_64-linux";
-  };
-
-  steps = {
-    checkout.uses = "actions/checkout@v4";
-    installNix = {
-      uses = "nixbuild/nix-quick-install-action@master";
-      "with" = {
-        nix_conf = ''
-          keep-env-derivations = true
-          keep-outputs = true
-        '';
-        github_access_token = "\${{ secrets.GITHUB_TOKEN }}";
-      };
-    };
-    cacheNix = {
-      uses = "nix-community/cache-nix-action@main";
-      "with".primary-key = "nix-\${{ runner.os }}";
-    };
-  };
+  path = ".github/workflows/check.yaml";
 in
 {
   perSystem =
     { pkgs, ... }:
     {
-      files.file.${filePaths.check}.source = pkgs.writers.writeJSON "gh-actions-workflow-check.yaml" {
+      files.file.${path}.source = pkgs.writers.writeJSON "gh-actions-workflow-check.yaml" {
         name = "Check";
         on = {
           pull_request = { };
@@ -58,43 +13,34 @@ in
           workflow_dispatch = { };
         };
         jobs = {
-          ${ids.jobs.getCheckNames} = {
-            runs-on = runner.name;
-            outputs.${ids.outputs.jobs.getCheckNames} =
-              "\${{ steps.${ids.steps.getCheckNames}.outputs.${ids.outputs.steps.getCheckNames} }}";
+          check = {
+            runs-on = "ubuntu-latest";
             steps = [
-              steps.checkout
-              steps.installNix
-              steps.cacheNix
+              { uses = "actions/checkout@v5"; }
               {
-                id = ids.steps.getCheckNames;
-                run = ''
-                  checks="$(nix ${nixArgs} eval --json .#checks.${runner.system} --apply builtins.attrNames)"
-                  echo "${ids.outputs.steps.getCheckNames}=$checks" >> $GITHUB_OUTPUT
-                '';
+                uses = "cachix/install-nix-action@master";
+                "with" = {
+                  extra_nix_config = ''
+                    keep-env-derivations = true
+                    keep-outputs = true
+                  '';
+                  github_access_token = "\${{ secrets.GITHUB_TOKEN }}";
+                };
               }
-            ];
-          };
-
-          ${ids.jobs.check} = {
-            needs = ids.jobs.getCheckNames;
-            runs-on = runner.name;
-            strategy.matrix.${matrixParam} =
-              "\${{ fromJson(needs.${ids.jobs.getCheckNames}.outputs.${ids.outputs.jobs.getCheckNames}) }}";
-            steps = [
-              steps.checkout
-              steps.installNix
-              steps.cacheNix
+              # error: opening lock file "/nix/var/nix/temproots/2926": Permission denied
+              # https://github.com/molybdenumsoftware/statix/actions/runs/27678513502/job/81859681633?pr=2671#step:5:9
+              # {
+              #   uses = "nix-community/cache-nix-action@v7";
+              #   "with".primary-key = "nix-\${{ runner.os }}";
+              # }
               {
-                run = ''
-                  nix ${nixArgs} build '.#checks.${runner.system}."''${{ matrix.${matrixParam} }}"'
-                '';
+                run = "nix --accept-flake-config flake check --print-build-logs";
               }
             ];
           };
         };
       };
 
-      treefmt.settings.global.excludes = lib.attrValues filePaths;
+      treefmt.settings.global.excludes = [ path ];
     };
 }
