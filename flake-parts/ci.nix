@@ -31,9 +31,9 @@ let
   steps = {
     checkout.uses = "actions/checkout@v4";
     installNix = {
-      uses = "nixbuild/nix-quick-install-action@master";
+      uses = "cachix/install-nix-action@v31";
       "with" = {
-        nix_conf = ''
+        extra_nix_config = ''
           keep-env-derivations = true
           keep-outputs = true
         '';

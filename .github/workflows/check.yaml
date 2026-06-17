@@ -8,10 +8,10 @@
           "uses": "actions/checkout@v4"
         },
         {
-          "uses": "nixbuild/nix-quick-install-action@master",
+          "uses": "cachix/install-nix-action@v31",
           "with": {
-            "github_access_token": "${{ secrets.GITHUB_TOKEN }}",
-            "nix_conf": "keep-env-derivations = true\nkeep-outputs = true\n"
+            "extra_nix_config": "keep-env-derivations = true\nkeep-outputs = true\n",
+            "github_access_token": "${{ secrets.GITHUB_TOKEN }}"
           }
         },
         {
@@ -40,10 +40,10 @@
           "uses": "actions/checkout@v4"
         },
         {
-          "uses": "nixbuild/nix-quick-install-action@master",
+          "uses": "cachix/install-nix-action@v31",
           "with": {
-            "github_access_token": "${{ secrets.GITHUB_TOKEN }}",
-            "nix_conf": "keep-env-derivations = true\nkeep-outputs = true\n"
+            "extra_nix_config": "keep-env-derivations = true\nkeep-outputs = true\n",
+            "github_access_token": "${{ secrets.GITHUB_TOKEN }}"
           }
         },
         {
