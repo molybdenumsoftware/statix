@@ -14,6 +14,12 @@
           }
         },
         {
+          "uses": "nix-community/cache-nix-action@main",
+          "with": {
+            "primary-key": "nix-${{ runner.os }}"
+          }
+        },
+        {
           "run": "nix --accept-flake-config flake check --print-build-logs"
         }
       ]
