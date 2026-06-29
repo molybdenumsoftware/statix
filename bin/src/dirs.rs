@@ -3,7 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use ignore::{overrides::OverrideBuilder, WalkBuilder};
+use ignore::{WalkBuilder, overrides::OverrideBuilder};
 
 /// Walks through target paths and returns an iterator of .nix files, respecting gitignore rules.
 ///
