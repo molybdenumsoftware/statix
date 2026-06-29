@@ -126,10 +126,11 @@ disabled = [
 
 `statix` automatically discovers the configuration file by
 traversing parents of the current directory and looking for
-a `statix.toml` file. Alternatively, you can pass the path
-to the `statix.toml` file on the command line with the
-`--config` flag (available on `statix check` and `statix
-fix`).
+a `statix.toml` file. If none is found it will also check
+`$XDG_CONFIG_HOME/statix/statix.toml`. Alternatively, you
+can pass the path to the `statix.toml` file on the command
+line with the `--config` flag (available on `statix check`,
+`statix fix`, and `statix single`).
 
 The available lints are (see `statix list` for an updated
 list):
