@@ -12,7 +12,6 @@
 
     nixpkgs = {
       url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
-      flake = false;
     };
 
     git-hooks = {
