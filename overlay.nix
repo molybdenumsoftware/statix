@@ -22,7 +22,7 @@ final: _prev: {
     meta = {
       mainProgram = "statix";
       description = "Lints and suggestions for the Nix programming language";
-      homepage = "https://git.peppe.rs/languages/statix/about";
+      homepage = "https://github.com/molybdenumsoftware/statix";
       license = final.lib.licenses.mit;
     };
   };
