@@ -1,4 +1,4 @@
-final: _prev: {
-  statix = final.callPackage ./packages/statix.nix { };
-  statix-vim = final.callPackage ./packages/statix-vim.nix { };
+final: prev: {
+  statix = prev.callPackage ./packages/statix.nix { };
+  statix-vim = prev.callPackage ./packages/statix-vim.nix { };
 }
