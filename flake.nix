@@ -10,6 +10,10 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
+    import-tree = {
+      url = "github:vic/import-tree";
+      flake = false;
+    };
     nixpkgs = {
       url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
     };
@@ -38,24 +42,7 @@
       {
         _module.args.root = ./.;
 
-        imports = [
-          ./docs/flake-part.nix
-          ./flake-parts/cachix.nix
-          ./flake-parts/ci.nix
-          ./flake-parts/dependabot.nix
-          ./flake-parts/dev-shell.nix
-          ./flake-parts/dogfood.nix
-          ./flake-parts/files.nix
-          ./flake-parts/fmt.nix
-          ./flake-parts/git-hooks.nix
-          ./flake-parts/git-ignore.nix
-          ./flake-parts/license.nix
-          ./flake-parts/nixpkgs.nix
-          ./flake-parts/rust.nix
-          ./flake-parts/statix.nix
-          ./flake-parts/systems.nix
-          ./flake-parts/vim-plugin.nix
-        ];
+        imports = [ (import inputs.import-tree ./flake-parts) ];
       }
     );
 }
