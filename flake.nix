@@ -11,7 +11,7 @@
     };
 
     import-tree = {
-      url = "github:vic/import-tree";
+      url = "github:denful/import-tree";
       flake = false;
     };
     nixpkgs = {
