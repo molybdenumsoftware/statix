@@ -3,4 +3,4 @@ source: bin/tests/manual_inherit.rs
 ---
 let a = 2; in { a = a; }
 ---
-<temp_file_path>>1:17:W:3:This assignment is better written with `inherit`
+<temp_file_path>>1:17:W:3:[manual_inherit] This assignment is better written with `inherit`

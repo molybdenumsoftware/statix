@@ -73,7 +73,7 @@ fn write_stderr<T: Write>(
                             .with_char_set(CharSet::Unicode),
                     )
                     .with_message(report.note)
-                    .with_code(report.code),
+                    .with_code(report.name),
                 |cli_report, diagnostic| {
                     cli_report.with_label(
                         Label::new((src_id, range(diagnostic.at)))
@@ -102,7 +102,7 @@ fn write_errfmt<T: Write>(
             let col = column(diagnostic.at.start(), src);
             writeln!(
                 writer,
-                "{filename}>{linenumber}:{columnnumber}:{errortype}:{errornumber}:{errormessage}",
+                "{filename}>{linenumber}:{columnnumber}:{errortype}:{errornumber}:[{errorname}] {errormessage}",
                 filename = path.to_str().unwrap_or("<unknown>"),
                 linenumber = line,
                 columnnumber = col,
@@ -112,6 +112,7 @@ fn write_errfmt<T: Write>(
                     Severity::Hint => "I", /* "info" message */
                 },
                 errornumber = report.code,
+                errorname = report.name,
                 errormessage = diagnostic.message
             )?;
         }
@@ -138,6 +139,7 @@ mod json {
 
     #[derive(Serialize)]
     struct JsonReport<'μ> {
+        name: &'static str,
         note: &'static str,
         code: u32,
         severity: &'μ Severity,
@@ -197,6 +199,7 @@ mod json {
             .reports
             .iter()
             .map(|r| {
+                let name = r.name;
                 let note = r.note;
                 let code = r.code;
                 let severity = &r.severity;
@@ -213,6 +216,7 @@ mod json {
                     })
                     .collect::<Vec<_>>();
                 JsonReport {
+                    name,
                     note,
                     code,
                     severity,

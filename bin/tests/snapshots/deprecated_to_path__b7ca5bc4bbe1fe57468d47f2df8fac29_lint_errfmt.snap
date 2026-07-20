@@ -3,4 +3,4 @@ source: bin/tests/deprecated_to_path.rs
 ---
 builtins.toPath x
 ---
-<temp_file_path>>1:1:W:17:`builtins.toPath` is deprecated, see `:doc builtins.toPath` within the REPL for more
+<temp_file_path>>1:1:W:17:[deprecated_to_path] `builtins.toPath` is deprecated, see `:doc builtins.toPath` within the REPL for more

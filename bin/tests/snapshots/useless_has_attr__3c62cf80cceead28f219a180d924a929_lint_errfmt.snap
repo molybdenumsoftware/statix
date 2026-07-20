@@ -3,4 +3,4 @@ source: bin/tests/useless_has_attr.rs
 ---
 if x ? a.b then x.a.b else default
 ---
-<temp_file_path>>1:1:W:19:Consider using `x.a.b or default` instead of this `if` expression
+<temp_file_path>>1:1:W:19:[useless_has_attr] Consider using `x.a.b or default` instead of this `if` expression

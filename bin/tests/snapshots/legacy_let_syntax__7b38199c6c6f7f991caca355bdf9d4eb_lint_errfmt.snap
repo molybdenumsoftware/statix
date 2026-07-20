@@ -7,4 +7,4 @@ let {
   y = " world!";
 }
 ---
-<temp_file_path>>1:1:W:5:Prefer `rec` over undocumented `let` syntax
+<temp_file_path>>1:1:W:5:[legacy_let_syntax] Prefer `rec` over undocumented `let` syntax

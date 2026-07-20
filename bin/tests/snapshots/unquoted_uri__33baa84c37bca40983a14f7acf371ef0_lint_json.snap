@@ -7,6 +7,7 @@ github:nerdypepper/statix
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "unquoted_uri",
       "note": "Found unquoted URI expression",
       "code": 12,
       "severity": "Warn",

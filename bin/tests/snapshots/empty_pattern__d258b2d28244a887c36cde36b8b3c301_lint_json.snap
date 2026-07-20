@@ -7,6 +7,7 @@ source: bin/tests/empty_pattern.rs
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "redundant_pattern_bind",
       "note": "Found redundant pattern bind in function argument",
       "code": 11,
       "severity": "Warn",

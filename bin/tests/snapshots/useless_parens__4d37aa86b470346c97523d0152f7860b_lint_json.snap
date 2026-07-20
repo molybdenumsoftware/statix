@@ -7,6 +7,7 @@ let a = (1 + 2); in null
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "useless_parens",
       "note": "These parentheses can be omitted",
       "code": 8,
       "severity": "Warn",

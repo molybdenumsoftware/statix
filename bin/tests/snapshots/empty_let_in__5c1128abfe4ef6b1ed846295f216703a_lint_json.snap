@@ -7,6 +7,7 @@ let in null
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "empty_let_in",
       "note": "Useless let-in expression",
       "code": 2,
       "severity": "Warn",

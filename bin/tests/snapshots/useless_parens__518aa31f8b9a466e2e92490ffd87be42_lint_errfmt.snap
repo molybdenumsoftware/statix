@@ -3,4 +3,4 @@ source: bin/tests/useless_parens.rs
 ---
 let h = ({ inherit (builtins) map; }); in null
 ---
-<temp_file_path>>1:9:W:8:Useless parentheses around value in binding
+<temp_file_path>>1:9:W:8:[useless_parens] Useless parentheses around value in binding

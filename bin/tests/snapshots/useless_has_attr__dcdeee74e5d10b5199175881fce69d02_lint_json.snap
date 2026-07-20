@@ -7,6 +7,7 @@ if x.a ? b then x.a.b else default
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "useless_has_attr",
       "note": "This `if` expression can be simplified with `or`",
       "code": 19,
       "severity": "Warn",

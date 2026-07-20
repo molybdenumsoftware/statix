@@ -7,6 +7,7 @@ source: bin/tests/bool_simplification.rs
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "bool_simplification",
       "note": "This boolean expression can be simplified",
       "code": 18,
       "severity": "Warn",

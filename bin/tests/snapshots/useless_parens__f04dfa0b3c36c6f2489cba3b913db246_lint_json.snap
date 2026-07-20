@@ -7,6 +7,7 @@ let b = 0; in (b)
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "useless_parens",
       "note": "These parentheses can be omitted",
       "code": 8,
       "severity": "Warn",

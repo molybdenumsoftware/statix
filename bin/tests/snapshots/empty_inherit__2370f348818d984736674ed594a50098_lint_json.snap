@@ -7,6 +7,7 @@ source: bin/tests/empty_inherit.rs
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "empty_inherit",
       "note": "Found empty inherit statement",
       "code": 14,
       "severity": "Warn",

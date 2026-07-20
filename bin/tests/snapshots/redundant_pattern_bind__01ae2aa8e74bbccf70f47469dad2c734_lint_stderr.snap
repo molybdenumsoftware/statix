@@ -3,7 +3,7 @@ source: bin/tests/redundant_pattern_bind.rs
 ---
 { ... } @ inputs: null
 ---
-[11] Warning: Found redundant pattern bind in function argument
+[redundant_pattern_bind] Warning: Found redundant pattern bind in function argument
    ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ { ... } @ inputs: null

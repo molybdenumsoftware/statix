@@ -11,6 +11,7 @@ let {
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "legacy_let_syntax",
       "note": "Using undocumented `let` syntax",
       "code": 5,
       "severity": "Warn",
