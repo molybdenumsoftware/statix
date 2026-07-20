@@ -27,6 +27,8 @@ pub enum Severity {
 #[derive(Debug, Default)]
 #[cfg_attr(feature = "json-out", derive(Serialize))]
 pub struct Report {
+    // The unique name of this lint
+    pub name: &'static str,
     /// General information about this lint and where it applies.
     pub note: &'static str,
     /// An error code to uniquely identify this lint
@@ -40,8 +42,9 @@ pub struct Report {
 impl Report {
     /// Construct a report. Do not invoke `Report::new` manually, see `lint` macro
     #[must_use]
-    pub fn new(note: &'static str, code: u32) -> Self {
+    pub fn new(name: &'static str, note: &'static str, code: u32) -> Self {
         Self {
+            name,
             note,
             code,
             ..Default::default()
@@ -118,7 +121,7 @@ impl Report {
             .get_mut(0..1)
             .unwrap()
             .make_ascii_uppercase();
-        Self::new("Syntax error", 0)
+        Self::new("syntax_error", "Syntax error", 0)
             .diagnostic(*at, message)
             .severity(Severity::Error)
     }
