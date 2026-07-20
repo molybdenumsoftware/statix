@@ -3,7 +3,7 @@ source: bin/tests/empty_pattern.rs
 ---
 ({ ... }: 42)
 ---
-[10] Warning: Found empty pattern in function argument
+[empty_pattern] Warning: Found empty pattern in function argument
    ╭─[ <temp_file_path>:1:2 ]
    │
  1 │ ({ ... }: 42)

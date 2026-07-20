@@ -3,7 +3,7 @@ source: bin/tests/unquoted_uri.rs
 ---
 github:nerdypepper/statix
 ---
-[12] Warning: Found unquoted URI expression
+[unquoted_uri] Warning: Found unquoted URI expression
    ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ github:nerdypepper/statix

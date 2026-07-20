@@ -3,7 +3,7 @@ source: bin/tests/bool_simplification.rs
 ---
 !(a == b)
 ---
-[18] Warning: This boolean expression can be simplified
+[bool_simplification] Warning: This boolean expression can be simplified
    ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ !(a == b)
