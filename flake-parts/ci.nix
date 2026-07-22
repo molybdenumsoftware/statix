@@ -27,12 +27,10 @@ in
                   github_access_token = "\${{ secrets.GITHUB_TOKEN }}";
                 };
               }
-              # error: opening lock file "/nix/var/nix/temproots/2926": Permission denied
-              # https://github.com/molybdenumsoftware/statix/actions/runs/27678513502/job/81859681633?pr=2671#step:5:9
-              # {
-              #   uses = "nix-community/cache-nix-action@v7";
-              #   "with".primary-key = "nix-\${{ runner.os }}";
-              # }
+              {
+                uses = "nix-community/cache-nix-action@main";
+                "with".primary-key = "nix-\${{ runner.os }}";
+              }
               {
                 run = "nix --accept-flake-config flake check --print-build-logs";
               }
