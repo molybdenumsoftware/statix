@@ -9,7 +9,7 @@ source: bin/tests/repeated_keys.rs
   foo.baz.bar5 = 5;
 }
 ---
-[20] Warning: Avoid repeated keys in attribute sets
+[repeated_keys] Warning: Avoid repeated keys in attribute sets
    ╭─[ <temp_file_path>:2:3 ]
    │
  2 │   foo.baz.bar1 = 1;

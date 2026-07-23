@@ -3,7 +3,7 @@ source: bin/tests/useless_parens.rs
 ---
 ("hello")
 ---
-[08] Warning: These parentheses can be omitted
+[useless_parens] Warning: These parentheses can be omitted
    ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ ("hello")

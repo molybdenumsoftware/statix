@@ -17,7 +17,7 @@ any nix code (imports, attr sets etc.).
 
 ```shell
 $ statix check tests/c.nix
-[W04] Warning: Assignment instead of inherit from
+[manual_inherit_from] Warning: Assignment instead of inherit from
    ╭─[tests/c.nix:2:3]
    │
  2 │   mtl = pkgs.haskellPackages.mtl;
