@@ -268,6 +268,15 @@ impl ConfFile {
         let config_file = fs::read_to_string(path).map_err(ConfigErr::InvalidPath)?;
         toml::de::from_str(&config_file).map_err(ConfigErr::ConfFileParse)
     }
+    fn discover_default_with_found() -> Result<(Self, bool), ConfigErr> {
+        match xdg::BaseDirectories::with_prefix("statix").find_config_file("statix.toml") {
+            Some(statix_toml_path) => Ok((Self::from_path(statix_toml_path)?, true)),
+            None => Ok((Self::default(), false)),
+        }
+    }
+    fn discover_default() -> Result<Self, ConfigErr> {
+        Ok(Self::discover_default_with_found()?.0)
+    }
     pub fn discover<P: AsRef<Path>>(path: P) -> Result<Self, ConfigErr> {
         let cannonical_path = fs::canonicalize(path.as_ref()).map_err(ConfigErr::InvalidPath)?;
         for p in cannonical_path.ancestors() {
@@ -280,16 +289,18 @@ impl ConfFile {
                 return Self::from_path(statix_toml_path);
             }
         }
-        Ok(Self::default())
+        Self::discover_default()
     }
     #[must_use]
-    pub fn dump(&self) -> String {
-        let ideal_config = {
-            let disabled = vec![];
-            let ignore = vec![".direnv".into()];
-            Self { disabled, ignore }
+    pub fn dump_default() -> Result<String, ConfigErr> {
+        let ideal_config = match Self::discover_default_with_found()? {
+            (config, true) => config,
+            (_, false) => Self {
+                disabled: vec![],
+                ignore: vec![".direnv".into()],
+            },
         };
-        toml::ser::to_string_pretty(&ideal_config).unwrap()
+        Ok(toml::ser::to_string_pretty(&ideal_config).unwrap())
     }
     #[must_use]
     pub fn lints(&self) -> LintMap {
