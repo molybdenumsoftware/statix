@@ -1,0 +1,6 @@
+---
+source: bin/tests/bool_comparison.rs
+---
+false != true
+---
+<temp_file_path>>1:1:W:1:Equality comparison between boolean literals

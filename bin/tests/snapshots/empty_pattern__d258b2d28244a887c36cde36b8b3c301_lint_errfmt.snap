@@ -1,0 +1,6 @@
+---
+source: bin/tests/empty_pattern.rs
+---
+({ ... } @ inputs: inputs)
+---
+<temp_file_path>>1:2:W:11:This pattern bind is redundant, use `inputs` instead

@@ -1,0 +1,10 @@
+---
+source: bin/tests/empty_let_in.rs
+---
+let
+  # don't fix this, we have a comment
+  # raise the lint though
+in
+null
+---
+<temp_file_path>>1:1:W:2:This let-in expression has no entries

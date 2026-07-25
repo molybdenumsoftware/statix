@@ -1,0 +1,6 @@
+---
+source: bin/tests/empty_pattern.rs
+---
+({ ... }: 42)
+---
+<temp_file_path>>1:2:W:10:This pattern is empty, use `_` instead

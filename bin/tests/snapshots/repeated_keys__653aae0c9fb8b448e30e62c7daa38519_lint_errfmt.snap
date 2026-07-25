@@ -1,0 +1,14 @@
+---
+source: bin/tests/repeated_keys.rs
+---
+{
+  foo.baz.bar1 = 1;
+  foo.baz.bar2 = 2;
+  foo.baz.bar3 = 3;
+  foo.baz.bar4 = 4;
+  foo.baz.bar5 = 5;
+}
+---
+<temp_file_path>>2:3:W:20:The key `foo` is first assigned here ...
+<temp_file_path>>3:3:W:20:... repeated here ...
+<temp_file_path>>4:3:W:20:... and here (`2` occurrences omitted). Try `foo = { baz.bar1=...; baz.bar2=...; baz.bar3=...; }` instead.

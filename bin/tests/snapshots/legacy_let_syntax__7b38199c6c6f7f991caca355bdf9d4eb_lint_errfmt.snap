@@ -1,0 +1,10 @@
+---
+source: bin/tests/legacy_let_syntax.rs
+---
+let {
+  body = x + y;
+  x = "hello,";
+  y = " world!";
+}
+---
+<temp_file_path>>1:1:W:5:Prefer `rec` over undocumented `let` syntax

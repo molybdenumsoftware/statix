@@ -1,0 +1,6 @@
+---
+source: bin/tests/useless_parens.rs
+---
+let a = (1 + 2); in null
+---
+<temp_file_path>>1:9:W:8:Useless parentheses around value in binding

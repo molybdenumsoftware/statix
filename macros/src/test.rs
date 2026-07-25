@@ -56,10 +56,13 @@ pub fn generate_tests(input: TokenStream) -> TokenStream {
         .into_iter()
         .map(|nix_expression| {
             let lint_stderr_test = make_test(&rule, TestKind::LintStderr, &nix_expression);
+            let lint_errfmt_test = make_test(&rule, TestKind::LintErrfmt, &nix_expression);
             let fix_test = make_test(&rule, TestKind::Fix, &nix_expression);
 
             quote! {
                 #lint_stderr_test
+
+                #lint_errfmt_test
 
                 #fix_test
             }
@@ -71,6 +74,7 @@ pub fn generate_tests(input: TokenStream) -> TokenStream {
 #[derive(Clone, Copy, Debug)]
 enum TestKind {
     LintStderr,
+    LintErrfmt,
     Fix,
 }
 
@@ -80,6 +84,7 @@ fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2
 
     let kind_str = match kind {
         TestKind::LintStderr => "lint_stderr",
+        TestKind::LintErrfmt => "lint_errfmt",
         TestKind::Fix => "fix",
     };
 
@@ -89,6 +94,7 @@ fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2
 
     let args = match kind {
         TestKind::LintStderr => quote! {&["check", "--format", "stderr"]},
+        TestKind::LintErrfmt => quote! {&["check", "--format", "errfmt"]},
         TestKind::Fix => quote! {&["fix", "--dry-run"]},
     };
 

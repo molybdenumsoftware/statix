@@ -1,0 +1,14 @@
+---
+source: bin/tests/collapsible_let_in.rs
+---
+{
+  pkgs ? import <nixpkgs> { },
+}:
+let
+  pkgs' = pkgs.extend (import ./overlay.nix);
+in
+let
+  pkgs = pkgs';
+in
+pkgs
+---

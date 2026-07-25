@@ -1,0 +1,6 @@
+---
+source: bin/tests/empty_inherit.rs
+---
+{ inherit; }
+---
+<temp_file_path>>1:3:W:14:Remove this empty `inherit` statement

@@ -1,0 +1,6 @@
+---
+source: bin/tests/deprecated_to_path.rs
+---
+toPath "/abc/def"
+---
+<temp_file_path>>1:1:W:17:`toPath` is deprecated, see `:doc builtins.toPath` within the REPL for more

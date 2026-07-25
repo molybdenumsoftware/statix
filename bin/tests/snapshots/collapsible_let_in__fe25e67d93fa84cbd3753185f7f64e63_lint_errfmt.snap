@@ -1,0 +1,13 @@
+---
+source: bin/tests/collapsible_let_in.rs
+---
+let
+  x = f y;
+in
+let
+  z = 1;
+in
+x
+---
+<temp_file_path>>1:1:W:6:This `let in` expression contains a nested `let in` expression
+<temp_file_path>>4:1:W:6:This `let in` expression is nested
