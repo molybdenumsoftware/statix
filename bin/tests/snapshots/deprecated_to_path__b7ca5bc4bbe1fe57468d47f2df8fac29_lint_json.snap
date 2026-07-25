@@ -1,0 +1,31 @@
+---
+source: bin/tests/deprecated_to_path.rs
+---
+builtins.toPath x
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Found usage of deprecated builtin toPath",
+      "code": 17,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "message": "`builtins.toPath` is deprecated, see `:doc builtins.toPath` within the REPL for more",
+          "suggestion": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+---
+source: bin/tests/eta_reduction.rs
+---
+let double = x: x * 2; in map (x: double x) [1 2 3]
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "This function expression is eta reducible",
+      "code": 7,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 32
+            },
+            "to": {
+              "line": 1,
+              "column": 43
+            }
+          },
+          "message": "Found eta-reduction: `double`",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 32
+              },
+              "to": {
+                "line": 1,
+                "column": 43
+              }
+            },
+            "fix": "double"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+---
+source: bin/tests/empty_list_concat.rs
+---
+[] ++ [1 2 3]
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Unnecessary concatenation with empty list",
+      "code": 23,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 14
+            }
+          },
+          "message": "Concatenation with the empty list, `[]`, is a no-op",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 1
+              },
+              "to": {
+                "line": 1,
+                "column": 14
+              }
+            },
+            "fix": "[1 2 3]"
+          }
+        }
+      ]
+    }
+  ]
+}

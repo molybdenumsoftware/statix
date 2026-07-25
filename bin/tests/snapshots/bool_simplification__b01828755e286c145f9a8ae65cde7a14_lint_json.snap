@@ -1,0 +1,43 @@
+---
+source: bin/tests/bool_simplification.rs
+---
+!(a == b)
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "This boolean expression can be simplified",
+      "code": 18,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 10
+            }
+          },
+          "message": "Try `!=` instead of `!(... == ...)`",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 1
+              },
+              "to": {
+                "line": 1,
+                "column": 10
+              }
+            },
+            "fix": "a != b"
+          }
+        }
+      ]
+    }
+  ]
+}

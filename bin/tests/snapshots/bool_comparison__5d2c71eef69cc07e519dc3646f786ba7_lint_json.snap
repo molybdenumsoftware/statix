@@ -1,0 +1,31 @@
+---
+source: bin/tests/bool_comparison.rs
+---
+false == false
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Equality comparison between boolean literals",
+      "code": 1,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 15
+            }
+          },
+          "message": "Equality comparison between boolean literals",
+          "suggestion": null
+        }
+      ]
+    }
+  ]
+}

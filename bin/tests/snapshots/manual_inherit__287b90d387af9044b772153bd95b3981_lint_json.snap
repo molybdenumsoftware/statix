@@ -1,0 +1,5 @@
+---
+source: bin/tests/manual_inherit.rs
+---
+let y = 2; in { x.y = y; }
+---

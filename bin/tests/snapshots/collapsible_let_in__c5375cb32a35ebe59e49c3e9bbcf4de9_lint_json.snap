@@ -1,0 +1,11 @@
+---
+source: bin/tests/collapsible_let_in.rs
+---
+let
+  inherit pkgs;
+in
+let
+  pkgs = pkgs.extend (import ./overlay.nix);
+in
+pkgs
+---

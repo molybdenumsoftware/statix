@@ -1,0 +1,47 @@
+---
+source: bin/tests/legacy_let_syntax.rs
+---
+let {
+  body = x + y;
+  x = "hello,";
+  y = " world!";
+}
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Using undocumented `let` syntax",
+      "code": 5,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 5,
+              "column": 2
+            }
+          },
+          "message": "Prefer `rec` over undocumented `let` syntax",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 1
+              },
+              "to": {
+                "line": 5,
+                "column": 2
+              }
+            },
+            "fix": "(rec {\n  body = x + y;\n  x = \"hello,\";\n  y = \" world!\";\n}).body"
+          }
+        }
+      ]
+    }
+  ]
+}

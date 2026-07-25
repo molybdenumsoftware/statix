@@ -1,0 +1,43 @@
+---
+source: bin/tests/useless_parens.rs
+---
+[(builtins.map)]
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "These parentheses can be omitted",
+      "code": 8,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 2
+            },
+            "to": {
+              "line": 1,
+              "column": 16
+            }
+          },
+          "message": "Useless parentheses around primitive expression",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 2
+              },
+              "to": {
+                "line": 1,
+                "column": 16
+              }
+            },
+            "fix": "builtins.map"
+          }
+        }
+      ]
+    }
+  ]
+}

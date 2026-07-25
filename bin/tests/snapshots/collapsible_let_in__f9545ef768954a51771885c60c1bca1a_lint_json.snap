@@ -1,0 +1,63 @@
+---
+source: bin/tests/collapsible_let_in.rs
+---
+let
+  a.b = 1;
+in
+let
+  c = 2;
+in
+c
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "These let-in expressions are collapsible",
+      "code": 6,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 7,
+              "column": 2
+            }
+          },
+          "message": "This `let in` expression contains a nested `let in` expression",
+          "suggestion": null
+        },
+        {
+          "at": {
+            "from": {
+              "line": 4,
+              "column": 1
+            },
+            "to": {
+              "line": 7,
+              "column": 2
+            }
+          },
+          "message": "This `let in` expression is nested",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 3,
+                "column": 1
+              },
+              "to": {
+                "line": 4,
+                "column": 4
+              }
+            },
+            "fix": ""
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+---
+source: bin/tests/useless_parens.rs
+---
+let a = (1 + 2); in null
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "These parentheses can be omitted",
+      "code": 8,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 9
+            },
+            "to": {
+              "line": 1,
+              "column": 16
+            }
+          },
+          "message": "Useless parentheses around value in binding",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 9
+              },
+              "to": {
+                "line": 1,
+                "column": 16
+              }
+            },
+            "fix": "1 + 2"
+          }
+        }
+      ]
+    }
+  ]
+}
