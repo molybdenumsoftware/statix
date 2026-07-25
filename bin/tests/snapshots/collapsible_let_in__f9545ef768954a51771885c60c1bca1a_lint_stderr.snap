@@ -9,7 +9,7 @@ let
 in
 c
 ---
-[06] Warning: These let-in expressions are collapsible
+[collapsible_let_in] Warning: These let-in expressions are collapsible
    ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ ╭───▶ let

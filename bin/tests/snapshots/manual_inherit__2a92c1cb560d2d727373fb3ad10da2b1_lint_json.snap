@@ -7,6 +7,7 @@ let a = 2; in { a = a; }
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "manual_inherit",
       "note": "Assignment instead of inherit",
       "code": 3,
       "severity": "Warn",

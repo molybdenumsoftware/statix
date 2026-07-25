@@ -7,6 +7,7 @@ builtins.toPath x
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "deprecated_to_path",
       "note": "Found usage of deprecated builtin toPath",
       "code": 17,
       "severity": "Warn",

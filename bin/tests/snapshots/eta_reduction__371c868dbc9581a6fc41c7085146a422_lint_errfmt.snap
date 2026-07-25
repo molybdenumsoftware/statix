@@ -3,4 +3,4 @@ source: bin/tests/eta_reduction.rs
 ---
 let double = x: x * 2; in map (x: double x) [1 2 3]
 ---
-<temp_file_path>>1:32:W:7:Found eta-reduction: `double`
+<temp_file_path>>1:32:W:7:[eta_reduction] Found eta-reduction: `double`

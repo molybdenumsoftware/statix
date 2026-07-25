@@ -13,6 +13,7 @@ source: bin/tests/repeated_keys.rs
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "repeated_keys",
       "note": "Avoid repeated keys in attribute sets",
       "code": 20,
       "severity": "Warn",

@@ -7,6 +7,7 @@ source: bin/tests/empty_pattern.rs
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "empty_pattern",
       "note": "Found empty pattern in function argument",
       "code": 10,
       "severity": "Warn",

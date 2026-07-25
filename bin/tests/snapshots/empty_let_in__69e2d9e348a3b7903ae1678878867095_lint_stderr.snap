@@ -7,7 +7,7 @@ let
 in
 null
 ---
-[02] Warning: Useless let-in expression
+[empty_let_in] Warning: Useless let-in expression
    ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ ╭─▶ let

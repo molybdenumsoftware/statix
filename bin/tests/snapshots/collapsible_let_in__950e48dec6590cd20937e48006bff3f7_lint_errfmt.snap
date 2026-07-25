@@ -11,5 +11,5 @@ in
   in
   a + b + c + d
 ---
-<temp_file_path>>1:1:W:6:This `let in` expression contains a nested `let in` expression
-<temp_file_path>>5:3:W:6:This `let in` expression is nested
+<temp_file_path>>1:1:W:6:[collapsible_let_in] This `let in` expression contains a nested `let in` expression
+<temp_file_path>>5:3:W:6:[collapsible_let_in] This `let in` expression is nested

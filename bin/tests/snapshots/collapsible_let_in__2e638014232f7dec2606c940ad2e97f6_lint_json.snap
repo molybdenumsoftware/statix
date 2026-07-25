@@ -13,6 +13,7 @@ x
   "file": "<temp_file_path>",
   "report": [
     {
+      "name": "collapsible_let_in",
       "note": "These let-in expressions are collapsible",
       "code": 6,
       "severity": "Warn",

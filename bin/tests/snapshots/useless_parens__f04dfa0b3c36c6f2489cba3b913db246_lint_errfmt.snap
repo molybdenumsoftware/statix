@@ -3,4 +3,4 @@ source: bin/tests/useless_parens.rs
 ---
 let b = 0; in (b)
 ---
-<temp_file_path>>1:15:W:8:Useless parentheses around body of `let` expression
+<temp_file_path>>1:15:W:8:[useless_parens] Useless parentheses around body of `let` expression

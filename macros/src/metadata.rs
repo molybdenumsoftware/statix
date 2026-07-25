@@ -149,7 +149,7 @@ impl<'μ> LintMeta<'μ> {
     fn generate_report_fn() -> TokenStream2 {
         quote! {
             fn report(&self) -> crate::Report {
-                crate::Report::new(self.note(), self.code())
+                crate::Report::new(self.name(), self.note(), self.code())
             }
         }
     }

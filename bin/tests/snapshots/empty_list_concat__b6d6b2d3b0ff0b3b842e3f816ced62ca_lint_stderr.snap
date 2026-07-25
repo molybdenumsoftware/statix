@@ -3,7 +3,7 @@ source: bin/tests/empty_list_concat.rs
 ---
 [] ++ [1 2 3]
 ---
-[23] Warning: Unnecessary concatenation with empty list
+[empty_list_concat] Warning: Unnecessary concatenation with empty list
    ╭─[ <temp_file_path>:1:1 ]
    │
  1 │ [] ++ [1 2 3]
