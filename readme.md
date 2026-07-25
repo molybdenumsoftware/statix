@@ -108,7 +108,7 @@ statix fix --dry-run /path/to/file
 json and errfmt:
 
 ```shell
-statix check /path/to/dir -o json   # only when compiled with --all-features
+statix check /path/to/dir -o json
 statix check /path/to/dir -o errfmt # singleline, easy to integrate with vim
 ```
 

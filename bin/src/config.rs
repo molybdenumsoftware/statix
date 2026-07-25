@@ -50,8 +50,7 @@ pub struct Check {
     unrestricted: bool,
 
     /// Output format.
-    #[cfg_attr(feature = "json", doc = "Supported values: stderr, errfmt, json")]
-    #[cfg_attr(not(feature = "json"), doc = "Supported values: stderr, errfmt")]
+    /// Supported values: stderr, errfmt, json
     #[clap(short = 'o', long, default_value_t)]
     pub format: OutFormat,
 
@@ -215,7 +214,6 @@ pub struct List {}
 
 #[derive(Debug, Copy, Clone, Default)]
 pub enum OutFormat {
-    #[cfg(feature = "json")]
     Json,
     Errfmt,
     #[default]
@@ -228,7 +226,6 @@ impl fmt::Display for OutFormat {
             f,
             "{}",
             match self {
-                #[cfg(feature = "json")]
                 Self::Json => "json",
                 Self::Errfmt => "errfmt",
                 Self::StdErr => "stderr",
@@ -242,10 +239,7 @@ impl FromStr for OutFormat {
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
         match value.to_ascii_lowercase().as_str() {
-            #[cfg(feature = "json")]
             "json" => Ok(Self::Json),
-            #[cfg(not(feature = "json"))]
-            "json" => Err("statix was not compiled with the `json` feature flag"),
             "errfmt" => Ok(Self::Errfmt),
             "stderr" => Ok(Self::StdErr),
             _ => Err("unknown output format, try: json, errfmt"),

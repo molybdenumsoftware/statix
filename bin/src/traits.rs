@@ -33,7 +33,6 @@ where
         format: OutFormat,
     ) -> io::Result<()> {
         match format {
-            #[cfg(feature = "json")]
             OutFormat::Json => json::write_json(self, lint_result, vfs),
             OutFormat::StdErr => write_stderr(self, lint_result, vfs),
             OutFormat::Errfmt => write_errfmt(self, lint_result, vfs),
@@ -120,7 +119,6 @@ fn write_errfmt<T: Write>(
     Ok(())
 }
 
-#[cfg(feature = "json")]
 mod json {
     use crate::lint::LintResult;
 

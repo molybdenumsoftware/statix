@@ -21,7 +21,6 @@ rustPlatform.buildRustPackage {
     ];
   };
   cargoLock.lockFile = ../Cargo.lock;
-  buildFeatures = [ "json" ];
   meta = {
     mainProgram = "statix";
     description = "Lints and suggestions for the Nix programming language";
