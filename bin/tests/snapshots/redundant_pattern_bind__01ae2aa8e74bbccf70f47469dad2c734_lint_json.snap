@@ -1,0 +1,43 @@
+---
+source: bin/tests/redundant_pattern_bind.rs
+---
+{ ... } @ inputs: null
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Found redundant pattern bind in function argument",
+      "code": 11,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 17
+            }
+          },
+          "message": "This pattern bind is redundant, use `inputs` instead",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 1
+              },
+              "to": {
+                "line": 1,
+                "column": 17
+              }
+            },
+            "fix": "inputs"
+          }
+        }
+      ]
+    }
+  ]
+}

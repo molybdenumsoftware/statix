@@ -1,0 +1,43 @@
+---
+source: bin/tests/empty_inherit.rs
+---
+{ inherit; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Found empty inherit statement",
+      "code": 14,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 3
+            },
+            "to": {
+              "line": 1,
+              "column": 11
+            }
+          },
+          "message": "Remove this empty `inherit` statement",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 2
+              },
+              "to": {
+                "line": 1,
+                "column": 11
+              }
+            },
+            "fix": ""
+          }
+        }
+      ]
+    }
+  ]
+}

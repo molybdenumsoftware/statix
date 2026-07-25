@@ -1,0 +1,9 @@
+---
+source: bin/tests/repeated_keys.rs
+---
+rec {
+  foo.x = foo.y;
+  foo.y = 2;
+  foo.z = 3;
+}
+---

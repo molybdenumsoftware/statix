@@ -1,0 +1,65 @@
+---
+source: bin/tests/repeated_keys.rs
+---
+{
+  foo.baz.bar1 = 1;
+  foo.baz.bar2 = 2;
+  foo.baz.bar3 = 3;
+  foo.baz.bar4 = 4;
+  foo.baz.bar5 = 5;
+}
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Avoid repeated keys in attribute sets",
+      "code": 20,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 3
+            },
+            "to": {
+              "line": 2,
+              "column": 15
+            }
+          },
+          "message": "The key `foo` is first assigned here ...",
+          "suggestion": null
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 3
+            },
+            "to": {
+              "line": 3,
+              "column": 15
+            }
+          },
+          "message": "... repeated here ...",
+          "suggestion": null
+        },
+        {
+          "at": {
+            "from": {
+              "line": 4,
+              "column": 3
+            },
+            "to": {
+              "line": 4,
+              "column": 15
+            }
+          },
+          "message": "... and here (`2` occurrences omitted). Try `foo = { baz.bar1=...; baz.bar2=...; baz.bar3=...; }` instead.",
+          "suggestion": null
+        }
+      ]
+    }
+  ]
+}

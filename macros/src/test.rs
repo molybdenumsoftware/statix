@@ -55,11 +55,17 @@ pub fn generate_tests(input: TokenStream) -> TokenStream {
     expressions
         .into_iter()
         .map(|nix_expression| {
-            let lint_test = make_test(&rule, TestKind::Lint, &nix_expression);
+            let lint_stderr_test = make_test(&rule, TestKind::LintStderr, &nix_expression);
+            let lint_errfmt_test = make_test(&rule, TestKind::LintErrfmt, &nix_expression);
+            let lint_json_test = make_test(&rule, TestKind::LintJson, &nix_expression);
             let fix_test = make_test(&rule, TestKind::Fix, &nix_expression);
 
             quote! {
-                #lint_test
+                #lint_stderr_test
+
+                #lint_errfmt_test
+
+                #lint_json_test
 
                 #fix_test
             }
@@ -70,7 +76,9 @@ pub fn generate_tests(input: TokenStream) -> TokenStream {
 
 #[derive(Clone, Copy, Debug)]
 enum TestKind {
-    Lint,
+    LintStderr,
+    LintErrfmt,
+    LintJson,
     Fix,
 }
 
@@ -79,7 +87,9 @@ fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2
     let expression_hash = hex::encode(&expression_hash[..16]);
 
     let kind_str = match kind {
-        TestKind::Lint => "lint",
+        TestKind::LintStderr => "lint_stderr",
+        TestKind::LintErrfmt => "lint_errfmt",
+        TestKind::LintJson => "lint_json",
         TestKind::Fix => "fix",
     };
 
@@ -88,7 +98,9 @@ fn make_test(rule: &Ident, kind: TestKind, nix_expression: &Expr) -> proc_macro2
     let snap_name = format!("{expression_hash}_{kind_str}");
 
     let args = match kind {
-        TestKind::Lint => quote! {&["check"]},
+        TestKind::LintStderr => quote! {&["check", "--format", "stderr"]},
+        TestKind::LintErrfmt => quote! {&["check", "--format", "errfmt"]},
+        TestKind::LintJson => quote! {&["check", "--format", "json"]},
         TestKind::Fix => quote! {&["fix", "--dry-run"]},
     };
 

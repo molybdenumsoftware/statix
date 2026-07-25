@@ -1,0 +1,63 @@
+---
+source: bin/tests/repeated_keys.rs
+---
+{
+  foo.bar = 1;
+  foo.baz."hello" = 1;
+  foo.again = 1;
+}
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Avoid repeated keys in attribute sets",
+      "code": 20,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 3
+            },
+            "to": {
+              "line": 2,
+              "column": 10
+            }
+          },
+          "message": "The key `foo` is first assigned here ...",
+          "suggestion": null
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 3
+            },
+            "to": {
+              "line": 3,
+              "column": 18
+            }
+          },
+          "message": "... repeated here ...",
+          "suggestion": null
+        },
+        {
+          "at": {
+            "from": {
+              "line": 4,
+              "column": 3
+            },
+            "to": {
+              "line": 4,
+              "column": 12
+            }
+          },
+          "message": "... and here. Try `foo = { bar=...; baz.\"hello\"=...; again=...; }` instead.",
+          "suggestion": null
+        }
+      ]
+    }
+  ]
+}

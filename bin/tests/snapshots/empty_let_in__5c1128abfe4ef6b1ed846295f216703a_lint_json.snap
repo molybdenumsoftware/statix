@@ -1,0 +1,43 @@
+---
+source: bin/tests/empty_let_in.rs
+---
+let in null
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Useless let-in expression",
+      "code": 2,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 12
+            }
+          },
+          "message": "This let-in expression has no entries",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 1
+              },
+              "to": {
+                "line": 1,
+                "column": 12
+              }
+            },
+            "fix": "null"
+          }
+        }
+      ]
+    }
+  ]
+}

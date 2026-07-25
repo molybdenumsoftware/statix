@@ -1,0 +1,35 @@
+---
+source: bin/tests/empty_let_in.rs
+---
+let
+  # don't fix this, we have a comment
+  # raise the lint though
+in
+null
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Useless let-in expression",
+      "code": 2,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 5,
+              "column": 5
+            }
+          },
+          "message": "This let-in expression has no entries",
+          "suggestion": null
+        }
+      ]
+    }
+  ]
+}

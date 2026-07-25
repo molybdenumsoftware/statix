@@ -1,0 +1,43 @@
+---
+source: bin/tests/empty_pattern.rs
+---
+({ ... }: 42)
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Found empty pattern in function argument",
+      "code": 10,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 2
+            },
+            "to": {
+              "line": 1,
+              "column": 9
+            }
+          },
+          "message": "This pattern is empty, use `_` instead",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 2
+              },
+              "to": {
+                "line": 1,
+                "column": 9
+              }
+            },
+            "fix": "_"
+          }
+        }
+      ]
+    }
+  ]
+}

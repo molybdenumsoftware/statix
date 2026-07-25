@@ -1,0 +1,43 @@
+---
+source: bin/tests/useless_has_attr.rs
+---
+if x ? a then x.a else b.c
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "This `if` expression can be simplified with `or`",
+      "code": 19,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 27
+            }
+          },
+          "message": "Consider using `x.a or b.c` instead of this `if` expression",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 1
+              },
+              "to": {
+                "line": 1,
+                "column": 27
+              }
+            },
+            "fix": "x.a or b.c"
+          }
+        }
+      ]
+    }
+  ]
+}

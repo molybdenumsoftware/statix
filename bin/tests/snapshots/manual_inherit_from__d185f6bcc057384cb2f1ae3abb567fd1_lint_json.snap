@@ -1,0 +1,43 @@
+---
+source: bin/tests/manual_inherit_from.rs
+---
+let a.b = 2; in { b = a.b; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "note": "Assignment instead of inherit from",
+      "code": 4,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 19
+            },
+            "to": {
+              "line": 1,
+              "column": 27
+            }
+          },
+          "message": "This assignment is better written with `inherit`",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 19
+              },
+              "to": {
+                "line": 1,
+                "column": 27
+              }
+            },
+            "fix": "inherit (a) b;"
+          }
+        }
+      ]
+    }
+  ]
+}

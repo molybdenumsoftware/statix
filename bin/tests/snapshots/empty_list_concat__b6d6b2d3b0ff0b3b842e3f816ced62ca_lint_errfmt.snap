@@ -1,0 +1,6 @@
+---
+source: bin/tests/empty_list_concat.rs
+---
+[] ++ [1 2 3]
+---
+<temp_file_path>>1:1:W:23:Concatenation with the empty list, `[]`, is a no-op
