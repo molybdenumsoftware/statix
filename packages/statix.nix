@@ -1,30 +1,32 @@
 {
-  rustPlatform,
   lib,
+  pkgs,
+  crate2nixSrc,
 }:
-rustPlatform.buildRustPackage {
-  pname = "statix";
-  version = "0.6.0-git";
-  src = lib.fileset.toSource {
-    root = ../.;
-    fileset = lib.fileset.unions [
-      (lib.fileset.fileFilter (
-        file:
-        lib.any lib.id [
-          (file.name == "Cargo.toml")
-          (file.hasExt "rs")
-          (file.hasExt "snap")
-        ]
-      ) ../.)
-      ../Cargo.lock
-      ../insta.yaml
-    ];
+let
+  tools = pkgs.callPackage "${crate2nixSrc}/tools.nix" { };
+  cargoNix = tools.generatedCargoNix {
+    name = "statix";
+    src = lib.fileset.toSource {
+      root = ../.;
+      fileset = lib.fileset.unions [
+        (lib.fileset.fileFilter (
+          file:
+          lib.any lib.id [
+            (file.name == "Cargo.toml")
+            (file.hasExt "rs")
+            (file.hasExt "snap")
+          ]
+        ) ../.)
+        ../Cargo.lock
+        ../insta.yaml
+      ];
+    };
   };
-  cargoLock.lockFile = ../Cargo.lock;
-  meta = {
-    mainProgram = "statix";
-    description = "Lints and suggestions for the Nix programming language";
-    homepage = "https://github.com/molybdenumsoftware/statix";
-    license = lib.licenses.mit;
-  };
+in
+(pkgs.callPackage "${cargoNix}/default.nix" { }).workspaceMembers.statix.build.override {
+  features = [
+    "default"
+    "json"
+  ];
 }
