@@ -1,7 +1,6 @@
 {
   nixConfig = {
     abort-on-warn = true;
-    allow-import-from-derivation = false;
   };
 
   inputs = {
@@ -10,6 +9,10 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
+    crate2nix = {
+      url = "github:nix-community/crate2nix";
+      flake = false;
+    };
     import-tree = {
       url = "github:denful/import-tree";
       flake = false;
