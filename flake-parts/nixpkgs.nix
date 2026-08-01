@@ -3,10 +3,8 @@
   perSystem =
     { system, ... }:
     {
-      _module.args.pkgs = import inputs.nixpkgs {
-        inherit system;
-        config = { };
-        overlays = [ (import (root + "/overlay.nix")) ];
-      };
+      imports = [ "${inputs.nixpkgs}/nixos/modules/misc/nixpkgs.nix" ];
+      nixpkgs.hostPlatform = { inherit system; };
+      nixpkgs.overlays = [ (import (root + "/overlay.nix")) ];
     };
 }
