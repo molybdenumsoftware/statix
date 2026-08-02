@@ -23,4 +23,4 @@ let
     };
   };
 in
-(callPackage cargoNix { }).workspaceMembers.statix.build
+callPackage cargoNix { }
