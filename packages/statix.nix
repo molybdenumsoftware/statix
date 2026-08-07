@@ -20,6 +20,8 @@ rustPlatform.buildRustPackage {
       ../insta.yaml
     ];
   };
+  useClippy = true;
+  extraRustcOpts = "-D warnings";
   cargoLock.lockFile = ../Cargo.lock;
   meta = {
     mainProgram = "statix";
