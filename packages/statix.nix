@@ -21,7 +21,7 @@ rustPlatform.buildRustPackage {
     ];
   };
   useClippy = true;
-  extraRustcOpts = "-D warnings";
+  RUSTFLAGS = "-D warnings";
   cargoLock.lockFile = ../Cargo.lock;
   meta = {
     mainProgram = "statix";
