@@ -1,6 +1,7 @@
 {
   rustPlatform,
   lib,
+  clippy,
 }:
 rustPlatform.buildRustPackage {
   pname = "statix";
@@ -20,8 +21,19 @@ rustPlatform.buildRustPackage {
       ../insta.yaml
     ];
   };
-  useClippy = true;
   RUSTFLAGS = "-D warnings";
+
+  nativeBuildInputs = [ clippy ];
+
+  checkPhase = ''
+    runHook preCheck
+
+    cargo clippy --all-targets --all-features
+    cargoCheckHook
+
+    runHook postCheck
+  '';
+
   cargoLock.lockFile = ../Cargo.lock;
   meta = {
     mainProgram = "statix";
