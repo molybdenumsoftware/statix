@@ -7,9 +7,7 @@ pub fn test_cli(expression: &str, args: &[&str]) -> anyhow::Result<String> {
     let mut fixture = NamedTempFile::with_suffix(".nix")?;
     fixture.write_all(expression.as_bytes())?;
 
-    let output = Command::new("cargo")
-        .arg("run")
-        .arg("--")
+    let output = Command::new(env!("CARGO_BIN_EXE_statix"))
         .args(args)
         .arg(fixture.path())
         .output()?;
@@ -23,9 +21,7 @@ pub fn test_cli(expression: &str, args: &[&str]) -> anyhow::Result<String> {
 
 #[allow(dead_code)]
 pub fn test_cli_stdin(input: &str, args: &[&str]) -> anyhow::Result<String> {
-    let mut child = Command::new("cargo")
-        .arg("run")
-        .arg("--")
+    let mut child = Command::new(env!("CARGO_BIN_EXE_statix"))
         .args(args)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
