@@ -77,7 +77,8 @@ impl Check {
         } else {
             let all_ignores = [self.ignore.as_slice(), extra_ignores].concat();
             let ignore = dirs::build_ignore_set(&all_ignores, &self.target, self.unrestricted)?;
-            let files = dirs::walk_nix_files(ignore, &self.target)?;
+            let files =
+                dirs::walk_nix_files(ignore, &self.target, &all_ignores, self.unrestricted)?;
             Ok(vfs(&files.collect::<Vec<_>>()))
         }
     }
@@ -130,7 +131,8 @@ impl Fix {
         } else {
             let all_ignores = [self.ignore.as_slice(), extra_ignores].concat();
             let ignore = dirs::build_ignore_set(&all_ignores, &self.target, self.unrestricted)?;
-            let files = dirs::walk_nix_files(ignore, &self.target)?;
+            let files =
+                dirs::walk_nix_files(ignore, &self.target, &all_ignores, self.unrestricted)?;
             Ok(vfs(&files.collect::<Vec<_>>()))
         }
     }
