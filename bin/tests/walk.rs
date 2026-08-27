@@ -157,30 +157,22 @@ mod gitignored_files {
     }
 
     #[test]
-    fn nested_gitignore_is_respected() {
+    fn multiple_gitignores() {
         let report = Fixture::with_files(&[
-            ("linted.nix", CODE_THAT_TRIGGERS_A_LINT),
-            ("generated/.gitignore", "linted.nix\n"),
-            ("generated/linted.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("file.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("a/.gitignore", "file.nix\nbuild/\n"),
+            ("a/file.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("a/build/inside.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("b/file.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("b/build/inside.nix", CODE_THAT_TRIGGERS_A_LINT),
         ])
         .run_with_args(&[])
         .unwrap();
 
-        assert_eq!(report.paths, ["./linted.nix"]);
-    }
-
-    #[test]
-    fn nested_gitignore_patterns_are_relative_to_subdir() {
-        let report = Fixture::with_files(&[
-            ("linted.nix", CODE_THAT_TRIGGERS_A_LINT),
-            ("a/.gitignore", "build/\n"),
-            ("a/build/ignored.nix", CODE_THAT_TRIGGERS_A_LINT),
-            ("b/build/not_ignored.nix", CODE_THAT_TRIGGERS_A_LINT),
-        ])
-        .run_with_args(&[])
-        .unwrap();
-
-        assert_eq!(report.paths, ["./linted.nix", "./b/build/not_ignored.nix"]);
+        assert_eq!(
+            report.paths,
+            ["./file.nix", "./b/file.nix", "./b/build/inside.nix"]
+        );
     }
 }
 
