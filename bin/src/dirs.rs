@@ -1,112 +1,75 @@
-use std::{
-    fs,
-    io::{self, Error, ErrorKind},
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 
-use crate::dirs;
+use ignore::{Error as IgnoreError, Match, WalkBuilder, gitignore::GitignoreBuilder};
 
-use ignore::{
-    Error as IgnoreError, Match,
-    gitignore::{Gitignore, GitignoreBuilder},
-};
-
-#[derive(Debug)]
-pub struct Walker {
-    dirs: Vec<PathBuf>,
-    files: Vec<PathBuf>,
-    ignore: Gitignore,
-}
-
-impl Walker {
-    pub fn new<P: AsRef<Path>>(target: P, ignore: Gitignore) -> io::Result<Self> {
-        let target = target.as_ref().to_path_buf();
-        if !target.exists() {
-            Err(Error::new(
-                ErrorKind::NotFound,
-                format!("file not found: {}", target.display()),
-            ))
-        } else if target.is_dir() {
-            Ok(Self {
-                dirs: vec![target],
-                files: vec![],
-                ignore,
-            })
-        } else {
-            Ok(Self {
-                dirs: vec![],
-                files: vec![target],
-                ignore,
-            })
-        }
+pub fn check_path_exists<P: AsRef<Path>>(target: P) -> std::io::Result<()> {
+    let target = target.as_ref();
+    if target.exists() {
+        Ok(())
+    } else {
+        Err(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            format!("file not found: {}", target.display()),
+        ))
     }
 }
 
-impl Iterator for Walker {
-    type Item = PathBuf;
-    fn next(&mut self) -> Option<Self::Item> {
-        self.files.pop().or_else(|| {
-            while let Some(dir) = self.dirs.pop() {
-                if dir.is_dir()
-                    && let Match::None | Match::Whitelist(_) = self.ignore.matched(&dir, true)
-                {
-                    let mut found = false;
-                    for entry in fs::read_dir(&dir).ok()? {
-                        let entry = entry.ok()?;
-                        let path = entry.path();
-                        if path.is_dir() {
-                            self.dirs.push(path);
-                        } else if path.is_file()
-                            && let Match::None | Match::Whitelist(_) =
-                                self.ignore.matched(&path, false)
-                        {
-                            found = true;
-                            self.files.push(path);
-                        }
-                    }
-                    if found {
-                        break;
-                    }
-                }
-            }
-            self.files.pop()
-        })
-    }
-}
-
-pub fn build_ignore_set<P: AsRef<Path>>(
-    ignore: &[String],
+pub fn walk_nix_files<P: AsRef<Path>>(
     target: P,
+    extra_ignores: &[String],
     unrestricted: bool,
-) -> Result<Gitignore, IgnoreError> {
-    let gitignore_path = target.as_ref().join(".gitignore");
+) -> Result<impl Iterator<Item = PathBuf>, IgnoreError> {
+    let target = target.as_ref();
 
-    // Looks like GitignoreBuilder::new does not source globs
-    // within gitignore_path by default, we have to enforce that
-    // using GitignoreBuilder::add. Probably a bug in the ignore
-    // crate?
-    let mut gitignore = GitignoreBuilder::new(&gitignore_path);
+    let mut builder = WalkBuilder::new(target);
 
-    // if we are to "restrict" aka "respect" .gitignore, then
-    // add globs from gitignore path as well
+    // read as "do not ignore hidden files"
+    builder.hidden(false);
+
+    if unrestricted {
+        builder.standard_filters(false);
+    } else {
+        builder.require_git(false);
+    }
+
+    let mut gitignore = GitignoreBuilder::new(target);
+
     if !unrestricted {
-        gitignore.add(&gitignore_path);
-
         // ignore .git by default, nobody cares about .git, i'm sure
         gitignore.add_line(None, ".git")?;
     }
 
-    for i in ignore {
-        gitignore.add_line(None, i.as_str())?;
+    for ignore_rule in extra_ignores {
+        gitignore.add_line(None, ignore_rule)?;
     }
+    let custom_ignore = gitignore.build()?;
 
-    gitignore.build()
-}
+    builder.filter_entry(move |entry| {
+        if entry.depth() == 0 {
+            return true;
+        }
 
-pub fn walk_nix_files<P: AsRef<Path>>(
-    ignore: Gitignore,
-    target: P,
-) -> Result<impl Iterator<Item = PathBuf>, io::Error> {
-    let walker = dirs::Walker::new(target, ignore)?;
-    Ok(walker.filter(|path: &PathBuf| matches!(path.extension(), Some(e) if e == "nix")))
+        let is_dir = entry.file_type().is_some_and(|ft| ft.is_dir());
+
+        !matches!(
+            custom_ignore.matched(entry.path(), is_dir),
+            Match::Ignore(_)
+        )
+    });
+
+    Ok(builder.build().filter_map(|entry| {
+        let entry = entry.ok()?;
+        let file_type = entry.file_type()?;
+
+        if !file_type.is_file() {
+            return None;
+        }
+
+        let path = entry.into_path();
+        if path.extension()? != "nix" {
+            return None;
+        }
+
+        Some(path)
+    }))
 }
