@@ -125,6 +125,18 @@ mod directory {
 
         assert_eq!(report.paths, ["dir/a.nix"]);
     }
+
+    #[test]
+    fn hidden_files_are_linted() {
+        let report = Fixture::with_files(&[
+            (".hidden.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("normal.nix", CODE_THAT_TRIGGERS_A_LINT),
+        ])
+        .run_with_args(&[])
+        .unwrap();
+
+        assert_eq!(report.paths, ["./.hidden.nix", "./normal.nix"]);
+    }
 }
 
 mod gitignored_files {
@@ -157,6 +169,25 @@ mod gitignored_files {
     }
 }
 
+mod missing_path {
+    use std::process::Command;
+
+    #[test]
+    fn errors_on_missing_path() {
+        let dir = tempfile::tempdir().unwrap();
+        let output = Command::new(env!("CARGO_BIN_EXE_statix"))
+            .current_dir(dir.path())
+            .arg("check")
+            .arg("does_not_exist.nix")
+            .output()
+            .unwrap();
+
+        let stderr = std::str::from_utf8(&output.stderr).unwrap();
+        assert!(stderr.contains("config error: path error: file not found"));
+        assert!(stderr.contains("does_not_exist.nix"));
+    }
+}
+
 mod unrestricted {
     use super::*;
 
@@ -171,6 +202,30 @@ mod unrestricted {
         .unwrap();
 
         assert_eq!(report.paths, ["./linted.nix", "./ignored.nix"]);
+    }
+
+    #[test]
+    fn ignores_git_directory_by_default() {
+        let report = Fixture::with_files(&[
+            (".git/internal.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("linted.nix", CODE_THAT_TRIGGERS_A_LINT),
+        ])
+        .run_with_args(&[])
+        .unwrap();
+
+        assert_eq!(report.paths, ["./linted.nix"]);
+    }
+
+    #[test]
+    fn traverses_git_directory_when_unrestricted() {
+        let report = Fixture::with_files(&[
+            (".git/internal.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("linted.nix", CODE_THAT_TRIGGERS_A_LINT),
+        ])
+        .run_with_args(&["--unrestricted"])
+        .unwrap();
+
+        assert_eq!(report.paths, ["./.git/internal.nix", "./linted.nix"]);
     }
 }
 
