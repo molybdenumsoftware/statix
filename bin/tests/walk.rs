@@ -169,11 +169,11 @@ mod gitignored_files {
     }
 }
 
-mod missing_path {
-    use std::process::Command;
+mod error {
+    use std::{fs, process::Command};
 
     #[test]
-    fn errors_on_missing_path() {
+    fn missing_path() {
         let dir = tempfile::tempdir().unwrap();
         let output = Command::new(env!("CARGO_BIN_EXE_statix"))
             .current_dir(dir.path())
@@ -185,6 +185,32 @@ mod missing_path {
         let stderr = std::str::from_utf8(&output.stderr).unwrap();
         assert!(stderr.contains("config error: path error: file not found"));
         assert!(stderr.contains("does_not_exist.nix"));
+        assert!(output.status.success());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn unreadable_file() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("file.nix");
+        fs::write(&path, "").unwrap();
+
+        let mut perms = fs::metadata(&path).unwrap().permissions();
+        perms.set_mode(0o222);
+        fs::set_permissions(&path, perms).unwrap();
+
+        let output = Command::new(env!("CARGO_BIN_EXE_statix"))
+            .current_dir(dir.path())
+            .arg("check")
+            .output()
+            .unwrap();
+
+        let stdout = std::str::from_utf8(&output.stdout).unwrap();
+        assert!(stdout.contains("file.nix` contains non-utf8"));
+
+        assert!(output.status.success());
     }
 }
 
