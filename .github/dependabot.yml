@@ -15,6 +15,7 @@
       "commit-message": {
         "prefix": "chore"
       },
+      "directory": "/",
       "package-ecosystem": "nix",
       "schedule": {
         "interval": "daily"

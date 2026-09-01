@@ -19,6 +19,7 @@ in
           }
           {
             package-ecosystem = "nix";
+            directory = "/";
             schedule.interval = "daily";
             commit-message.prefix = "chore";
           }
