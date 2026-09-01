@@ -1,0 +1,32 @@
+{
+  "jobs": {
+    "dependabot": {
+      "if": "github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'molybdenumsoftware/statix'",
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "id": "metadata",
+          "name": "Dependabot metadata",
+          "uses": "dependabot/fetch-metadata@main",
+          "with": {
+            "github-token": "${{ secrets.GITHUB_TOKEN }}"
+          }
+        },
+        {
+          "env": {
+            "GH_TOKEN": "${{secrets.GITHUB_TOKEN}}",
+            "PR_URL": "${{github.event.pull_request.html_url}}"
+          },
+          "name": "Enable auto-merge for Dependabot PRs",
+          "run": "gh pr merge --auto --merge \"$PR_URL\""
+        }
+      ]
+    }
+  },
+  "name": "Dependabot auto-merge",
+  "on": "pull_request",
+  "permissions": {
+    "contents": "write",
+    "pull-requests": "write"
+  }
+}
