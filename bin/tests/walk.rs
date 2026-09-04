@@ -167,6 +167,25 @@ mod gitignored_files {
 
         assert_eq!(report.paths, ["./linted.nix"]);
     }
+
+    #[test]
+    fn multiple_gitignores() {
+        let report = Fixture::with_files(&[
+            ("file.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("a/.gitignore", "file.nix\nbuild/\n"),
+            ("a/file.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("a/build/inside.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("b/file.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("b/build/inside.nix", CODE_THAT_TRIGGERS_A_LINT),
+        ])
+        .run_with_args(&[])
+        .unwrap();
+
+        assert_eq!(
+            report.paths,
+            ["./file.nix", "./b/file.nix", "./b/build/inside.nix"]
+        );
+    }
 }
 
 mod error {
