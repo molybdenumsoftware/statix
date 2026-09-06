@@ -167,6 +167,55 @@ mod gitignored_files {
 
         assert_eq!(report.paths, ["./linted.nix"]);
     }
+
+    #[test]
+    fn does_not_ignore_substring_matches() {
+        let report = Fixture::with_files(&[
+            ("ignore_me.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("do_not_ignore_me.nix", CODE_THAT_TRIGGERS_A_LINT),
+        ])
+        .run_with_args(&["--ignore", "ignore_me.nix"])
+        .unwrap();
+
+        assert_eq!(report.paths, ["./do_not_ignore_me.nix"]);
+    }
+
+    #[test]
+    fn applies_to_files_in_subdirectories() {
+        let report = Fixture::with_files(&[
+            ("src/generated.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("src/linted.nix", CODE_THAT_TRIGGERS_A_LINT),
+        ])
+        .run_with_args(&["--ignore", "generated.nix"])
+        .unwrap();
+
+        assert_eq!(report.paths, ["./src/linted.nix"]);
+    }
+
+    #[test]
+    fn supports_path_arguments() {
+        let report = Fixture::with_files(&[
+            ("src/generated/file.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("src/manual/file.nix", CODE_THAT_TRIGGERS_A_LINT),
+        ])
+        .run_with_args(&["--ignore", "src/generated/file.nix"])
+        .unwrap();
+
+        assert_eq!(report.paths, ["./src/manual/file.nix"]);
+    }
+
+    #[test]
+    fn supports_glob_patterns() {
+        let report = Fixture::with_files(&[
+            ("foo/generated.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("bar/generated.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ("foo/linted.nix", CODE_THAT_TRIGGERS_A_LINT),
+        ])
+        .run_with_args(&["--ignore", "**/generated.nix"])
+        .unwrap();
+
+        assert_eq!(report.paths, ["./foo/linted.nix"]);
+    }
 }
 
 mod error {
