@@ -2,6 +2,7 @@
   rustPlatform,
   lib,
   clippy,
+  gitMinimal,
 }:
 rustPlatform.buildRustPackage {
   pname = "statix";
@@ -24,6 +25,8 @@ rustPlatform.buildRustPackage {
   RUSTFLAGS = "-D warnings";
 
   nativeBuildInputs = [ clippy ];
+
+  nativeCheckInputs = [ gitMinimal ];
 
   checkPhase = ''
     runHook preCheck

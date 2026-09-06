@@ -1,5 +1,7 @@
 use std::{collections::HashSet, process::Command};
 
+use anyhow::{anyhow, bail};
+
 const CODE_THAT_TRIGGERS_A_LINT: &str = "!(a == b)\n";
 
 #[derive(Debug)]
@@ -13,6 +15,13 @@ impl<const N: usize> PartialEq<[&str; N]> for Paths {
 
 struct Fixture {
     files: Vec<(String, String)>,
+    current_dir: CurrentDir,
+    git_init_at: Option<&'static str>,
+}
+
+enum CurrentDir {
+    FixtureRoot,
+    Relative(&'static str),
 }
 
 impl Fixture {
@@ -22,10 +31,12 @@ impl Fixture {
                 .iter()
                 .map(|&(path, content)| (path.to_owned(), content.to_owned()))
                 .collect(),
+            current_dir: CurrentDir::FixtureRoot,
+            git_init_at: None,
         }
     }
 
-    fn run_with_args(self, args: &[&str]) -> Result<Report, Box<dyn std::error::Error>> {
+    fn run_with_args(self, args: &[&str]) -> anyhow::Result<Report> {
         let dir = tempfile::tempdir()?;
 
         for (relative_path, content) in &self.files {
@@ -34,8 +45,24 @@ impl Fixture {
             std::fs::write(&path, content)?;
         }
 
+        if let Some(relative_path) = self.git_init_at {
+            let exit_status = Command::new("git")
+                .current_dir(dir.path().join(relative_path))
+                .arg("init")
+                .status()?;
+
+            if !exit_status.success() {
+                bail!("git init {exit_status}")
+            }
+        }
+
+        let current_dir = match self.current_dir {
+            CurrentDir::FixtureRoot => dir.path().to_owned(),
+            CurrentDir::Relative(relative) => dir.path().join(relative),
+        };
+
         let output = Command::new(env!("CARGO_BIN_EXE_statix"))
-            .current_dir(dir.path())
+            .current_dir(current_dir)
             .arg("check")
             .args(["-o", "errfmt"])
             .args(args)
@@ -46,14 +73,24 @@ impl Fixture {
             .map(|line| {
                 let (path, _) = line
                     .split_once('>')
-                    .ok_or("errfmt line did not contain '>'")?;
+                    .ok_or(anyhow!("errfmt line did not contain '>'"))?;
                 Ok(path.to_owned())
             })
-            .collect::<Result<_, Box<dyn std::error::Error>>>()?;
+            .collect::<anyhow::Result<_>>()?;
 
         Ok(Report {
             paths: Paths(paths),
         })
+    }
+
+    fn current_dir(mut self, relative_path: &'static str) -> Self {
+        self.current_dir = CurrentDir::Relative(relative_path);
+        self
+    }
+
+    fn git_init_at(mut self, relative_path: &'static str) -> Self {
+        self.git_init_at = Some(relative_path);
+        self
     }
 }
 
@@ -240,6 +277,39 @@ mod gitignored_files {
                 "./a/build/inside.nix", // undesirable behavior
             ]
         );
+    }
+
+    mod ancestor_gitignores {
+        use super::*;
+
+        #[test]
+        fn no_repo() {
+            let report = Fixture::with_files(&[
+                (".gitignore", "generated.nix\n"),
+                ("dir/file.nix", CODE_THAT_TRIGGERS_A_LINT),
+                ("dir/generated.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ])
+            .current_dir("dir")
+            .run_with_args(&[])
+            .unwrap();
+
+            assert_eq!(report.paths, ["./file.nix", "./generated.nix",]);
+        }
+
+        #[test]
+        fn yes_repo() {
+            let report = Fixture::with_files(&[
+                (".gitignore", "generated.nix\n"),
+                ("dir/file.nix", CODE_THAT_TRIGGERS_A_LINT),
+                ("dir/generated.nix", CODE_THAT_TRIGGERS_A_LINT),
+            ])
+            .git_init_at("dir")
+            .current_dir("dir")
+            .run_with_args(&[])
+            .unwrap();
+
+            assert_eq!(report.paths, ["./file.nix", "./generated.nix",]);
+        }
     }
 }
 
