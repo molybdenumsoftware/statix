@@ -30,6 +30,7 @@ pub fn walk_nix_files<P: AsRef<Path>>(
         builder.standard_filters(false);
     } else {
         builder.require_git(false);
+        builder.parents(false);
     }
 
     let mut gitignore = GitignoreBuilder::new(target);
