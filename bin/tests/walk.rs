@@ -269,13 +269,7 @@ mod gitignored_files {
 
         assert_eq!(
             report.paths,
-            [
-                "./file.nix",
-                "./b/build/inside.nix",
-                "./b/file.nix",
-                "./a/file.nix",         // undesirable behavior
-                "./a/build/inside.nix", // undesirable behavior
-            ]
+            ["./file.nix", "./b/build/inside.nix", "./b/file.nix",]
         );
     }
 
