@@ -35,6 +35,7 @@ tempfile = "*"
 thiserror = "*"
 toml = "*"
 vfs.path = "./vfs"
+xdg = "*"
 
 [workspace.lints.clippy]
 pedantic = { level = "deny", priority = -1 }
