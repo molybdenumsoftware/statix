@@ -150,6 +150,12 @@ empty_inherit
 deprecated_to_path
 bool_simplification
 useless_has_attr
+repeated_keys
+empty_list_concat
+devenv_exec_shebang
+devenv_pre_commit
+hardcoded_store_path
+impure_host_path
 ```
 
 All lints are enabled by default. Generate a minimal config

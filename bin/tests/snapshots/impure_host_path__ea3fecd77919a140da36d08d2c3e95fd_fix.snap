@@ -1,0 +1,9 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+''
+  #!/bin/bash
+  /opt/homebrew/bin/brew install x
+  /usr/bin/python3 -V
+''
+---

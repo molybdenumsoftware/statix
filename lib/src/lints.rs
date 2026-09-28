@@ -21,5 +21,6 @@ lints! {
     empty_list_concat,
     devenv_exec_shebang,
     devenv_pre_commit,
-    hardcoded_store_path
+    hardcoded_store_path,
+    impure_host_path
 }

@@ -1,0 +1,64 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+''
+  #!/bin/bash
+  /opt/homebrew/bin/brew install x
+  /usr/bin/python3 -V
+''
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "impure_host_path",
+      "note": "Found path outside the Nix store",
+      "code": 27,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 5
+            },
+            "to": {
+              "line": 2,
+              "column": 14
+            }
+          },
+          "message": "`/bin/bash` depends on the host system, use a package from nixpkgs instead",
+          "suggestion": null
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 3
+            },
+            "to": {
+              "line": 3,
+              "column": 25
+            }
+          },
+          "message": "`/opt/homebrew/` depends on the host system, use a package from nixpkgs instead",
+          "suggestion": null
+        },
+        {
+          "at": {
+            "from": {
+              "line": 4,
+              "column": 3
+            },
+            "to": {
+              "line": 4,
+              "column": 19
+            }
+          },
+          "message": "`/usr/bin/` depends on the host system, use a package from nixpkgs instead",
+          "suggestion": null
+        }
+      ]
+    }
+  ]
+}

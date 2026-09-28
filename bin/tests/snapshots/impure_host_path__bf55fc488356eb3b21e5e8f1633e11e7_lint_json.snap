@@ -1,0 +1,32 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+/usr/local/bin/bash
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "impure_host_path",
+      "note": "Found path outside the Nix store",
+      "code": 27,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 20
+            }
+          },
+          "message": "`/usr/local/` depends on the host system, use a package from nixpkgs instead",
+          "suggestion": null
+        }
+      ]
+    }
+  ]
+}
