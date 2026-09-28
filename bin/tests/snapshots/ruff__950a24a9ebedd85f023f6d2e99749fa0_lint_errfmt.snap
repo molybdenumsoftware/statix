@@ -1,0 +1,10 @@
+---
+source: bin/tests/ruff.rs
+---
+pkgs.writeScript "x" ''
+  #!${pkgs.python3}/bin/python3
+  x == 1
+''
+---
+<temp_file_path>>3:3:W:29:[ruff] B015: Pointless comparison. Did you mean to assign a value? Otherwise, prepend `assert` or remove it.
+<temp_file_path>>3:3:W:29:[ruff] F821: Undefined name `x`

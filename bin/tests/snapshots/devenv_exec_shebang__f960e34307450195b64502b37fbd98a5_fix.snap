@@ -1,0 +1,8 @@
+---
+source: bin/tests/devenv_exec_shebang.rs
+---
+{ scripts.hello.exec = ''
+  #!/usr/bin/env python3
+  print(1)
+''; }
+---

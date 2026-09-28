@@ -1,0 +1,11 @@
+---
+source: bin/tests/shellcheck.rs
+---
+stdenv.mkDerivation { installPhase = ''
+  mkdir -p $out/bin
+  cp $src/tool $out/bin/
+''; }
+---
+<temp_file_path>>2:12:I:28:[shellcheck] SC2086: Double quote to prevent globbing and word splitting.
+<temp_file_path>>3:6:I:28:[shellcheck] SC2086: Double quote to prevent globbing and word splitting.
+<temp_file_path>>3:16:I:28:[shellcheck] SC2086: Double quote to prevent globbing and word splitting.

@@ -1,0 +1,62 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ systemd.services.web = { script = ''
+  cd $STATE_DIRECTORY
+''; }; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 3
+            },
+            "to": {
+              "line": 2,
+              "column": 22
+            }
+          },
+          "message": "SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 37
+              },
+              "to": {
+                "line": 3,
+                "column": 3
+              }
+            },
+            "fix": "''\n  cd $STATE_DIRECTORY || exit\n''"
+          },
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 6
+            },
+            "to": {
+              "line": 2,
+              "column": 22
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": null,
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

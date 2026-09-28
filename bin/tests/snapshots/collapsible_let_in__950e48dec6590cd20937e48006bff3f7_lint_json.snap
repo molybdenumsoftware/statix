@@ -32,7 +32,8 @@ in
             }
           },
           "message": "This `let in` expression contains a nested `let in` expression",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false
         },
         {
           "at": {
@@ -58,7 +59,8 @@ in
               }
             },
             "fix": ""
-          }
+          },
+          "fixable": true
         }
       ]
     }

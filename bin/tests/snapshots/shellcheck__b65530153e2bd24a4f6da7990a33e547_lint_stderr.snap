@@ -1,0 +1,14 @@
+---
+source: bin/tests/shellcheck.rs
+---
+pkgs.writeShellApplication { name = "x"; text = ''
+  rm -rf "$DIR"/*
+''; }
+---
+[shellcheck] Warning: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:2:10 ]
+   │
+ 2 │   rm -rf "$DIR"/*
+   │          ────┬───  
+   │              ╰───── SC2115: Use "${var:?}" to ensure this never expands to /* .
+───╯

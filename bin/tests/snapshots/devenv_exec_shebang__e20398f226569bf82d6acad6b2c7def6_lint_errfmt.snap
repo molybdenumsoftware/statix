@@ -1,0 +1,6 @@
+---
+source: bin/tests/devenv_exec_shebang.rs
+---
+{ config.tasks."app:setup".exec = "#!/bin/sh\necho hi"; }
+---
+<temp_file_path>>1:35:W:24:[devenv_exec_shebang] devenv runs `tasks.<name>.exec` with bash, this shebang is ignored; set `package` to choose the interpreter

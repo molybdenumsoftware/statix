@@ -1,3 +1,5 @@
+pub mod cache;
+pub mod changed;
 pub mod config;
 pub mod dirs;
 pub mod dump;

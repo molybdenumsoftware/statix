@@ -1,0 +1,10 @@
+---
+source: bin/tests/devenv_pre_commit.rs
+---
+{ pre-commit = { hooks.nixfmt.enable = true; }; }
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1 +1 @@
+-{ pre-commit = { hooks.nixfmt.enable = true; }; }
++{ git-hooks = { hooks.nixfmt.enable = true; }; }

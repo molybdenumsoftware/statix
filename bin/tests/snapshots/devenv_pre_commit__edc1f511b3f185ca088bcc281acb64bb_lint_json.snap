@@ -1,0 +1,5 @@
+---
+source: bin/tests/devenv_pre_commit.rs
+---
+{ perSystem = { pre-commit.settings.hooks.nixfmt.enable = true; }; }
+---

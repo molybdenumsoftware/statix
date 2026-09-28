@@ -1,0 +1,5 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ description = "echo $1"; }
+---

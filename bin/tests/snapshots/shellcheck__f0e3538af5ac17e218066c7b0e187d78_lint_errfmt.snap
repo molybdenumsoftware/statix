@@ -1,0 +1,9 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ config = mkIf cfg.enable { systemd.services.${name}.preStart = ''
+  rm -rf $CACHE/*
+''; }; }
+---
+<temp_file_path>>2:10:W:28:[shellcheck] SC2115: Use "${var:?}" to ensure this never expands to /* .
+<temp_file_path>>2:10:W:28:[shellcheck] SC2086: Double quote to prevent globbing and word splitting.

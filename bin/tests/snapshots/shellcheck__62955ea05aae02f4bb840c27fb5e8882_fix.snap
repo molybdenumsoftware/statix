@@ -1,0 +1,10 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ tasks."app:run".exec = "${pkgs.hello}/bin/hello $ARGS"; }
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1 +1 @@
+-{ tasks."app:run".exec = "${pkgs.hello}/bin/hello $ARGS"; }
++{ tasks."app:run".exec = "${pkgs.hello}/bin/hello \"$ARGS\""; }
