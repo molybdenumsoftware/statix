@@ -1,0 +1,8 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.py.exec = ''
+  #!/usr/bin/env python3
+  print($1)
+''; }
+---

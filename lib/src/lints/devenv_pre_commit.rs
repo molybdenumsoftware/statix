@@ -71,7 +71,10 @@ impl Rule for DevenvPreCommit {
             return None;
         }
 
-        let attr = apv.attrpath()?.attrs().nth(index - (path.len() - own_len))?;
+        let attr = apv
+            .attrpath()?
+            .attrs()
+            .nth(index - (path.len() - own_len))?;
         let at = attr.syntax().text_range();
         let replacement = make::ident("git-hooks");
         Some(self.report().suggest(

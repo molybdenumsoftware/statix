@@ -36,7 +36,8 @@ let b = 0; in (b)
               }
             },
             "fix": "b"
-          }
+          },
+          "fixable": true
         }
       ]
     }

@@ -27,7 +27,8 @@ source: bin/tests/devenv_exec_shebang.rs
             }
           },
           "message": "devenv runs `processes.<name>.exec` with bash, this shebang is ignored; set `package` to choose the interpreter",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false
         }
       ]
     }

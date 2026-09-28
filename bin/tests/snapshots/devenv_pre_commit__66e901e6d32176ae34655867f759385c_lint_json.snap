@@ -36,7 +36,8 @@ source: bin/tests/devenv_pre_commit.rs
               }
             },
             "fix": "git-hooks"
-          }
+          },
+          "fixable": true
         }
       ]
     }

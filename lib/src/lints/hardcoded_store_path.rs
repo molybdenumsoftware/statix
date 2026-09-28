@@ -62,9 +62,13 @@ impl Rule for HardcodedStorePath {
                 start + TextSize::try_from(i).ok()?,
                 TextSize::try_from(len).ok()?,
             );
-            report = report.diagnostic(
+            report = report.diagnostic_with_help(
                 at,
                 "Hardcoded store path, interpolate the package instead (e.g. `${pkgs.hello}`)",
+                "Replace `/nix/store/<hash>-<name>-<version>` with the package that builds it, \
+e.g. `${pkgs.hello}` for `...-hello-2.12.1`; the name after the hash tells which one. \
+Keep the rest of the path (`/bin/hello`) as it is."
+                    .to_string(),
             );
         }
         (!report.diagnostics.is_empty()).then_some(report)

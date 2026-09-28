@@ -24,7 +24,9 @@ source: bin/tests/hardcoded_store_path.rs
             }
           },
           "message": "Hardcoded store path, interpolate the package instead (e.g. `${pkgs.hello}`)",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false,
+          "help": "Replace `/nix/store/<hash>-<name>-<version>` with the package that builds it, e.g. `${pkgs.hello}` for `...-hello-2.12.1`; the name after the hash tells which one. Keep the rest of the path (`/bin/hello`) as it is."
         }
       ]
     }

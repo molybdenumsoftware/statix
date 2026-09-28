@@ -11,6 +11,7 @@ use crate::{
 
 fn collect_fixes(source: &str, lints: &LintMap) -> Result<Vec<Report>, ParseError> {
     let parsed = Root::parse(source).ok()?;
+    lib::prefetch(parsed.syntax());
 
     Ok(parsed
         .syntax()
@@ -83,9 +84,13 @@ impl<'a> Iterator for FixResult<'a> {
     }
 }
 
-pub fn all_with<'a>(src: &'a str, lints: &'a LintMap) -> Option<FixResult<'a>> {
-    let src = Cow::from(src);
-    let _ = Root::parse(&src).ok().ok()?;
-    let initial = FixResult::empty(src, lints);
-    initial.into_iter().last()
+/// One fix pass: `src` with all non-overlapping suggestions applied, `None`
+/// when there are none (or `src` doesn't parse).
+pub fn pass(src: &str, lints: &LintMap) -> Option<String> {
+    FixResult::empty(Cow::Borrowed(src), lints)
+        .next()
+        .map(|r| r.src.into_owned())
 }
+
+/// Most fix passes per file, in case fixes keep undoing each other.
+pub const MAX_PASSES: usize = 25;

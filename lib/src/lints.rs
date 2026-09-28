@@ -22,5 +22,8 @@ lints! {
     devenv_exec_shebang,
     devenv_pre_commit,
     hardcoded_store_path,
-    impure_host_path
+    impure_host_path,
+    shellcheck,
+    ruff,
+    script_file
 }

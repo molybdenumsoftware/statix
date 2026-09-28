@@ -1,0 +1,64 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ tasks."a:b".exec = ''
+  read name
+  export VERSION=$(${pkgs.git}/bin/git describe)
+  echo "$name $VERSION"
+''; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 3
+            },
+            "to": {
+              "line": 2,
+              "column": 7
+            }
+          },
+          "message": "SC2162: read without -r will mangle backslashes.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 22
+              },
+              "to": {
+                "line": 5,
+                "column": 3
+              }
+            },
+            "fix": "''\n  read -r name\n  export VERSION\n  VERSION=$(${pkgs.git}/bin/git describe)\n  echo \"$name $VERSION\"\n''"
+          },
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 10
+            },
+            "to": {
+              "line": 3,
+              "column": 17
+            }
+          },
+          "message": "SC2155: Declare and assign separately to avoid masking return values.",
+          "suggestion": null,
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

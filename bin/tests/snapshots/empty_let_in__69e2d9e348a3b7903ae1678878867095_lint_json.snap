@@ -28,7 +28,8 @@ null
             }
           },
           "message": "This let-in expression has no entries",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false
         }
       ]
     }

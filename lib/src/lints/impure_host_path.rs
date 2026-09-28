@@ -32,6 +32,12 @@ struct ImpureHostPath;
 
 const HOST_PATHS: &[&str] = &["/usr/local/", "/opt/homebrew/", "/usr/bin/", "/bin/bash"];
 
+const HELP: &str = "If it's a program, use it from nixpkgs: `${pkgs.jq}/bin/jq` or `${lib.getExe pkgs.jq}` \
+(in devenv, adding the package to `packages` and calling it by name also works). \
+If it's where files are read or written, use a location the project owns, like `$DEVENV_ROOT`, \
+`$DEVENV_STATE` or a path passed in as an argument. \
+Don't just swap in another host path such as `/tmp`, and keep what the code does the same.";
+
 fn is_path_char(c: u8) -> bool {
     // `@out@/usr/bin`, `{bash}/bin/bash` are prefixed paths too
     c.is_ascii_alphanumeric() || b"/._-+@}".contains(&c)
@@ -85,9 +91,10 @@ impl Rule for ImpureHostPath {
                 start + TextSize::try_from(i).ok()?,
                 TextSize::try_from(len).ok()?,
             );
-            report = report.diagnostic(
+            report = report.diagnostic_with_help(
                 at,
                 format!("`{host}` depends on the host system, use a package from nixpkgs instead"),
+                HELP.to_string(),
             );
         }
         (!report.diagnostics.is_empty()).then_some(report)

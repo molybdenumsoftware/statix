@@ -1,0 +1,17 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.py.exec = ''
+  #!/usr/bin/env python3
+  print($1)
+''; }
+---
+[devenv_exec_shebang] Warning: Shebang in devenv `exec` is ignored
+   ╭─[ <temp_file_path>:1:21 ]
+   │
+ 1 │ ╭─▶ { scripts.py.exec = ''
+   ┆ ┆   
+ 4 │ ├─▶ ''; }
+   │ │           
+   │ ╰─────────── devenv runs scripts.<name>.exec with bash, this shebang is ignored; set package to choose the interpreter
+───╯

@@ -3,7 +3,7 @@ use crate::{Metadata, Report, Rule, utils};
 use macros::lint;
 use rnix::{
     NodeOrToken, SyntaxElement, SyntaxKind,
-    ast::{AttrSet, AttrpathValue, Expr, HasEntry as _, InterpolPart},
+    ast::{AttrpathValue, Expr, InterpolPart},
 };
 use rowan::ast::AstNode as _;
 
@@ -47,8 +47,6 @@ use rowan::ast::AstNode as _;
 )]
 struct DevenvExecShebang;
 
-const SHELL_PACKAGES: &[&str] = &["bash", "bashInteractive"];
-
 impl Rule for DevenvExecShebang {
     fn validate(&self, node: &SyntaxElement) -> Option<Report> {
         let NodeOrToken::Node(node) = node else {
@@ -76,7 +74,10 @@ impl Rule for DevenvExecShebang {
         if !first_line.trim_start().starts_with("#!") {
             return None;
         }
-        if has_non_shell_package(&apv) {
+        let non_shell = utils::sibling_package(&apv).is_some_and(|p| {
+            !["bash", "bashInteractive"].contains(&p.trim().rsplit('.').next().unwrap_or(""))
+        });
+        if non_shell {
             return None;
         }
 
@@ -88,30 +89,4 @@ impl Rule for DevenvExecShebang {
                 .diagnostic(value.syntax().text_range(), message),
         )
     }
-}
-
-/// Is there a sibling `package = pkgs.<not bash>;` next to this `exec`?
-fn has_non_shell_package(exec: &AttrpathValue) -> bool {
-    let Some(exec_keys) = exec.attrpath().map(|p| p.attrs().filter_map(|a| utils::attr_name(&a)).collect::<Vec<_>>()) else {
-        return false;
-    };
-    let Some(set) = exec.syntax().parent().and_then(AttrSet::cast) else {
-        return false;
-    };
-    let mut package_keys = exec_keys;
-    package_keys.pop();
-    package_keys.push("package".into());
-
-    set.attrpath_values().any(|sibling| {
-        let keys: Vec<_> = sibling
-            .attrpath()
-            .map(|p| p.attrs().filter_map(|a| utils::attr_name(&a)).collect())
-            .unwrap_or_default();
-        let Some(value) = sibling.value() else {
-            return false;
-        };
-        let value = value.syntax().to_string();
-        let last = value.trim().rsplit('.').next().unwrap_or_default();
-        keys == package_keys && !SHELL_PACKAGES.contains(&last)
-    })
 }
