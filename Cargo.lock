@@ -426,10 +426,12 @@ version = "0.0.0"
 dependencies = [
  "lazy_static",
  "macros",
+ "rayon",
  "rnix",
  "rowan",
  "serde",
  "serde_json",
+ "tempfile",
 ]
 
 [[package]]

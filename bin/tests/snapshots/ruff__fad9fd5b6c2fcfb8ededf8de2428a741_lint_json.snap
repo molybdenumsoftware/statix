@@ -1,0 +1,63 @@
+---
+source: bin/tests/ruff.rs
+---
+pkgs.writers.writePython3Bin "hello" { } ''
+  import os
+  print("hello")
+''
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "ruff",
+      "note": "ruff found issues in an inline Python script",
+      "code": 29,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 3
+            },
+            "to": {
+              "line": 2,
+              "column": 12
+            }
+          },
+          "message": "I001: Import block is un-sorted or un-formatted",
+          "suggestion": null,
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 10
+            },
+            "to": {
+              "line": 2,
+              "column": 12
+            }
+          },
+          "message": "F401: `os` imported but unused",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 42
+              },
+              "to": {
+                "line": 4,
+                "column": 3
+              }
+            },
+            "fix": "''\n  print(\"hello\")\n''"
+          },
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

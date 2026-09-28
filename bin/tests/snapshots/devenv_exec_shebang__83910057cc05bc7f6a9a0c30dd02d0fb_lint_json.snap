@@ -1,0 +1,36 @@
+---
+source: bin/tests/devenv_exec_shebang.rs
+---
+{ processes = { web = { exec = ''
+  #!/usr/bin/env bash
+  serve
+''; }; }; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "devenv_exec_shebang",
+      "note": "Shebang in devenv `exec` is ignored",
+      "code": 24,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 32
+            },
+            "to": {
+              "line": 4,
+              "column": 3
+            }
+          },
+          "message": "devenv runs `processes.<name>.exec` with bash, this shebang is ignored; set `package` to choose the interpreter",
+          "suggestion": null,
+          "fixable": false
+        }
+      ]
+    }
+  ]
+}

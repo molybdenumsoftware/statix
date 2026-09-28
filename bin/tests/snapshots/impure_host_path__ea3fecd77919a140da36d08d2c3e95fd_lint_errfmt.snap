@@ -1,0 +1,12 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+''
+  #!/bin/bash
+  /opt/homebrew/bin/brew install x
+  /usr/bin/python3 -V
+''
+---
+<temp_file_path>>2:5:W:27:[impure_host_path] `/bin/bash` depends on the host system, use a package from nixpkgs instead
+<temp_file_path>>3:3:W:27:[impure_host_path] `/opt/homebrew/` depends on the host system, use a package from nixpkgs instead
+<temp_file_path>>4:3:W:27:[impure_host_path] `/usr/bin/` depends on the host system, use a package from nixpkgs instead

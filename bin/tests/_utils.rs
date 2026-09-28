@@ -7,7 +7,10 @@ pub fn test_cli(expression: &str, args: &[&str]) -> anyhow::Result<String> {
     let mut fixture = NamedTempFile::with_suffix(".nix")?;
     fixture.write_all(expression.as_bytes())?;
 
+    let home = tempfile::tempdir()?;
     let output = Command::new(env!("CARGO_BIN_EXE_statix"))
+        .env("HOME", home.path())
+        .env("XDG_CONFIG_HOME", home.path())
         .args(args)
         .arg(fixture.path())
         .output()?;

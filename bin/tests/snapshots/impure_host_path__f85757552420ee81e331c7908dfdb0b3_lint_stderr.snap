@@ -1,0 +1,12 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+"/usr/local/bin/jq . data.json"
+---
+[impure_host_path] Warning: Found path outside the Nix store
+   ╭─[ <temp_file_path>:1:2 ]
+   │
+ 1 │ "/usr/local/bin/jq . data.json"
+   │  ────────┬────────  
+   │          ╰────────── /usr/local/ depends on the host system, use a package from nixpkgs instead
+───╯

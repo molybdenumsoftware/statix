@@ -1,0 +1,14 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ enterShell = ''
+  echo ''${GREETING}
+''; }
+---
+[shellcheck] Advice: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:2:8 ]
+   │
+ 2 │   echo ''${GREETING}
+   │        ──────┬──────  
+   │              ╰──────── SC2086: Double quote to prevent globbing and word splitting.
+───╯

@@ -1,0 +1,20 @@
+---
+source: bin/tests/shellcheck.rs
+---
+stdenv.mkDerivation { installPhase = ''
+  mkdir -p $out/bin
+  cp $src/tool $out/bin/
+''; }
+---
+[shellcheck] Advice: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:2:12 ]
+   │
+ 2 │   mkdir -p $out/bin
+   │            ──┬─  
+   │              ╰─── SC2086: Double quote to prevent globbing and word splitting.
+ 3 │   cp $src/tool $out/bin/
+   │      ──┬─      ──┬─  
+   │        ╰───────────── SC2086: Double quote to prevent globbing and word splitting.
+   │                  │   
+   │                  ╰─── SC2086: Double quote to prevent globbing and word splitting.
+───╯

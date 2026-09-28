@@ -1,0 +1,5 @@
+---
+source: bin/tests/script_file.rs
+expression: "fs::read_to_string(root.join(\"scripts/report.py\")).unwrap()"
+---
+print('report')

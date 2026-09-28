@@ -1,0 +1,53 @@
+---
+source: bin/tests/ruff.rs
+---
+pkgs.writeScript "x" ''
+  #!${pkgs.python3}/bin/python3
+  x == 1
+''
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "ruff",
+      "note": "ruff found issues in an inline Python script",
+      "code": 29,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 3
+            },
+            "to": {
+              "line": 3,
+              "column": 9
+            }
+          },
+          "message": "B015: Pointless comparison. Did you mean to assign a value? Otherwise, prepend `assert` or remove it.",
+          "suggestion": null,
+          "fixable": false,
+          "help": "See https://docs.astral.sh/ruff/rules/useless-comparison"
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 3
+            },
+            "to": {
+              "line": 3,
+              "column": 4
+            }
+          },
+          "message": "F821: Undefined name `x`",
+          "suggestion": null,
+          "fixable": false,
+          "help": "See https://docs.astral.sh/ruff/rules/undefined-name"
+        }
+      ]
+    }
+  ]
+}
