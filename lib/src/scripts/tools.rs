@@ -211,3 +211,21 @@ pub fn ruff_fix(script: &str, filename: Option<&Path>) -> Option<String> {
     let fixed = String::from_utf8(run("STATIX_RUFF", "ruff", &args, script)?).ok()?;
     (!fixed.is_empty() && fixed != script).then_some(fixed)
 }
+
+/// `--version` of shellcheck and ruff (and which binaries), empty when missing.
+pub fn versions() -> String {
+    let version = |env: &str, program: &str| {
+        let stdout = run(env, program, &[OsStr::new("--version")], "").unwrap_or_default();
+        format!(
+            "{}={}:{}",
+            program,
+            std::env::var(env).unwrap_or_default(),
+            String::from_utf8_lossy(&stdout).trim()
+        )
+    };
+    format!(
+        "{} {}",
+        version("STATIX_SHELLCHECK", "shellcheck"),
+        version("STATIX_RUFF", "ruff")
+    )
+}

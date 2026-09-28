@@ -67,14 +67,45 @@ pub mod main {
         scripts: Vec<(std::path::PathBuf, lib::Lang, lib::Kind)>,
     }
 
+    /// Fix the script files `fixed` refer to, each once, in parallel.
+    fn fix_referenced(fixed: Vec<Outcome>, out: FixOut) -> Result<(), FixErr> {
+        use rayon::prelude::*;
+
+        let mut scripts: Vec<_> = fixed.into_iter().flat_map(|f| f.scripts).collect();
+        scripts.sort_by(|a, b| a.0.cmp(&b.0));
+        scripts.dedup_by(|a, b| a.0 == b.0);
+        let diffs: Vec<_> = scripts
+            .par_iter()
+            .map(|(path, lang, kind)| -> Result<_, FixErr> {
+                let Ok(old) = std::fs::read_to_string(path) else {
+                    return Ok(None);
+                };
+                let Some(new) = lib::fix_text(*lang, *kind, &old, Some(path)) else {
+                    return Ok(None);
+                };
+                if matches!(out, FixOut::Write) {
+                    std::fs::write(path, &new).map_err(FixErr::InvalidPath)?;
+                }
+                Ok(Some((path, old, new)))
+            })
+            .collect::<Result<_, _>>()?;
+        if matches!(out, FixOut::Diff) {
+            for (path, old, new) in diffs.into_iter().flatten() {
+                print_diff(path, &old, &new);
+            }
+        }
+        Ok(())
+    }
+
     pub fn all(fix_config: &FixConfig) -> Result<(), StatixErr> {
         use rayon::prelude::*;
 
         let conf_file = ConfFile::discover(&fix_config.conf_path)?;
-        let vfs = fix_config.vfs(conf_file.ignore.as_slice())?;
-        let out = fix_config.out();
-
         let lints = conf_file.lints();
+        let use_cache = !fix_config.no_cache && !fix_config.streaming;
+        let mut cache = crate::cache::Cache::open(&lints, &conf_file, use_cache);
+        let vfs = fix_config.vfs(conf_file.ignore.as_slice(), cache.as_ref())?;
+        let out = fix_config.out();
         let fix_scripts = lints.values().flatten().any(|l| l.name() == "script_file");
         // `script_file` only reports; referenced scripts are fixed below.
         let mut nix_lints = lints.clone();
@@ -85,7 +116,20 @@ pub mod main {
         // 1. Nix files: all files do one fix pass in parallel, then every
         // script the pass produced is checked in batches across files, and
         // again until no file changes.
-        let entries: Vec<_> = vfs.iter().collect();
+        // Files without findings last time, unchanged since, need no fixing.
+        let entries: Vec<_> = vfs
+            .par_iter()
+            .filter(|e| {
+                cache
+                    .as_ref()
+                    .is_none_or(|c| !c.is_clean(e.file_path, e.contents))
+            })
+            .collect();
+        if !entries.is_empty()
+            && let Some(cache) = cache.as_mut()
+        {
+            cache.load_scripts();
+        }
         let mut current: Vec<Option<String>> = vec![None; entries.len()];
         let mut active: Vec<usize> = (0..entries.len()).collect();
         let check_scripts = lints.values().flatten().any(|l| l.name() == "shellcheck");
@@ -154,28 +198,11 @@ pub mod main {
         }
 
         // 2. Script files they refer to, each once, in parallel
-        let mut scripts: Vec<_> = fixed.into_iter().flat_map(|f| f.scripts).collect();
-        scripts.sort_by(|a, b| a.0.cmp(&b.0));
-        scripts.dedup_by(|a, b| a.0 == b.0);
-        let diffs: Vec<_> = scripts
-            .par_iter()
-            .map(|(path, lang, kind)| -> Result<_, FixErr> {
-                let Ok(old) = std::fs::read_to_string(path) else {
-                    return Ok(None);
-                };
-                let Some(new) = lib::fix_text(*lang, *kind, &old, Some(path)) else {
-                    return Ok(None);
-                };
-                if matches!(out, FixOut::Write) {
-                    std::fs::write(path, &new).map_err(FixErr::InvalidPath)?;
-                }
-                Ok(Some((path, old, new)))
-            })
-            .collect::<Result<_, _>>()?;
-        if matches!(out, FixOut::Diff) {
-            for (path, old, new) in diffs.into_iter().flatten() {
-                print_diff(path, &old, &new);
-            }
+        fix_referenced(fixed, out)?;
+
+        // checker results for the scripts (clean files are recorded by check)
+        if let Some(cache) = cache {
+            cache.save();
         }
         Ok(())
     }

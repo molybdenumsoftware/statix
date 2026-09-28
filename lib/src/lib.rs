@@ -6,8 +6,9 @@ mod utils;
 
 pub use lints::LINTS;
 pub use scripts::{
-    Kind, Lang, fix_text, nixstr::NIX_ESCAPING, prefetch, prefetch_scripts, referenced_files,
-    shell_scripts, with_current_file,
+    Kind, Lang, StoredScript, content_hash, export_script_cache, fix_text, import_script_cache,
+    nixstr::NIX_ESCAPING, prefetch, prefetch_scripts, referenced_files, script_cache_changed,
+    shell_scripts, tool_versions, with_current_file,
 };
 
 use rnix::{ParseError, SyntaxElement, SyntaxKind, TextRange};

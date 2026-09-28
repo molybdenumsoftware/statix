@@ -62,6 +62,7 @@ pub mod main {
 
     use super::{lint_with, prefetch};
     use crate::{
+        cache::Cache,
         config::{Check as CheckConfig, ConfFile},
         err::StatixErr,
         traits::WriteDiagnostic,
@@ -72,26 +73,69 @@ pub mod main {
     pub fn main(check_config: &CheckConfig) -> Result<(), StatixErr> {
         let conf_file = ConfFile::discover(&check_config.conf_path)?;
         let lints = conf_file.lints();
+        let use_cache = !check_config.no_cache && !check_config.streaming;
+        let mut cache = Cache::open(&lints, &conf_file, use_cache);
 
-        let vfs = check_config.vfs(conf_file.ignore.as_slice())?;
+        let vfs = check_config.vfs(conf_file.ignore.as_slice(), cache.as_ref())?;
 
-        let mut stdout = io::stdout();
-        let sources: Vec<_> = vfs.iter().map(|e| (e.file_path, e.contents)).collect();
-        prefetch(&sources);
-        let lint = |vfs_entry| lint_with(&vfs_entry, &lints);
-        let results = vfs
+        // Files without findings last time, unchanged since, are skipped.
+        let entries: Vec<_> = vfs.iter().collect();
+        let stale: Vec<_> = entries
             .par_iter()
-            .map(lint)
-            .filter(|lr| !lr.reports.is_empty())
-            .collect::<Vec<_>>();
+            .filter(|e| {
+                cache
+                    .as_ref()
+                    .is_none_or(|c| !c.is_clean(e.file_path, e.contents))
+            })
+            .collect();
 
-        if !results.is_empty() {
-            for r in &results {
-                stdout.write(r, &vfs, check_config.format).unwrap();
+        if !stale.is_empty()
+            && let Some(cache) = cache.as_mut()
+        {
+            cache.load_scripts();
+        }
+        let sources: Vec<_> = stale.iter().map(|e| (e.file_path, e.contents)).collect();
+        prefetch(&sources);
+        let results: Vec<_> = stale
+            .par_iter()
+            .map(|entry| {
+                let result = lint_with(entry, &lints);
+                let refs = cache.is_some().then(|| {
+                    lib::referenced_files(entry.contents, entry.file_path)
+                        .into_iter()
+                        .map(|(path, _, _)| path)
+                        .collect::<Vec<_>>()
+                });
+                (entry, result, refs)
+            })
+            .collect();
+
+        if let Some(cache) = cache.as_mut() {
+            for entry in &entries {
+                cache.touch(entry.file_path);
             }
-            std::process::exit(1);
+            for (entry, result, refs) in &results {
+                let clean = result.reports.is_empty();
+                cache.record(
+                    entry.file_path,
+                    entry.contents,
+                    refs.clone().unwrap_or_default(),
+                    clean,
+                );
+            }
+        }
+        if let Some(cache) = cache {
+            cache.save();
         }
 
-        std::process::exit(0);
+        let mut stdout = io::stdout();
+        let failed: Vec<_> = results
+            .iter()
+            .filter(|(_, r, _)| !r.reports.is_empty())
+            .collect();
+        for (_, r, _) in &failed {
+            stdout.write(r, &vfs, check_config.format).unwrap();
+        }
+        std::process::exit(i32::from(!failed.is_empty()));
     }
 }

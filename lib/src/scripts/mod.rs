@@ -38,7 +38,9 @@ pub enum Kind {
     Fragment,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, serde::Serialize, serde::Deserialize,
+)]
 pub enum Level {
     Info,
     Warning,
@@ -46,7 +48,7 @@ pub enum Level {
 }
 
 /// A checker finding in 1-based coordinates of the checked text.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Finding {
     pub line: usize,
     pub column: usize,
@@ -108,7 +110,8 @@ pub fn current_dir() -> Option<PathBuf> {
 
 /// Raw checker findings (before noise filtering, which depends on where the
 /// script is used), shared by all files and fix passes. Keyed by language,
-/// the text, and for ruff the directory its configuration is found from.
+/// a hash of the text, and for ruff the directory its configuration is found
+/// from. Can be saved and loaded between runs ([`export_script_cache`]).
 type CacheKey = (Lang, String, Option<PathBuf>);
 
 fn cache() -> &'static Mutex<HashMap<CacheKey, Arc<Vec<Finding>>>> {
@@ -116,24 +119,132 @@ fn cache() -> &'static Mutex<HashMap<CacheKey, Arc<Vec<Finding>>>> {
     CACHE.get_or_init(Default::default)
 }
 
+/// Hex SHA-256 of `bytes`.
+#[must_use]
+pub fn content_hash(bytes: &[u8]) -> String {
+    use sha2::{Digest, Sha256};
+    hex::encode(Sha256::digest(bytes))
+}
+
 fn cache_key(lang: Lang, text: &str, filename: Option<&Path>) -> CacheKey {
     let dir = match lang {
         Lang::Python => filename.and_then(Path::parent).map(Path::to_path_buf),
         Lang::Shell(_) => None,
     };
-    (lang, text.to_string(), dir)
+    (lang, content_hash(text.as_bytes()), dir)
+}
+
+/// Keys looked up or added in this process, to keep when saving.
+fn used() -> &'static Mutex<std::collections::HashSet<CacheKey>> {
+    static USED: OnceLock<Mutex<std::collections::HashSet<CacheKey>>> = OnceLock::new();
+    USED.get_or_init(Default::default)
 }
 
 fn cached(key: &CacheKey) -> Option<Arc<Vec<Finding>>> {
-    cache().lock().ok()?.get(key).cloned()
+    let found = cache().lock().ok()?.get(key).cloned()?;
+    if let Ok(mut used) = used().lock() {
+        used.insert(key.clone());
+    }
+    Some(found)
+}
+
+/// Whether checkers ran in this process, i.e. there are new results to save.
+static CHECKED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// Whether any checker ran in this process (see [`export_script_cache`]).
+#[must_use]
+pub fn script_cache_changed() -> bool {
+    CHECKED.load(std::sync::atomic::Ordering::Relaxed)
 }
 
 fn remember(key: CacheKey, findings: Vec<Finding>) -> Arc<Vec<Finding>> {
+    CHECKED.store(true, std::sync::atomic::Ordering::Relaxed);
     let findings = Arc::new(findings);
+    if let Ok(mut used) = used().lock() {
+        used.insert(key.clone());
+    }
     if let Ok(mut cache) = cache().lock() {
         cache.insert(key, Arc::clone(&findings));
     }
     findings
+}
+
+/// Most saved script results; beyond it only those used in this run are kept.
+const MAX_SAVED_SCRIPTS: usize = 100_000;
+
+/// Checker findings for one script, as stored between runs.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct StoredScript {
+    /// `bash`, `sh`, `dash`, `ksh` or `python`
+    pub lang: String,
+    /// [`content_hash`] of the script
+    pub hash: String,
+    /// ruff's configuration directory
+    pub dir: Option<PathBuf>,
+    pub findings: Vec<Finding>,
+}
+
+fn lang_name(lang: Lang) -> &'static str {
+    match lang {
+        Lang::Shell(shell) => shell,
+        Lang::Python => "python",
+    }
+}
+
+fn lang_from_name(name: &str) -> Option<Lang> {
+    Some(match name {
+        "bash" => Lang::Shell("bash"),
+        "sh" => Lang::Shell("sh"),
+        "dash" => Lang::Shell("dash"),
+        "ksh" => Lang::Shell("ksh"),
+        "python" => Lang::Python,
+        _ => return None,
+    })
+}
+
+/// All checker results of this process, to save for the next run.
+#[must_use]
+pub fn export_script_cache() -> Vec<StoredScript> {
+    let (Ok(cache), Ok(used)) = (cache().lock(), used().lock()) else {
+        return Vec::new();
+    };
+    let unused_budget = MAX_SAVED_SCRIPTS.saturating_sub(used.len());
+    let unused = cache
+        .iter()
+        .filter(|(k, _)| !used.contains(*k))
+        .take(unused_budget);
+    cache
+        .iter()
+        .filter(|(k, _)| used.contains(*k))
+        .chain(unused)
+        .map(|((lang, hash, dir), findings)| StoredScript {
+            lang: lang_name(*lang).to_string(),
+            hash: hash.clone(),
+            dir: dir.clone(),
+            findings: findings.as_ref().clone(),
+        })
+        .collect()
+}
+
+/// Load checker results of an earlier run.
+pub fn import_script_cache(scripts: Vec<StoredScript>) {
+    let Ok(mut cache) = cache().lock() else {
+        return;
+    };
+    for s in scripts {
+        if let Some(lang) = lang_from_name(&s.lang) {
+            cache
+                .entry((lang, s.hash, s.dir))
+                .or_insert_with(|| Arc::new(s.findings));
+        }
+    }
+}
+
+/// `--version` output of the checkers, part of what decides whether saved
+/// results are still valid.
+#[must_use]
+pub fn tool_versions() -> String {
+    tools::versions()
 }
 
 fn raw_findings(lang: Lang, text: &str, filename: Option<&Path>) -> Option<Arc<Vec<Finding>>> {

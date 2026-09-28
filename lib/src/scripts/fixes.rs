@@ -1,11 +1,11 @@
 //! Fixes for shellcheck findings that ship without one, and hints for the
 //! ones that need a human (or an agent) to decide.
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// One edit in 1-based shellcheck coordinates of the rendered script
 /// (`end_*` exclusive), same shape as shellcheck's `json1` replacements.
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Change {
     pub line: usize,

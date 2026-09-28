@@ -36,10 +36,12 @@ pub enum SubCommand {
 }
 
 #[derive(Parser, Debug)]
+#[allow(clippy::struct_excessive_bools)] // command line flags
 pub struct Check {
-    /// File or directory to run check on
+    /// Files or directories to run check on. For script files (`.sh`,
+    /// `.py`...), the `.nix` files under `.` that refer to them are checked.
     #[clap(default_value = ".")]
-    target: PathBuf,
+    targets: Vec<PathBuf>,
 
     /// Globs of file patterns to skip
     #[clap(short, long)]
@@ -48,6 +50,19 @@ pub struct Check {
     /// Don't respect .gitignore files
     #[clap(short, long)]
     unrestricted: bool,
+
+    /// Don't use or update the results cache (`$XDG_CACHE_HOME/statix`)
+    #[clap(long)]
+    pub no_cache: bool,
+
+    /// Only files changed since REF (default HEAD), including staged,
+    /// unstaged and untracked changes. Needs git.
+    #[clap(long, value_name = "REF", num_args = 0..=1, default_missing_value = "HEAD")]
+    pub changed: Option<String>,
+
+    /// Only staged files. Needs git.
+    #[clap(long)]
+    pub staged: bool,
 
     /// Output format.
     /// Supported values: stderr, errfmt, json, agent
@@ -64,7 +79,11 @@ pub struct Check {
 }
 
 impl Check {
-    pub fn vfs(&self, extra_ignores: &[String]) -> Result<ReadOnlyVfs, ConfigErr> {
+    pub fn vfs(
+        &self,
+        extra_ignores: &[String],
+        cache: Option<&crate::cache::Cache>,
+    ) -> Result<ReadOnlyVfs, ConfigErr> {
         if self.streaming {
             use std::io::{self, BufRead};
             let src = io::stdin()
@@ -76,18 +95,24 @@ impl Check {
             Ok(ReadOnlyVfs::singleton("<stdin>", src.as_bytes()))
         } else {
             let all_ignores = [self.ignore.as_slice(), extra_ignores].concat();
-            dirs::check_path_exists(&self.target)?;
-            let files = dirs::walk_nix_files(&self.target, &all_ignores, self.unrestricted)?;
-            Ok(vfs(&files.collect::<Vec<_>>()))
+            let targets = if self.staged || self.changed.is_some() {
+                crate::changed::changed_files(self.changed.as_deref(), self.staged)?
+            } else {
+                self.targets.clone()
+            };
+            let files = nix_files_for(&targets, &all_ignores, self.unrestricted, cache)?;
+            Ok(vfs(&files))
         }
     }
 }
 
 #[derive(Parser, Debug)]
+#[allow(clippy::struct_excessive_bools)] // command line flags
 pub struct Fix {
-    /// File or directory to run fix on
+    /// Files or directories to run fix on. For script files (`.sh`,
+    /// `.py`...), the `.nix` files under `.` that refer to them are fixed.
     #[clap(default_value = ".")]
-    target: PathBuf,
+    targets: Vec<PathBuf>,
 
     /// Globs of file patterns to skip
     #[clap(short, long)]
@@ -96,6 +121,19 @@ pub struct Fix {
     /// Don't respect .gitignore files
     #[clap(short, long)]
     unrestricted: bool,
+
+    /// Don't use or update the results cache (`$XDG_CACHE_HOME/statix`)
+    #[clap(long)]
+    pub no_cache: bool,
+
+    /// Only files changed since REF (default HEAD), including staged,
+    /// unstaged and untracked changes. Needs git.
+    #[clap(long, value_name = "REF", num_args = 0..=1, default_missing_value = "HEAD")]
+    pub changed: Option<String>,
+
+    /// Only staged files. Needs git.
+    #[clap(long)]
+    pub staged: bool,
 
     /// Do not fix files in place, display a diff instead
     #[clap(short, long = "dry-run")]
@@ -118,7 +156,11 @@ pub enum FixOut {
 }
 
 impl Fix {
-    pub fn vfs(&self, extra_ignores: &[String]) -> Result<ReadOnlyVfs, ConfigErr> {
+    pub fn vfs(
+        &self,
+        extra_ignores: &[String],
+        cache: Option<&crate::cache::Cache>,
+    ) -> Result<ReadOnlyVfs, ConfigErr> {
         if self.streaming {
             use std::io::{self, BufRead};
             let src = io::stdin()
@@ -130,9 +172,13 @@ impl Fix {
             Ok(ReadOnlyVfs::singleton("<stdin>", src.as_bytes()))
         } else {
             let all_ignores = [self.ignore.as_slice(), extra_ignores].concat();
-            dirs::check_path_exists(&self.target)?;
-            let files = dirs::walk_nix_files(&self.target, &all_ignores, self.unrestricted)?;
-            Ok(vfs(&files.collect::<Vec<_>>()))
+            let targets = if self.staged || self.changed.is_some() {
+                crate::changed::changed_files(self.changed.as_deref(), self.staged)?
+            } else {
+                self.targets.clone()
+            };
+            let files = nix_files_for(&targets, &all_ignores, self.unrestricted, cache)?;
+            Ok(vfs(&files))
         }
     }
 
@@ -352,10 +398,64 @@ impl FromStr for WarningCode {
     }
 }
 
+/// The `.nix` files to process for `targets`: `.nix` files and directories as
+/// given, and for script files (e.g. changed files passed by a git hook) the
+/// `.nix` files under `.` that refer to them. `cache` knows what unchanged
+/// `.nix` files refer to, so they don't need to be read.
+fn nix_files_for(
+    targets: &[PathBuf],
+    ignores: &[String],
+    unrestricted: bool,
+    cache: Option<&crate::cache::Cache>,
+) -> Result<Vec<PathBuf>, ConfigErr> {
+    use rayon::prelude::*;
+    let mut files = Vec::new();
+    let mut scripts = Vec::new();
+    for target in targets {
+        dirs::check_path_exists(target)?;
+        if target.is_file() && target.extension().is_none_or(|e| e != "nix") {
+            scripts.extend(fs::canonicalize(target));
+        } else {
+            files.extend(dirs::walk_nix_files(target, ignores, unrestricted)?);
+        }
+    }
+    if !scripts.is_empty() {
+        let candidates: Vec<PathBuf> = dirs::walk_nix_files(".", ignores, unrestricted)?.collect();
+        files.par_extend(candidates.into_par_iter().filter(|nix| {
+            let refs = cache.and_then(|c| c.refs_if_unchanged(nix)).or_else(|| {
+                let src = fs::read_to_string(nix).ok()?;
+                Some(
+                    lib::referenced_files(&src, nix)
+                        .into_iter()
+                        .map(|(path, _, _)| path)
+                        .collect(),
+                )
+            });
+            refs.unwrap_or_default()
+                .iter()
+                .filter_map(|path| fs::canonicalize(path).ok())
+                .any(|path| scripts.contains(&path))
+        }));
+    }
+    if targets.len() > 1 || !scripts.is_empty() {
+        // `./a.nix` and `a.nix` are the same file
+        let normalized = |p: &Path| -> PathBuf {
+            p.components()
+                .filter(|c| !matches!(c, std::path::Component::CurDir))
+                .collect()
+        };
+        let mut seen = std::collections::HashSet::new();
+        files.retain(|f| seen.insert(normalized(f)));
+    }
+    Ok(files)
+}
+
 fn vfs(files: &[PathBuf]) -> vfs::ReadOnlyVfs {
+    use rayon::prelude::*;
+    let contents: Vec<_> = files.par_iter().map(fs::read_to_string).collect();
     let mut vfs = ReadOnlyVfs::default();
-    for file in files {
-        if let Ok(data) = fs::read_to_string(file) {
+    for (file, data) in files.iter().zip(contents) {
+        if let Ok(data) = data {
             let _id = vfs.alloc_file_id(file);
             vfs.set_file_contents(file, data.as_bytes());
         } else {

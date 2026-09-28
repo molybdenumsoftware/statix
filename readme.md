@@ -113,6 +113,29 @@ statix check /path/to/dir -o errfmt # singleline, easy to integrate with vim
 statix check /path/to/dir -o agent  # markdown with context and fix instructions, for coding agents
 ```
 
+### Only what changed
+
+```shell
+statix check a.nix b.nix scripts/x.sh  # several targets; a script checks the .nix files referring to it
+statix check --staged                  # staged files (git)
+statix check --changed                 # changed since HEAD, incl. unstaged and untracked (git)
+statix check --changed origin/main     # changed since a branch point
+```
+
+`statix fix` takes the same options.
+
+Results are cached between runs in `$XDG_CACHE_HOME/statix` (or
+`$STATIX_CACHE_DIR`): a file that had no findings is skipped until it or a
+script it refers to changes, and checker results are reused per script.
+The cache is dropped when statix, the enabled lints, `statix.toml` or the
+`shellcheck`/`ruff` versions change. Turn it off with `--no-cache` or
+`STATIX_NO_CACHE=1`.
+
+On all of nixpkgs (44k files, 12 cores): 22 s the first time, 6 s again
+(files with findings are re-checked), 0.3 s for one changed file, 0.14 s
+for `--staged`. `--changed` also lists untracked files, which costs git
+about a second on a repository that size.
+
 ### Scripts in and next to Nix code
 
 Three lints check scripts with [ShellCheck](https://www.shellcheck.net)

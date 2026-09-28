@@ -91,3 +91,37 @@ fn agent_format_shows_the_script_file() {
     let out = statix(dir.path(), &["check", "-o", "agent", "devenv.nix"]);
     insta::assert_snapshot!(out.replace(&dir.path().display().to_string(), "<dir>"));
 }
+
+#[test]
+fn a_changed_script_checks_the_nix_files_referring_to_it() {
+    let dir = project();
+    let root = dir.path();
+    fs::write(root.join("other.nix"), "{ enterShell = \"cd $HOME\"; }\n").unwrap();
+    // only the script changed, as a git hook would pass it
+    let out = statix(root, &["check", "-o", "errfmt", "scripts/deploy.sh"]);
+    assert!(
+        out.contains("devenv.nix>3:25:W:30:[script_file] ./scripts/deploy.sh:2:1: SC2164"),
+        "{out}"
+    );
+    assert!(!out.contains("other.nix"), "{out}");
+}
+
+#[test]
+fn several_targets() {
+    let dir = project();
+    let root = dir.path();
+    fs::write(root.join("other.nix"), "{ enterShell = \"cd $HOME\"; }\n").unwrap();
+    fs::write(root.join("clean.nix"), "{ enterShell = \"echo hi\"; }\n").unwrap();
+    let out = statix(root, &["check", "-o", "errfmt", "other.nix", "clean.nix"]);
+    assert!(out.contains("other.nix>1:"), "{out}");
+    assert!(!out.contains("devenv.nix"), "{out}");
+}
+
+#[test]
+fn fix_with_a_changed_script_fixes_it() {
+    let dir = project();
+    let root = dir.path();
+    statix(root, &["fix", "scripts/deploy.sh"]);
+    let fixed = fs::read_to_string(root.join("scripts/deploy.sh")).unwrap();
+    assert!(fixed.contains("cd \"$TARGET\" || exit"), "{fixed}");
+}
