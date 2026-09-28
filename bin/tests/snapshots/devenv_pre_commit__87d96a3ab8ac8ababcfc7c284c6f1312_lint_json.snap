@@ -1,0 +1,44 @@
+---
+source: bin/tests/devenv_pre_commit.rs
+---
+{ pre-commit = { hooks.nixfmt.enable = true; }; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "devenv_pre_commit",
+      "note": "Found deprecated devenv option `pre-commit`",
+      "code": 25,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 3
+            },
+            "to": {
+              "line": 1,
+              "column": 13
+            }
+          },
+          "message": "`pre-commit` is deprecated in devenv, use `git-hooks`",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 3
+              },
+              "to": {
+                "line": 1,
+                "column": 13
+              }
+            },
+            "fix": "git-hooks"
+          }
+        }
+      ]
+    }
+  ]
+}

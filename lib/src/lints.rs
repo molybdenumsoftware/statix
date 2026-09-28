@@ -19,5 +19,6 @@ lints! {
     useless_has_attr,
     repeated_keys,
     empty_list_concat,
-    devenv_exec_shebang
+    devenv_exec_shebang,
+    devenv_pre_commit
 }

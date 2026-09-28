@@ -1,0 +1,10 @@
+---
+source: bin/tests/devenv_pre_commit.rs
+---
+{ config.pre-commit.hooks.shellcheck.enable = true; }
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1 +1 @@
+-{ config.pre-commit.hooks.shellcheck.enable = true; }
++{ config.git-hooks.hooks.shellcheck.enable = true; }
