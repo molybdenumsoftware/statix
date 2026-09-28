@@ -14,3 +14,42 @@ pub fn with_preceeding_whitespace(node: &SyntaxNode) -> TextRange {
     let end = node.text_range().end();
     TextRange::new(start, end)
 }
+
+/// Static name of an attribute (`foo`, `"foo"`), `None` for dynamic keys.
+pub fn attr_name(attr: &rnix::ast::Attr) -> Option<String> {
+    use rnix::ast::{Attr, InterpolPart};
+    use rowan::ast::AstNode as _;
+    match attr {
+        Attr::Ident(ident) => Some(ident.syntax().text().to_string()),
+        Attr::Str(s) => s
+            .normalized_parts()
+            .into_iter()
+            .map(|part| match part {
+                InterpolPart::Literal(lit) => Some(lit),
+                InterpolPart::Interpolation(_) => None,
+            })
+            .collect(),
+        Attr::Dynamic(_) => None,
+    }
+}
+
+/// Keys of the attribute sets enclosing `node`, outermost first, e.g. for `x` in
+/// `{ a = { b.c = x; }; }` this is `["a", "b", "c"]`. Returns `None` when a key
+/// is dynamic or `node` is (inside) a `let` binding, since then it is not an
+/// attribute path of the enclosing module.
+pub fn enclosing_attrpath(node: &SyntaxNode) -> Option<Vec<String>> {
+    use rnix::ast::AttrpathValue;
+    use rowan::ast::AstNode as _;
+    let mut keys = Vec::new();
+    for ancestor in node.ancestors() {
+        let Some(apv) = AttrpathValue::cast(ancestor) else {
+            continue;
+        };
+        if apv.syntax().parent()?.kind() != SyntaxKind::NODE_ATTR_SET {
+            return None;
+        }
+        let names: Option<Vec<String>> = apv.attrpath()?.attrs().map(|a| attr_name(&a)).collect();
+        keys.splice(0..0, names?);
+    }
+    Some(keys)
+}
