@@ -20,5 +20,6 @@ lints! {
     repeated_keys,
     empty_list_concat,
     devenv_exec_shebang,
-    devenv_pre_commit
+    devenv_pre_commit,
+    hardcoded_store_path
 }

@@ -1,0 +1,32 @@
+---
+source: bin/tests/hardcoded_store_path.rs
+---
+/nix/store/q2l6gv5cdyx2ayx6frgz2rmd0mp4q6sw-hello-2.12.1/bin/hello
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "hardcoded_store_path",
+      "note": "Found hardcoded Nix store path",
+      "code": 26,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 1
+            },
+            "to": {
+              "line": 1,
+              "column": 67
+            }
+          },
+          "message": "Hardcoded store path, interpolate the package instead (e.g. `${pkgs.hello}`)",
+          "suggestion": null
+        }
+      ]
+    }
+  ]
+}
