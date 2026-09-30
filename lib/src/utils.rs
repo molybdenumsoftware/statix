@@ -24,6 +24,23 @@ pub fn is_shadowed(node: &SyntaxNode, name: &str) -> bool {
     lexical_binding(node, name).is_some()
 }
 
+/// Whether a conventional library name resolves to a local value definition.
+///
+/// Lambda parameters are accepted as conventional inputs. An unresolved name
+/// supplied by `with` is ambiguous and is conservatively treated as local.
+pub fn has_local_value_binding(node: &SyntaxNode, name: &str) -> bool {
+    match lexical_binding(node, name) {
+        Some(Binding::Parameter) => false,
+        Some(Binding::Value) => true,
+        None => node.ancestors().any(|ancestor| {
+            ast::With::cast(ancestor).is_some_and(|with| {
+                with.body().is_some_and(|body| {
+                    body.syntax().text_range().contains_range(node.text_range())
+                })
+            })
+        }),
+    }
+}
 enum Binding {
     Parameter,
     Value,

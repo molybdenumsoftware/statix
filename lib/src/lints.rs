@@ -20,5 +20,7 @@ lints! {
     repeated_keys,
     empty_list_concat,
     ineffective_string_escape,
-    negated_is_null
+    negated_is_null,
+    optionals_string,
+    optional_list_in_flat_context
 }

@@ -154,6 +154,8 @@ repeated_keys
 empty_list_concat
 ineffective_string_escape
 negated_is_null
+optionals_string
+optional_list_in_flat_context
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -168,6 +170,13 @@ and `null`. `negated_is_null` is a configurable readability hint, not a deprecat
 `isNull` remains a supported builtin. The fix preserves expression grouping and
 leaves higher-order predicates alone; disable the hint if your project prefers
 the predicate spelling. Comments outside the argument prevent automatic replacement.
+
+Nixpkgs helper checks assume a conventional `lib` input and skip local library
+definitions. `optionals_string` recommends `optionalString` only for a literal
+string concatenation. `optional_list_in_flat_context` recommends `optionals`
+only for a literal list flowing directly or through `++` into `lib.makeBinPath`.
+Both replace only the helper name, retaining arguments and comments. Unresolved
+aliases, ordinary nested lists, and unknown consumers are not rewritten.
 
 ## Maintainer coverage benchmark
 
