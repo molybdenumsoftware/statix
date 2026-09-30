@@ -158,3 +158,32 @@ fn custom_default_library_implementations_are_not_rewritten() {
         assert!(reports(source).is_empty(), "{source}");
     }
 }
+
+#[test]
+fn local_helper_library_parameters_are_not_conventional_inputs() {
+    for source in [
+        r#"{ lib }: let helper = lib: "prefix" + lib.optionals true "value"; in helper { optionals = c: s: s; optionalString = c: s: "changed"; }"#,
+        r#"{ lib }: let helper = { lib }: "prefix" + lib.optionals true "value"; in helper { lib = custom; }"#,
+        r#"{ lib }: { helper = lib: "prefix" + lib.optionals true "value"; }"#,
+        r#"{ optionals, optionalString }@lib: "prefix" + lib.optionals true "value""#,
+        r"{ lib }: let helper = lib: lib.makeBinPath (lib.optional true [ package ]); in helper custom",
+    ] {
+        assert!(reports(source).is_empty(), "{source}");
+    }
+}
+
+#[test]
+fn outer_library_inputs_remain_visible_inside_helper_closures() {
+    assert_fix(
+        r#"{ lib }: let helper = enabled: "prefix" + lib.optionals enabled "value"; in helper true"#,
+        r#"{ lib }: let helper = enabled: "prefix" + lib.optionalString enabled "value"; in helper true"#,
+        "optionals_string",
+        24,
+    );
+    assert_fix(
+        r#"inputs: ({ lib }: "prefix" + lib.optionals true "value")"#,
+        r#"inputs: ({ lib }: "prefix" + lib.optionalString true "value")"#,
+        "optionals_string",
+        24,
+    );
+}

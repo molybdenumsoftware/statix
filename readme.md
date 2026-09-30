@@ -183,8 +183,9 @@ and `null`. `negated_is_null` is a configurable readability hint, not a deprecat
 leaves higher-order predicates alone; disable the hint if your project prefers
 the predicate spelling. Comments outside the argument prevent automatic replacement.
 
-Nixpkgs helper checks assume a conventional required `lib` input and skip local
-library definitions and defaulted inputs. `optionals_string` recommends
+Nixpkgs helper checks assume a conventional required `lib` input on the outer
+function chain. They skip local library definitions, defaulted inputs, local
+helper parameters, and pattern `@` aliases. `optionals_string` recommends
 `optionalString` only for a literal
 string concatenation. `optional_list_in_flat_context` recommends `optionals`
 only for a literal list flowing directly or through `++` into `lib.makeBinPath`.

@@ -26,9 +26,9 @@ pub fn is_shadowed(node: &SyntaxNode, name: &str) -> bool {
 
 /// Whether a conventional library name resolves to a local value definition.
 ///
-/// Required lambda parameters are accepted as conventional inputs. Defaulted
-/// parameters can supply unrelated implementations and are treated as local
-/// values. An unresolved name supplied by `with` is conservatively local.
+/// Required outer function parameters are accepted as conventional inputs.
+/// Local helper parameters and defaulted inputs can supply unrelated
+/// implementations. An unresolved name supplied by `with` is conservatively local.
 pub fn has_local_value_binding(node: &SyntaxNode, name: &str) -> bool {
     match lexical_binding(node, name) {
         Some(Binding::Parameter) => false,
@@ -64,17 +64,21 @@ fn lexical_binding(node: &SyntaxNode, name: &str) -> Option<Binding> {
                         return Some(if entry.question_token().is_some() {
                             Binding::Value
                         } else {
-                            Binding::Parameter
+                            parameter_binding(&lambda)
                         });
                     }
-                    pattern
+                    if pattern
                         .pat_bind()
                         .and_then(|bind| bind.ident())
                         .is_some_and(|ident| ident_matches(&ident, name))
+                    {
+                        return Some(Binding::Value);
+                    }
+                    false
                 }
             };
             if bound {
-                return Some(Binding::Parameter);
+                return Some(parameter_binding(&lambda));
             }
         } else {
             // Unqualified inherit resolves in the outer environment, not the
@@ -105,6 +109,19 @@ fn lexical_binding(node: &SyntaxNode, name: &str) -> Option<Binding> {
         child = ancestor;
     }
     None
+}
+
+fn parameter_binding(lambda: &ast::Lambda) -> Binding {
+    for ancestor in lambda.syntax().ancestors().skip(1) {
+        match ancestor.kind() {
+            SyntaxKind::NODE_ROOT => return Binding::Parameter,
+            // Let binding values cross AttrpathValue first; only the returned
+            // let body can reach this branch directly.
+            SyntaxKind::NODE_PAREN | SyntaxKind::NODE_LAMBDA | SyntaxKind::NODE_LET_IN => {}
+            _ => return Binding::Value,
+        }
+    }
+    Binding::Value
 }
 
 fn entries_bind(scope: &impl HasEntry, name: &str) -> bool {
