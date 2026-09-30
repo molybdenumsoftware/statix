@@ -31,5 +31,6 @@ lints! {
     with_lexical_collision,
     module_mkif_update,
     module_optional_attrs,
-    suspect_native_dependency
+    suspect_native_dependency,
+    argv_multi_flag_string
 }

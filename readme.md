@@ -163,6 +163,7 @@ with_lexical_collision
 module_mkif_update
 module_optional_attrs
 suspect_native_dependency
+argv_multi_flag_string
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -219,6 +220,13 @@ introspection input. Check scanner/setup-hook placement for cross compilation
 manually; retain host libraries when linked. It never moves dependencies by name.
 Local builders, conditional lists, selected outputs, and ordinary attrsets are
 excluded; see the [maintainer correction and linked-library counterexample](https://github.com/NixOS/nixpkgs/pull/239191#discussion_r1238464808).
+
+`argv_multi_flag_string` advises about multiple flag-shaped tokens in one literal
+Home Manager launchd `ProgramArguments` element. Each element is one argument,
+but argument grammar is command-specific: no automatic splitting is offered.
+Space-containing positional values, end-of-options operands, interpreters,
+wrappers, quoting/escapes, computed elements, and unknown consumers are excluded.
+See the [Home Manager argv correction](https://github.com/nix-community/home-manager/pull/9907).
 
 ## Maintainer coverage benchmark
 
