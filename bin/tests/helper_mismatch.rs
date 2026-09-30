@@ -147,3 +147,14 @@ fn optional_list_keeps_intentional_nesting_and_unknown_consumers() {
         assert!(reports(source).is_empty(), "{source}");
     }
 }
+
+#[test]
+fn custom_default_library_implementations_are_not_rewritten() {
+    for source in [
+        r#"({ lib ? { optionals = c: s: s; optionalString = c: s: "changed"; } }: "prefix" + lib.optionals true "value") {}"#,
+        r"{ lib ? custom }: lib.makeBinPath (lib.optional true [ package ])",
+        r#"let lib = canonical; in ({ lib ? custom }: "prefix" + lib.optionals true "value") {}"#,
+    ] {
+        assert!(reports(source).is_empty(), "{source}");
+    }
+}

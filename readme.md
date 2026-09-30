@@ -164,6 +164,10 @@ module_mkif_update
 module_optional_attrs
 suspect_native_dependency
 argv_multi_flag_string
+shell_double_escaping
+shell_unquoted_substitution
+shell_unescaped_env
+shell_variable_interpolation
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -179,8 +183,9 @@ and `null`. `negated_is_null` is a configurable readability hint, not a deprecat
 leaves higher-order predicates alone; disable the hint if your project prefers
 the predicate spelling. Comments outside the argument prevent automatic replacement.
 
-Nixpkgs helper checks assume a conventional `lib` input and skip local library
-definitions. `optionals_string` recommends `optionalString` only for a literal
+Nixpkgs helper checks assume a conventional required `lib` input and skip local
+library definitions and defaulted inputs. `optionals_string` recommends
+`optionalString` only for a literal
 string concatenation. `optional_list_in_flat_context` recommends `optionals`
 only for a literal list flowing directly or through `++` into `lib.makeBinPath`.
 Both replace only the helper name, retaining arguments and comments. Unresolved
@@ -228,6 +233,22 @@ Space-containing positional values, end-of-options operands, interpreters,
 wrappers, quoting/escapes, computed elements, and unknown consumers are excluded.
 See the [Home Manager argv correction](https://github.com/nix-community/home-manager/pull/9907).
 
+Shell checks are conditional hints, never automatic rewrites. A bounded lexical
+scanner decodes Nix strings and tracks shell quotes, command boundaries, comments,
+and command-substitution depth in direct conventional shell attributes and
+qualified `pkgs.writeShellScript`, `pkgs.writeShellScriptBin`, or
+`pkgs.writeShellApplication` consumers. It is not a full shell parser.
+`shell_double_escaping` checks whole-word outer single quotes around qualified
+escape helpers; `shell_unquoted_substitution` checks unquoted whole-word
+`dirname` output. `shell_unescaped_env` checks builtin `toString` in straightforward
+unquoted export assignments; `shell_variable_interpolation` checks an unbound Nix
+identifier matching a preceding root-shell `for ... in ...; do` variable.
+Unknown earlier interpolation, heredocs/redirection, backticks, arithmetic,
+parameter-expansion syntax, complex grammar, local/defaulted namespaces, and
+nested shell strings are excluded. Inherited unqualified helpers and let-bound
+callable flow in the [actual Home Manager correction](https://github.com/nix-community/home-manager/pull/9408)
+remain outside these checks; adapted corpus detection is not whole-source coverage.
+
 ## Maintainer coverage benchmark
 
 Run `bash autoresearch.sh` to measure detection and fix coverage against
@@ -252,8 +273,8 @@ Existing-rule controls are reported separately from researched positives.
 
 Secondary metrics report exact token-level fix coverage (ignoring whitespace),
 false positives, unexpected changes, and control coverage. Fixtures distinguish
-automatic-fix candidates from advisory cases; their proposed rule names define
-the diagnostic contract for future implementations, not currently available lints.
+automatic-fix candidates from advisory cases and require the relevant diagnostic,
+not an incidental warning.
 Invalid fixtures, invalid generated syntax, or non-converging fixes fail the run.
 Missing diagnostics remain measured gaps. Matching tokens does not establish
 semantic equivalence; module, scope, and shell corrections require the contextual

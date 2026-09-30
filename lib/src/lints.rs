@@ -1,6 +1,7 @@
 use crate::lints;
 
 mod module_context;
+mod shell_context;
 
 lints! {
     bool_comparison,
@@ -32,5 +33,9 @@ lints! {
     module_mkif_update,
     module_optional_attrs,
     suspect_native_dependency,
-    argv_multi_flag_string
+    argv_multi_flag_string,
+    shell_double_escaping,
+    shell_unquoted_substitution,
+    shell_unescaped_env,
+    shell_variable_interpolation
 }

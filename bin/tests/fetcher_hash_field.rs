@@ -52,3 +52,10 @@ fn excludes_other_apis_encodings_and_ambiguous_sets() {
         assert!(reports(&source).is_empty(), "{source}");
     }
 }
+
+#[test]
+fn defaulted_fetcher_implementations_are_not_treated_as_nixpkgs() {
+    let source =
+        format!("{{ fetchFromGitHub ? args: args }}: fetchFromGitHub {{ sha256 = \"{SRI}\"; }}");
+    assert!(reports(&source).is_empty(), "{source}");
+}

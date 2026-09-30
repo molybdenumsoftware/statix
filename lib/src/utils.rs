@@ -26,8 +26,9 @@ pub fn is_shadowed(node: &SyntaxNode, name: &str) -> bool {
 
 /// Whether a conventional library name resolves to a local value definition.
 ///
-/// Lambda parameters are accepted as conventional inputs. An unresolved name
-/// supplied by `with` is ambiguous and is conservatively treated as local.
+/// Required lambda parameters are accepted as conventional inputs. Defaulted
+/// parameters can supply unrelated implementations and are treated as local
+/// values. An unresolved name supplied by `with` is conservatively local.
 pub fn has_local_value_binding(node: &SyntaxNode, name: &str) -> bool {
     match lexical_binding(node, name) {
         Some(Binding::Parameter) => false,
@@ -55,11 +56,18 @@ fn lexical_binding(node: &SyntaxNode, name: &str) -> Option<Binding> {
                     .ident()
                     .is_some_and(|ident| ident_matches(&ident, name)),
                 ast::Param::Pattern(pattern) => {
-                    pattern.pat_entries().any(|entry| {
+                    if let Some(entry) = pattern.pat_entries().find(|entry| {
                         entry
                             .ident()
                             .is_some_and(|ident| ident_matches(&ident, name))
-                    }) || pattern
+                    }) {
+                        return Some(if entry.question_token().is_some() {
+                            Binding::Value
+                        } else {
+                            Binding::Parameter
+                        });
+                    }
+                    pattern
                         .pat_bind()
                         .and_then(|bind| bind.ident())
                         .is_some_and(|ident| ident_matches(&ident, name))

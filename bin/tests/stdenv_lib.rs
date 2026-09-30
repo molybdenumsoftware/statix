@@ -36,3 +36,36 @@ fn ignores_package_outputs_local_stdenv_and_selection_defaults() {
         assert!(output.is_empty(), "{output}");
     }
 }
+
+#[test]
+fn defaulted_inputs_never_trigger_a_library_replacement() {
+    let rule = lib::LINTS
+        .iter()
+        .find(|rule| rule.name() == "deprecated_stdenv_lib")
+        .unwrap();
+    for (source, expected_reports) in [
+        ("{ lib, stdenv ? custom }: stdenv.lib.licenses.mit", 0),
+        ("{ lib ? custom, stdenv }: stdenv.lib.licenses.mit", 1),
+    ] {
+        let parsed = rnix::Root::parse(source);
+        assert!(parsed.errors().is_empty());
+        let reports: Vec<_> = parsed
+            .syntax()
+            .descendants()
+            .filter(|node| rule.match_with(&node.kind()))
+            .filter_map(|node| rule.validate(&node.into()))
+            .collect();
+        assert_eq!(reports.len(), expected_reports, "{source}");
+        let mut unchanged = source.to_owned();
+        for report in reports {
+            assert!(
+                report
+                    .diagnostics
+                    .iter()
+                    .all(|diagnostic| diagnostic.suggestion.is_none())
+            );
+            report.apply(&mut unchanged);
+        }
+        assert_eq!(unchanged, source);
+    }
+}
