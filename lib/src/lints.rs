@@ -1,5 +1,7 @@
 use crate::lints;
 
+mod module_context;
+
 lints! {
     bool_comparison,
     empty_let_in,
@@ -26,5 +28,7 @@ lints! {
     deprecated_stdenv_lib,
     fetcher_hash_field,
     broad_with_lib,
-    with_lexical_collision
+    with_lexical_collision,
+    module_mkif_update,
+    module_optional_attrs
 }

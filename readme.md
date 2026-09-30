@@ -160,6 +160,8 @@ deprecated_stdenv_lib
 fetcher_hash_field
 broad_with_lib
 with_lexical_collision
+module_mkif_update
+module_optional_attrs
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -200,6 +202,15 @@ argument, excluding narrow maintainer-list scopes. `with_lexical_collision`
 identifies an outer lexical name also present in a literal namespace; existing
 resolution is legal and may be intentional. Opaque namespaces, inner bindings,
 labels, nested scopes, and unqualified inherit of the same binding are excluded.
+
+Module checks are diagnostic-only hints. They require a supplied `lib` argument,
+an explicit returned `config` field, and an `options` or `imports` sibling.
+`module_optional_attrs` additionally requires a supplied `config` argument and
+a condition directly referencing it; `module_mkif_update` identifies direct
+`mkIf` operands of ordinary `//`. `mkIf` exposes declarations even when false,
+and `mkMerge` has different conflict rules, so both require manual review.
+Ordinary data, inner option values, defaulted inputs, aliases, and local
+redefinitions are excluded rather than assumed to be modules.
 
 ## Maintainer coverage benchmark
 
