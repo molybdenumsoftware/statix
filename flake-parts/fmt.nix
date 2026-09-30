@@ -25,6 +25,7 @@
             };
           };
         };
+        settings.global.excludes = [ "autoresearch.sh" ];
         settings.on-unmatched = "fatal";
       };
     };

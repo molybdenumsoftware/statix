@@ -1,0 +1,226 @@
+[
+  {
+    "id": "unquoted_uri",
+    "source": "https://github.com/NixOS/rfcs/pull/45#issuecomment-558308947",
+    "rationale": "Adapted from accepted RFC 45 and its maintainer's URL replacement tool: quoted strings avoid a redundant literal syntax and semicolon-selection ambiguity.",
+    "rules": ["unquoted_uri"],
+    "before": "{ homepage = https://example.org; }",
+    "after": "{ homepage = \"https://example.org\"; }",
+    "autofix": true
+  },
+  {
+    "id": "deprecated_to_path",
+    "source": "https://github.com/NixOS/rfcs/pull/45#issuecomment-489574945",
+    "rationale": "Adapted deprecation example. Warn only: replacing toPath is not universally equivalent because it returns a normalized string, not a path; Nix issue 12407 documents remaining use cases.",
+    "rules": ["deprecated_to_path"],
+    "before": "builtins.toPath \"/path\"",
+    "after": "/. + \"/path\"",
+    "autofix": false,
+    "negatives": ["let toPath = x: x; in toPath \"/path\""]
+  },
+  {
+    "id": "recursive_self_binding",
+    "source": "https://discourse.nixos.org/t/help-to-solve-an-infinite-loop-caused-in-a-package/24150/2",
+    "rationale": "Adapted solved forum bug: a recursive assignment captures itself rather than the outer variable. Existing manual_inherit offers the reported correction.",
+    "rules": ["manual_inherit"],
+    "before": "let enableWayland = true; in (rec { enableWayland = enableWayland; }).enableWayland",
+    "after": "let enableWayland = true; in rec { inherit enableWayland; }.enableWayland",
+    "autofix": true
+  },
+  {
+    "id": "optional_list_in_flat_context",
+    "source": "https://github.com/NixOS/nixpkgs/pull/188621",
+    "rationale": "Adapted merged makeBinPath fix: optional with a list produces a nested list. Correction changes shape intentionally; only a known flat-list consumer justifies it.",
+    "rules": ["optional_list_in_flat_context"],
+    "before": "{ lib, enableMail, gnused, inetutils, mailutils }: lib.makeBinPath ([ gnused ] ++ lib.optional enableMail [ inetutils mailutils ])",
+    "after": "{ lib, enableMail, gnused, inetutils, mailutils }: lib.makeBinPath ([ gnused ] ++ lib.optionals enableMail [ inetutils mailutils ])",
+    "autofix": true,
+    "negatives": [
+      "{ lib, enabled, item }: lib.optional enabled item",
+      "lib: lib.optional true [ [ 1 ] ]"
+    ]
+  },
+  {
+    "id": "optionals_string",
+    "source": "https://github.com/NixOS/nixpkgs/pull/484031#discussion_r2779671645",
+    "rationale": "Adapted review and merged correction in PR 488516: optionals returns [] when false, incompatible with this string concatenation.",
+    "rules": ["optionals_string"],
+    "before": "{ lib, needsPatch }: \"echo start\\n\" + lib.optionals needsPatch ''echo patch''",
+    "after": "{ lib, needsPatch }: \"echo start\\n\" + lib.optionalString needsPatch ''echo patch''",
+    "autofix": true,
+    "negatives": ["{ lib, enabled, items }: lib.optionals enabled items"]
+  },
+  {
+    "id": "deprecated_stdenv_lib",
+    "source": "https://github.com/NixOS/nixpkgs/issues/108938",
+    "rationale": "Adapted completed canonical-lib migration. This pair already has a lib argument: no caller/header migration is needed.",
+    "rules": ["deprecated_stdenv_lib"],
+    "before": "{ lib, stdenv }: { license = stdenv.lib.licenses.mit; }",
+    "after": "{ lib, stdenv }: { license = lib.licenses.mit; }",
+    "autofix": true,
+    "negatives": ["stdenv: stdenv.cc.cc.lib", "stdenv: stdenv.libc"]
+  },
+  {
+    "id": "broad_with_lib",
+    "source": "https://github.com/NixOS/nixpkgs/pull/487414",
+    "rationale": "Adapted merged removal of broad meta with-lib scopes; narrower maintainer lists remain allowed. Advisory only without lexical resolution.",
+    "rules": ["broad_with_lib"],
+    "before": "{ lib }: { meta = with lib; { license = licenses.mit; }; }",
+    "after": "{ lib }: { meta = { license = lib.licenses.mit; }; }",
+    "autofix": false,
+    "negatives": [
+      "{ lib }: { maintainers = with lib.maintainers; [ alice bob ]; }"
+    ]
+  },
+  {
+    "id": "fetcher_hash_field",
+    "source": "https://github.com/NixOS/nixpkgs/pull/558623",
+    "rationale": "Adapted merged hash modernization, with the hash already represented as SRI to isolate a key-only rename. Not evidence that every sha256 field is deprecated.",
+    "rules": ["fetcher_hash_field"],
+    "before": "{ fetchFromGitHub }: fetchFromGitHub { owner = \"reyammer\"; repo = \"shellnoob\"; rev = \"72cf49804d8ea3de1faa7fae5794449301987bff\"; sha256 = \"sha256-xF9OTFFe8godW4+z9MFaFEkjE9FB42bKWwdl9xRcmEo=\"; }",
+    "after": "{ fetchFromGitHub }: fetchFromGitHub { owner = \"reyammer\"; repo = \"shellnoob\"; rev = \"72cf49804d8ea3de1faa7fae5794449301987bff\"; hash = \"sha256-xF9OTFFe8godW4+z9MFaFEkjE9FB42bKWwdl9xRcmEo=\"; }",
+    "autofix": true,
+    "negatives": [
+      "{ sha256 = \"sha256-xF9OTFFe8godW4+z9MFaFEkjE9FB42bKWwdl9xRcmEo=\"; }"
+    ]
+  },
+  {
+    "id": "suspect_native_dependency",
+    "source": "https://github.com/NixOS/nixpkgs/pull/239191#discussion_r1238464808",
+    "rationale": "Adapted scanner/hook placement correction. The cited review also rejects name-only movement when libgirepository is linked; advisory, not automatic movement.",
+    "rules": ["suspect_native_dependency"],
+    "before": "{ buildPythonApplication, wrapGAppsHook, gobject-introspection, gtk3 }: buildPythonApplication { pname = \"example\"; version = \"1\"; nativeBuildInputs = [ wrapGAppsHook ]; buildInputs = [ gobject-introspection gtk3 ]; }",
+    "after": "{ buildPythonApplication, wrapGAppsHook, gobject-introspection, gtk3 }: buildPythonApplication { pname = \"example\"; version = \"1\"; nativeBuildInputs = [ wrapGAppsHook gobject-introspection ]; buildInputs = [ gtk3 ]; }",
+    "autofix": false
+  },
+  {
+    "id": "with_lexical_collision",
+    "source": "https://discourse.nixos.org/t/scoping-of-with-expressions/23484/5",
+    "rationale": "Adapted lexical-capture example with a literal namespace to make the collision visible. Intent is package-set foo; qualification is not a semantics-preserving style rewrite.",
+    "rules": ["with_lexical_collision"],
+    "before": "let foo = \"local\"; in with { foo = \"package\"; bar = \"other\"; }; [ foo bar ]",
+    "after": "let foo = \"local\"; namespace = { foo = \"package\"; bar = \"other\"; }; in [ namespace.foo namespace.bar ]",
+    "autofix": false
+  },
+  {
+    "id": "module_optional_attrs",
+    "source": "https://discourse.nixos.org/t/optionalattrs-in-module-infinite-recursion-with-config/27876/5",
+    "rationale": "Adapted config-dependent module conditional. mkIf delays the condition through module metadata; ordinary attrsets must not be rewritten.",
+    "rules": ["module_optional_attrs"],
+    "before": "{ config, lib, ... }: { options.demo.enable = lib.mkEnableOption \"demo\"; options.demo.message = lib.mkOption { type = lib.types.str; default = \"off\"; }; config = lib.optionalAttrs config.demo.enable { demo.message = \"on\"; }; }",
+    "after": "{ config, lib, ... }: { options.demo.enable = lib.mkEnableOption \"demo\"; options.demo.message = lib.mkOption { type = lib.types.str; default = \"off\"; }; config = lib.mkIf config.demo.enable { demo.message = \"on\"; }; }",
+    "autofix": false,
+    "negatives": [
+      "{ lib, enabled }: lib.optionalAttrs enabled { message = \"on\"; }"
+    ]
+  },
+  {
+    "id": "module_mkif_update",
+    "source": "https://discourse.nixos.org/t/lib-modules-mkif-vs-lib-attrsets-optionalattrs-and-other-module-system-basics/42728/6",
+    "rationale": "Adapted forum recommendation: ordinary right-biased // does not compose module metadata like mkMerge. Different conflict rules make this advisory.",
+    "rules": ["module_mkif_update"],
+    "before": "{ lib, ... }: { options.a = lib.mkEnableOption \"a\"; options.b = lib.mkEnableOption \"b\"; config = (lib.mkIf false { a = true; }) // { b = true; }; }",
+    "after": "{ lib, ... }: { options.a = lib.mkEnableOption \"a\"; options.b = lib.mkEnableOption \"b\"; config = lib.mkMerge [ (lib.mkIf false { a = true; }) { b = true; } ]; }",
+    "autofix": false,
+    "negatives": ["{ a = 1; } // { b = 2; }"]
+  },
+  {
+    "id": "shell_double_escaping",
+    "source": "https://github.com/nix-community/home-manager/pull/9408",
+    "rationale": "Adapted merged correction: outer single quotes cancel the shell quoting supplied by escapeShellArg. Fix requires shell lexical context.",
+    "rules": ["shell_double_escaping"],
+    "before": "{ lib, filePath }: { script = ''cat '${lib.escapeShellArg filePath}' ''; }",
+    "after": "{ lib, filePath }: { script = ''cat ${lib.escapeShellArg filePath} ''; }",
+    "autofix": false
+  },
+  {
+    "id": "shell_unquoted_substitution",
+    "source": "https://github.com/nix-community/home-manager/pull/9408",
+    "rationale": "Adapted separate defect from the same merged correction: escaping dirname's input does not quote its output; spaces still split.",
+    "rules": ["shell_unquoted_substitution"],
+    "before": "{ lib, filePath }: { script = ''mkdir -p $(dirname ${lib.escapeShellArg filePath})''; }",
+    "after": "{ lib, filePath }: { script = ''mkdir -p \"$(dirname ${lib.escapeShellArg filePath})\"''; }",
+    "autofix": false
+  },
+  {
+    "id": "shell_unescaped_env",
+    "source": "https://github.com/nix-community/home-manager/pull/9046",
+    "rationale": "Adapted merged restic environment correction. toString is not shell escaping. Literal data vs executable fragments must be distinguished.",
+    "rules": ["shell_unescaped_env"],
+    "before": "{ lib, repository }: { script = ''export RESTIC_REPOSITORY=${toString repository}''; }",
+    "after": "{ lib, repository }: { script = ''export RESTIC_REPOSITORY=${lib.escapeShellArg repository}''; }",
+    "autofix": false
+  },
+  {
+    "id": "argv_multi_flag_string",
+    "source": "https://github.com/nix-community/home-manager/pull/9907",
+    "rationale": "Adapted documented argv contract: each ProgramArguments element is one argument. Do not split arbitrary strings or quoted argument values.",
+    "rules": ["argv_multi_flag_string"],
+    "before": "{ launchd.agents.example.config.ProgramArguments = [ \"nh\" \"clean\" \"user\" \"--keep 5 --keep-since 3d\" ]; }",
+    "after": "{ launchd.agents.example.config.ProgramArguments = [ \"nh\" \"clean\" \"user\" \"--keep\" \"5\" \"--keep-since\" \"3d\" ]; }",
+    "autofix": false,
+    "negatives": [
+      "{ launchd.agents.example.config.ProgramArguments = [ \"echo\" \"1 day\" ]; }"
+    ]
+  },
+  {
+    "id": "ineffective_string_escape",
+    "source": "https://github.com/nix-community/home-manager/pull/8916",
+    "rationale": "Adapted merged semantic-no-op removal of backslash-space. Ordinary string escape parity matters; valid escaped backslashes must remain.",
+    "rules": ["ineffective_string_escape"],
+    "before": "\"Library/Application\\ Support/go\"",
+    "after": "\"Library/Application Support/go\"",
+    "autofix": true,
+    "negatives": ["\"literal\\\\ space\"", "\"line\\nnext\""]
+  },
+  {
+    "id": "negated_is_null",
+    "source": "https://github.com/NixOS/nix/issues/8264",
+    "rationale": "Adapted optional readability preference, not deprecation: Nix PR 9645 explicitly removed the isNull deprecation warning. Higher-order uses remain valid.",
+    "rules": ["negated_is_null"],
+    "before": "{ value }: !(builtins.isNull value)",
+    "after": "{ value }: value != null",
+    "autofix": true,
+    "negatives": ["{ values }: builtins.filter builtins.isNull values"]
+  },
+  {
+    "id": "shell_variable_interpolation",
+    "source": "https://discourse.nixos.org/t/dealing-with-shell-variables-in-nix-strings/7978/2",
+    "rationale": "Adapted solved shell-loop bug. Intended shell interpolation needs the indented-string escape; genuine Nix interpolation must remain untouched.",
+    "rules": ["shell_variable_interpolation"],
+    "before": "{ script = ''for x in one two; do printf '%s\\n' \"${x}\"; done''; }",
+    "after": "{ script = ''for x in one two; do printf '%s\\n' \"''${x}\"; done''; }",
+    "autofix": false,
+    "negatives": ["x: { script = ''printf '%s\\n' \"${x}\"''; }"]
+  },
+  {
+    "id": "control_manual_inherit",
+    "source": "lib/src/lints/manual_inherit.rs",
+    "rationale": "Existing documented rule control, not a researched maintainer finding.",
+    "rules": ["manual_inherit"],
+    "before": "x: { x = x; }",
+    "after": "x: { inherit x; }",
+    "autofix": true,
+    "control": true
+  },
+  {
+    "id": "control_manual_inherit_from",
+    "source": "lib/src/lints/manual_inherit_from.rs",
+    "rationale": "Existing documented rule control, not a researched maintainer finding.",
+    "rules": ["manual_inherit_from"],
+    "before": "pkgs: { hello = pkgs.hello; }",
+    "after": "pkgs: { inherit (pkgs) hello; }",
+    "autofix": true,
+    "control": true
+  },
+  {
+    "id": "control_bool_simplification",
+    "source": "lib/src/lints/bool_simplification.rs",
+    "rationale": "Existing documented rule control, not a researched maintainer finding.",
+    "rules": ["bool_simplification"],
+    "before": "x: y: !(x == y)",
+    "after": "x: y: x != y",
+    "autofix": true,
+    "control": true
+  }
+]

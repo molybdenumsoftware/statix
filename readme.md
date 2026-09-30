@@ -154,3 +154,34 @@ useless_has_attr
 
 All lints are enabled by default. Generate a minimal config
 with `statix dump > statix.toml`.
+
+## Maintainer coverage benchmark
+
+Run `bash autoresearch.sh` to measure detection and fix coverage against
+`bin/benchmarks/maintainer_cases.json`. The corpus contains adapted, cited
+examples from Nixpkgs, Home Manager, Nix, RFCs, and NixOS Discourse, plus
+existing-rule controls and valid near-misses. It is a curated sample, not
+a measurement of issue frequency.
+
+Provision the existing development environment and dependency cache once:
+
+```shell
+nix develop --command cargo fetch --locked
+bash autoresearch.sh
+```
+
+Benchmark runs use locked, offline builds and embedded fixtures; no fetching
+or Nix evaluation occurs in the workload. The driver exercises the production
+lint dispatcher and fix iterator with all default rules. `METRIC maintainer_f1`
+is detection F1, expressed as a percentage; unrelated warnings do not count
+as detecting a case. Accepted examples and near-misses penalize false positives.
+Existing-rule controls are reported separately from researched positives.
+
+Secondary metrics report exact token-level fix coverage (ignoring whitespace),
+false positives, unexpected changes, and control coverage. Fixtures distinguish
+automatic-fix candidates from advisory cases; their proposed rule names define
+the diagnostic contract for future implementations, not currently available lints.
+Invalid fixtures, invalid generated syntax, or non-converging fixes fail the run.
+Missing diagnostics remain measured gaps. Matching tokens does not establish
+semantic equivalence; module, scope, and shell corrections require the contextual
+checks recorded in each case's rationale.
