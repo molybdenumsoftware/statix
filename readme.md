@@ -162,6 +162,7 @@ broad_with_lib
 with_lexical_collision
 module_mkif_update
 module_optional_attrs
+suspect_native_dependency
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -211,6 +212,13 @@ a condition directly referencing it; `module_mkif_update` identifies direct
 and `mkMerge` has different conflict rules, so both require manual review.
 Ordinary data, inner option values, defaulted inputs, aliases, and local
 redefinitions are excluded rather than assumed to be modules.
+
+`suspect_native_dependency` is a contextual hint for Python application builders
+using `wrapGAppsHook` with host `gobject-introspection` but no explicit native
+introspection input. Check scanner/setup-hook placement for cross compilation
+manually; retain host libraries when linked. It never moves dependencies by name.
+Local builders, conditional lists, selected outputs, and ordinary attrsets are
+excluded; see the [maintainer correction and linked-library counterexample](https://github.com/NixOS/nixpkgs/pull/239191#discussion_r1238464808).
 
 ## Maintainer coverage benchmark
 

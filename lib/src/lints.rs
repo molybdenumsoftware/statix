@@ -30,5 +30,6 @@ lints! {
     broad_with_lib,
     with_lexical_collision,
     module_mkif_update,
-    module_optional_attrs
+    module_optional_attrs,
+    suspect_native_dependency
 }
