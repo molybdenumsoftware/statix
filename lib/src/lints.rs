@@ -24,5 +24,7 @@ lints! {
     optionals_string,
     optional_list_in_flat_context,
     deprecated_stdenv_lib,
-    fetcher_hash_field
+    fetcher_hash_field,
+    broad_with_lib,
+    with_lexical_collision
 }

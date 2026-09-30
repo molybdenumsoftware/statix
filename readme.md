@@ -158,6 +158,8 @@ optionals_string
 optional_list_in_flat_context
 deprecated_stdenv_lib
 fetcher_hash_field
+broad_with_lib
+with_lexical_collision
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -191,6 +193,13 @@ calls with a literal SHA-256 SRI value. It changes only `sha256` to `hash`, neve
 the hash bytes or encoding. Recursive sets, local wrappers, inherited/dynamic
 fields, existing `hash` fields, other algorithms, and legacy hashes are excluded.
 This does not deprecate arbitrary attributes named `sha256`.
+
+Scope advice never removes `with` or changes name resolution. `broad_with_lib`
+is a configurable hint for `meta = with lib; { ... };` with a supplied library
+argument, excluding narrow maintainer-list scopes. `with_lexical_collision`
+identifies an outer lexical name also present in a literal namespace; existing
+resolution is legal and may be intentional. Opaque namespaces, inner bindings,
+labels, nested scopes, and unqualified inherit of the same binding are excluded.
 
 ## Maintainer coverage benchmark
 
