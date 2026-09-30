@@ -22,5 +22,6 @@ lints! {
     ineffective_string_escape,
     negated_is_null,
     optionals_string,
-    optional_list_in_flat_context
+    optional_list_in_flat_context,
+    deprecated_stdenv_lib
 }

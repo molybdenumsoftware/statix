@@ -156,6 +156,7 @@ ineffective_string_escape
 negated_is_null
 optionals_string
 optional_list_in_flat_context
+deprecated_stdenv_lib
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -177,6 +178,12 @@ string concatenation. `optional_list_in_flat_context` recommends `optionals`
 only for a literal list flowing directly or through `++` into `lib.makeBinPath`.
 Both replace only the helper name, retaining arguments and comments. Unresolved
 aliases, ordinary nested lists, and unknown consumers are not rewritten.
+
+`deprecated_stdenv_lib` diagnoses the Nixpkgs library alias and uses an existing,
+unredefined `lib` argument when available. Otherwise it remains warning-only:
+adding required arguments needs coordinated caller changes. Package `.lib`
+outputs, locally defined `stdenv` values, selection defaults, and comments are
+not blindly rewritten.
 
 ## Maintainer coverage benchmark
 
