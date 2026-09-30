@@ -153,6 +153,7 @@ useless_has_attr
 repeated_keys
 empty_list_concat
 ineffective_string_escape
+negated_is_null
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -161,6 +162,12 @@ with `statix dump > statix.toml`.
 `ineffective_string_escape` removes only inert backslash-space escapes in ordinary
 quoted strings. It preserves escaped backslashes, valid escapes, and indented
 strings; see the [Home Manager correction](https://github.com/nix-community/home-manager/pull/8916).
+
+Builtin diagnostics respect lexical shadowing of `builtins`, `toPath`, `isNull`,
+and `null`. `negated_is_null` is a configurable readability hint, not a deprecation:
+`isNull` remains a supported builtin. The fix preserves expression grouping and
+leaves higher-order predicates alone; disable the hint if your project prefers
+the predicate spelling. Comments outside the argument prevent automatic replacement.
 
 ## Maintainer coverage benchmark
 

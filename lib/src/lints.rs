@@ -19,5 +19,6 @@ lints! {
     useless_has_attr,
     repeated_keys,
     empty_list_concat,
-    ineffective_string_escape
+    ineffective_string_escape,
+    negated_is_null
 }
