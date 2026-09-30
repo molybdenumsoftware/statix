@@ -150,10 +150,17 @@ empty_inherit
 deprecated_to_path
 bool_simplification
 useless_has_attr
+repeated_keys
+empty_list_concat
+ineffective_string_escape
 ```
 
 All lints are enabled by default. Generate a minimal config
 with `statix dump > statix.toml`.
+
+`ineffective_string_escape` removes only inert backslash-space escapes in ordinary
+quoted strings. It preserves escaped backslashes, valid escapes, and indented
+strings; see the [Home Manager correction](https://github.com/nix-community/home-manager/pull/8916).
 
 ## Maintainer coverage benchmark
 
