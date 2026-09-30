@@ -20,6 +20,7 @@ rustPlatform.buildRustPackage {
       ) ../.)
       ../Cargo.lock
       ../insta.yaml
+      ../bin/benchmarks/maintainer_cases.json
     ];
   };
   RUSTFLAGS = "-D warnings";
