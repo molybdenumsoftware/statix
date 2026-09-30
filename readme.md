@@ -157,6 +157,7 @@ negated_is_null
 optionals_string
 optional_list_in_flat_context
 deprecated_stdenv_lib
+fetcher_hash_field
 ```
 
 All lints are enabled by default. Generate a minimal config
@@ -184,6 +185,12 @@ unredefined `lib` argument when available. Otherwise it remains warning-only:
 adding required arguments needs coordinated caller changes. Package `.lib`
 outputs, locally defined `stdenv` values, selection defaults, and comments are
 not blindly rewritten.
+
+`fetcher_hash_field` is a modernization hint for conventional `fetchFromGitHub`
+calls with a literal SHA-256 SRI value. It changes only `sha256` to `hash`, never
+the hash bytes or encoding. Recursive sets, local wrappers, inherited/dynamic
+fields, existing `hash` fields, other algorithms, and legacy hashes are excluded.
+This does not deprecate arbitrary attributes named `sha256`.
 
 ## Maintainer coverage benchmark
 

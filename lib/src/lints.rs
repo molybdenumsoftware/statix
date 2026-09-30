@@ -23,5 +23,6 @@ lints! {
     negated_is_null,
     optionals_string,
     optional_list_in_flat_context,
-    deprecated_stdenv_lib
+    deprecated_stdenv_lib,
+    fetcher_hash_field
 }
