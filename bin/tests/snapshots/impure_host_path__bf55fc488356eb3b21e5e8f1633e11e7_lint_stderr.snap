@@ -1,0 +1,12 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+/usr/local/bin/bash
+---
+[impure_host_path] Warning: Found path outside the Nix store
+   ╭─[ <temp_file_path>:1:1 ]
+   │
+ 1 │ /usr/local/bin/bash
+   │ ─────────┬─────────  
+   │          ╰─────────── /usr/local/ depends on the host system, use a package from nixpkgs instead
+───╯

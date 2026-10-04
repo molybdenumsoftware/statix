@@ -1,0 +1,7 @@
+---
+source: bin/tests/ruff.rs
+---
+pkgs.writers.writePython3 "ok" { } ''
+  print("ok")
+''
+---

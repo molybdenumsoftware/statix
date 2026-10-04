@@ -1,0 +1,7 @@
+---
+source: bin/tests/script_file.rs
+expression: "fs::read_to_string(root.join(\"scripts/deploy.sh\")).unwrap()"
+---
+#!/usr/bin/env bash
+cd "$TARGET" || exit
+rm -rf "${TARGET:?}"/*

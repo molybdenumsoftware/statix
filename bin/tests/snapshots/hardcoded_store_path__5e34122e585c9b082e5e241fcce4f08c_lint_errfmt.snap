@@ -1,0 +1,5 @@
+---
+source: bin/tests/hardcoded_store_path.rs
+---
+"${pkgs.hello}/bin/hello"
+---

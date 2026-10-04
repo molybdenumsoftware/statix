@@ -1,0 +1,17 @@
+---
+source: bin/tests/ruff.rs
+---
+{ scripts.py = { package = pkgs.python312; exec = ''
+  import sys
+  print(${toString port})
+''; }; }
+---
+[ruff] Warning: ruff found issues in an inline Python script
+   ╭─[ <temp_file_path>:2:3 ]
+   │
+ 2 │   import sys
+   │   ─────┬──┬─  
+   │        ╰────── I001: Import block is un-sorted or un-formatted
+   │           │   
+   │           ╰─── F401: sys imported but unused
+───╯

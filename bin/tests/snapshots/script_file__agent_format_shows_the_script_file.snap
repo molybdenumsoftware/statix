@@ -1,0 +1,123 @@
+---
+source: bin/tests/script_file.rs
+expression: "out.replace(&dir.path().display().to_string(), \"<dir>\")"
+---
+# statix: `devenv.nix`
+
+Run `statix fix devenv.nix` first, it fixes these automatically (and may fix more after re-running lints):
+
+- devenv.nix:3:25 [script_file] ./scripts/deploy.sh:2:1: SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+- devenv.nix:3:25 [script_file] ./scripts/deploy.sh:2:4: SC2086: Double quote to prevent globbing and word splitting.
+- devenv.nix:3:25 [script_file] ./scripts/deploy.sh:3:8: SC2115: Use "${var:?}" to ensure this never expands to /* .
+- devenv.nix:3:25 [script_file] ./scripts/deploy.sh:3:8: SC2086: Double quote to prevent globbing and word splitting.
+- devenv.nix:4:33 [script_file] scripts/report.py:1:1: I001: Import block is un-sorted or un-formatted
+- devenv.nix:4:33 [script_file] scripts/report.py:1:8: F401: `os` imported but unused
+
+Fix by editing the file:
+
+Change only what each finding points at and keep what the code does the same. Afterwards re-run `statix fix devenv.nix` and `statix check -o agent devenv.nix` until nothing is left.
+
+## 1. devenv.nix:3:3 [repeated_keys] The key `scripts` is first assigned here ...
+
+Severity: warning
+
+### Why is this bad?
+Avoiding repetetion helps improve readibility.
+
+### Example
+```nix
+{
+  foo.a = 1;
+  foo.b = 2;
+  foo.c = 3;
+}
+```
+
+Don't repeat.
+```nix
+{
+  foo = {
+    a = 1;
+    b = 2;
+    c = 3;
+  };
+}
+```
+
+```nix
+     1 | { pkgs, ... }:
+     2 | {
+>    3 |   scripts.deploy.exec = ./scripts/deploy.sh;
+     4 |   scripts.report.exec = "python scripts/report.py";
+     5 |   scripts.again.exec = ''bash "${./scripts/deploy.sh}"'';
+```
+
+## 2. devenv.nix:4:3 [repeated_keys] ... repeated here ...
+
+Severity: warning
+
+### Why is this bad?
+Avoiding repetetion helps improve readibility.
+
+### Example
+```nix
+{
+  foo.a = 1;
+  foo.b = 2;
+  foo.c = 3;
+}
+```
+
+Don't repeat.
+```nix
+{
+  foo = {
+    a = 1;
+    b = 2;
+    c = 3;
+  };
+}
+```
+
+```nix
+     2 | {
+     3 |   scripts.deploy.exec = ./scripts/deploy.sh;
+>    4 |   scripts.report.exec = "python scripts/report.py";
+     5 |   scripts.again.exec = ''bash "${./scripts/deploy.sh}"'';
+     6 |   scripts.clean.exec = ./scripts/clean.sh;
+```
+
+## 3. devenv.nix:5:3 [repeated_keys] ... and here (`1` occurrence omitted). Try `scripts = { deploy.exec=...; report.exec=...; again.exec=...; }` instead.
+
+Severity: warning
+
+### Why is this bad?
+Avoiding repetetion helps improve readibility.
+
+### Example
+```nix
+{
+  foo.a = 1;
+  foo.b = 2;
+  foo.c = 3;
+}
+```
+
+Don't repeat.
+```nix
+{
+  foo = {
+    a = 1;
+    b = 2;
+    c = 3;
+  };
+}
+```
+
+```nix
+     3 |   scripts.deploy.exec = ./scripts/deploy.sh;
+     4 |   scripts.report.exec = "python scripts/report.py";
+>    5 |   scripts.again.exec = ''bash "${./scripts/deploy.sh}"'';
+     6 |   scripts.clean.exec = ./scripts/clean.sh;
+     7 |   packages = [ (pkgs.makeSetupHook { name = "x"; } ./scripts/hook.sh) ];
+```

@@ -36,7 +36,8 @@ source: bin/tests/useless_parens.rs
               }
             },
             "fix": "{ f = 2; }"
-          }
+          },
+          "fixable": true
         }
       ]
     }

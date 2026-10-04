@@ -1,0 +1,5 @@
+---
+source: bin/tests/hardcoded_store_path.rs
+---
+/nix/store/q2l6gv5cdyx2ayx6frgz2rmd0mp4q6sw-hello-2.12.1/bin/hello
+---

@@ -9,10 +9,12 @@ version = "0.0.0"
 [dependencies]
 lazy_static.workspace = true
 macros.workspace = true
+rayon.workspace = true
 rnix.workspace = true
 rowan.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+tempfile.workspace = true
 
 [lints]
 workspace = true

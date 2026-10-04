@@ -1,0 +1,62 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ config = mkIf cfg.enable { systemd.services.${name}.preStart = ''
+  rm -rf $CACHE/*
+''; }; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 10
+            },
+            "to": {
+              "line": 2,
+              "column": 18
+            }
+          },
+          "message": "SC2115: Use \"${var:?}\" to ensure this never expands to /* .",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 66
+              },
+              "to": {
+                "line": 3,
+                "column": 3
+              }
+            },
+            "fix": "''\n  rm -rf \"''${CACHE:?}\"/*\n''"
+          },
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 10
+            },
+            "to": {
+              "line": 2,
+              "column": 16
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": null,
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

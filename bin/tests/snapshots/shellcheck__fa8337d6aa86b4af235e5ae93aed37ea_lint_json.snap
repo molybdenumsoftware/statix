@@ -1,0 +1,47 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ enterShell = ''
+  echo ''${GREETING}
+''; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Hint",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 8
+            },
+            "to": {
+              "line": 2,
+              "column": 21
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 16
+              },
+              "to": {
+                "line": 3,
+                "column": 3
+              }
+            },
+            "fix": "''\n  echo \"''${GREETING}\"\n''"
+          },
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}
