@@ -1,0 +1,36 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.py = { package = pkgs.python3; exec = ''
+  print($1)
+''; }; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "ruff",
+      "note": "ruff found issues in an inline Python script",
+      "code": 29,
+      "severity": "Error",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 9
+            },
+            "to": {
+              "line": 2,
+              "column": 10
+            }
+          },
+          "message": "invalid-syntax: Got unexpected token $",
+          "suggestion": null,
+          "fixable": false,
+          "help": ""
+        }
+      ]
+    }
+  ]
+}

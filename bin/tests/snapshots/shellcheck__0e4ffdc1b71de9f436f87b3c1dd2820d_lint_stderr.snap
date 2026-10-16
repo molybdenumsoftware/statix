@@ -1,0 +1,16 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ packages = [ (pkgs.writeShellScriptBin "list" ''
+  for f in $(ls *.txt); do echo "$f"; done
+'') ]; }
+---
+[shellcheck] Error: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:2:12 ]
+   │
+ 2 │   for f in $(ls *.txt); do echo "$f"; done
+   │            ─────┬─────  
+   │                 ╰─────── SC2035: Use ./*glob* or -- *glob* so names with dashes won't become options.
+   │                 │       
+   │                 ╰─────── SC2045: Iterating over ls output is fragile. Use globs.
+───╯

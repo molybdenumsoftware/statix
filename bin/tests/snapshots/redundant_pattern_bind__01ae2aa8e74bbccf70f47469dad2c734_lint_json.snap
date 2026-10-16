@@ -36,7 +36,8 @@ source: bin/tests/redundant_pattern_bind.rs
               }
             },
             "fix": "inputs"
-          }
+          },
+          "fixable": true
         }
       ]
     }

@@ -1,0 +1,9 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ systemd.services.web = { script = ''
+  cd $STATE_DIRECTORY
+''; }; }
+---
+<temp_file_path>>2:3:W:28:[shellcheck] SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+<temp_file_path>>2:6:W:28:[shellcheck] SC2086: Double quote to prevent globbing and word splitting.

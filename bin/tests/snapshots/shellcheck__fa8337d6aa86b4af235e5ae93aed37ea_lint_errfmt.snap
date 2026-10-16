@@ -1,0 +1,8 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ enterShell = ''
+  echo ''${GREETING}
+''; }
+---
+<temp_file_path>>2:8:I:28:[shellcheck] SC2086: Double quote to prevent globbing and word splitting.

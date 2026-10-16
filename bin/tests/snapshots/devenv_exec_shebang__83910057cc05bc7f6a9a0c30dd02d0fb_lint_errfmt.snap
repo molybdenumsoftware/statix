@@ -1,0 +1,9 @@
+---
+source: bin/tests/devenv_exec_shebang.rs
+---
+{ processes = { web = { exec = ''
+  #!/usr/bin/env bash
+  serve
+''; }; }; }
+---
+<temp_file_path>>1:32:W:24:[devenv_exec_shebang] devenv runs `processes.<name>.exec` with bash, this shebang is ignored; set `package` to choose the interpreter

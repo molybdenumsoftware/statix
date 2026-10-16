@@ -1,0 +1,22 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+''
+  #!/bin/bash
+  /opt/homebrew/bin/brew install x
+  /usr/bin/python3 -V
+''
+---
+[impure_host_path] Warning: Found path outside the Nix store
+   ╭─[ <temp_file_path>:2:5 ]
+   │
+ 2 │   #!/bin/bash
+   │     ────┬────  
+   │         ╰────── /bin/bash depends on the host system, use a package from nixpkgs instead
+ 3 │   /opt/homebrew/bin/brew install x
+   │   ───────────┬──────────  
+   │              ╰──────────── /opt/homebrew/ depends on the host system, use a package from nixpkgs instead
+ 4 │   /usr/bin/python3 -V
+   │   ────────┬───────  
+   │           ╰───────── /usr/bin/ depends on the host system, use a package from nixpkgs instead
+───╯

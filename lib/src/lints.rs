@@ -18,5 +18,12 @@ lints! {
     bool_simplification,
     useless_has_attr,
     repeated_keys,
-    empty_list_concat
+    empty_list_concat,
+    devenv_exec_shebang,
+    devenv_pre_commit,
+    hardcoded_store_path,
+    impure_host_path,
+    shellcheck,
+    ruff,
+    script_file
 }
