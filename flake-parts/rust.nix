@@ -4,8 +4,10 @@
     { pkgs, ... }:
     {
       make-shells.default = {
-        inputsFrom = [ pkgs.statix ];
         packages = [
+          pkgs.cargo
+          pkgs.rustc
+          pkgs.clippy
           pkgs.bacon
           pkgs.cargo-insta
           pkgs.rust-analyzer
