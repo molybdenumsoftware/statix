@@ -1,0 +1,7 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.all.exec = ''
+  for p in ${lib.escapeShellArgs platforms}; do echo "$p"; done
+''; }
+---

@@ -1,0 +1,12 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ processes.web.exec = "cd $HOME && serve"; }
+---
+[shellcheck] Advice: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:1:28 ]
+   │
+ 1 │ { processes.web.exec = "cd $HOME && serve"; }
+   │                            ──┬──  
+   │                              ╰──── SC2086: Double quote to prevent globbing and word splitting.
+───╯

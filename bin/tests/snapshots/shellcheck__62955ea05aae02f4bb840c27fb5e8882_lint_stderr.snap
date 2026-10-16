@@ -1,0 +1,12 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ tasks."app:run".exec = "${pkgs.hello}/bin/hello $ARGS"; }
+---
+[shellcheck] Advice: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:1:51 ]
+   │
+ 1 │ { tasks."app:run".exec = "${pkgs.hello}/bin/hello $ARGS"; }
+   │                                                   ──┬──  
+   │                                                     ╰──── SC2086: Double quote to prevent globbing and word splitting.
+───╯

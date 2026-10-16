@@ -1,0 +1,36 @@
+---
+source: bin/tests/devenv_exec_shebang.rs
+---
+{ scripts.hello.exec = ''
+  #!/usr/bin/env python3
+  print(1)
+''; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "devenv_exec_shebang",
+      "note": "Shebang in devenv `exec` is ignored",
+      "code": 24,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 24
+            },
+            "to": {
+              "line": 4,
+              "column": 3
+            }
+          },
+          "message": "devenv runs `scripts.<name>.exec` with bash, this shebang is ignored; set `package` to choose the interpreter",
+          "suggestion": null,
+          "fixable": false
+        }
+      ]
+    }
+  ]
+}
