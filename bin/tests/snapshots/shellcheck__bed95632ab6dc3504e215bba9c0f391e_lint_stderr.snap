@@ -1,0 +1,14 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.hello.exec = ''
+  echo $1
+''; }
+---
+[shellcheck] Advice: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:2:8 ]
+   │
+ 2 │   echo $1
+   │        ─┬  
+   │         ╰── SC2086: Double quote to prevent globbing and word splitting.
+───╯

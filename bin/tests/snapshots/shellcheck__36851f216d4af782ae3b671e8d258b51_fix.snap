@@ -1,0 +1,21 @@
+---
+source: bin/tests/shellcheck.rs
+---
+let greet = "echo $1"; setup = ''
+  cd $HOME
+''; in { scripts.greet.exec = greet; enterShell = ''
+  ${setup}
+  echo ready
+''; }
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1,6 +1,6 @@
+-let greet = "echo $1"; setup = ''
+-  cd $HOME
++let greet = "echo \"$1\""; setup = ''
++  cd "$HOME" || exit
+ ''; in { scripts.greet.exec = greet; enterShell = ''
+   ${setup}
+   echo ready
+ ''; }

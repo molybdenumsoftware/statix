@@ -1,0 +1,26 @@
+---
+source: bin/tests/shellcheck.rs
+---
+let greet = "echo $1"; setup = ''
+  cd $HOME
+''; in { scripts.greet.exec = greet; enterShell = ''
+  ${setup}
+  echo ready
+''; }
+---
+[shellcheck] Advice: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:1:19 ]
+   │
+ 1 │ let greet = "echo $1"; setup = ''
+   │                   ─┬  
+   │                    ╰── SC2086: Double quote to prevent globbing and word splitting.
+───╯
+[shellcheck] Warning: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:2:3 ]
+   │
+ 2 │   cd $HOME
+   │   ────┬┬──  
+   │       ╰───── SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+   │        │    
+   │        ╰──── SC2086: Double quote to prevent globbing and word splitting.
+───╯

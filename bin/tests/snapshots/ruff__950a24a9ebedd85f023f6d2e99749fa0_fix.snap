@@ -1,0 +1,8 @@
+---
+source: bin/tests/ruff.rs
+---
+pkgs.writeScript "x" ''
+  #!${pkgs.python3}/bin/python3
+  x == 1
+''
+---

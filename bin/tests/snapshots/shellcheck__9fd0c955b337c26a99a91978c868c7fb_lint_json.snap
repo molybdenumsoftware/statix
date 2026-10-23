@@ -1,0 +1,45 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ processes.web.exec = "cd $HOME && serve"; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Hint",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 28
+            },
+            "to": {
+              "line": 1,
+              "column": 33
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 24
+              },
+              "to": {
+                "line": 1,
+                "column": 43
+              }
+            },
+            "fix": "\"cd \\\"$HOME\\\" && serve\""
+          },
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

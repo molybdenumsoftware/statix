@@ -36,6 +36,7 @@ where
             OutFormat::Json => json::write_json(self, lint_result, vfs),
             OutFormat::StdErr => write_stderr(self, lint_result, vfs),
             OutFormat::Errfmt => write_errfmt(self, lint_result, vfs),
+            OutFormat::Agent => write_agent(self, lint_result, vfs),
         }
     }
 }
@@ -120,6 +121,133 @@ fn write_errfmt<T: Write>(
     Ok(())
 }
 
+/// Markdown task list for coding agents: what `statix fix` handles, and for
+/// everything else where it is, the surrounding source and how to fix it.
+fn write_agent<T: Write>(
+    writer: &mut T,
+    lint_result: &LintResult,
+    vfs: &ReadOnlyVfs,
+) -> io::Result<()> {
+    let file_id = lint_result.file_id;
+    let src = str::from_utf8(vfs.get(file_id)).unwrap();
+    let path = vfs.file_path(file_id).to_str().unwrap_or("<unknown>");
+    let lines: Vec<&str> = src.lines().collect();
+
+    let mut manual = Vec::new();
+    let mut fixable = Vec::new();
+    for report in &lint_result.reports {
+        for d in &report.diagnostics {
+            let entry = (
+                line(d.at.start(), src),
+                column(d.at.start(), src),
+                report,
+                d,
+            );
+            if d.is_fixable() {
+                fixable.push(entry);
+            } else {
+                manual.push(entry);
+            }
+        }
+    }
+    if manual.is_empty() && fixable.is_empty() {
+        return Ok(());
+    }
+    manual.sort_by_key(|e| (e.0, e.1));
+    fixable.sort_by_key(|e| (e.0, e.1));
+
+    writeln!(writer, "# statix: `{path}`\n")?;
+    if !fixable.is_empty() {
+        writeln!(
+            writer,
+            "Run `statix fix {path}` first, it fixes these automatically (and may fix more after re-running lints):\n"
+        )?;
+        for (l, c, report, d) in &fixable {
+            writeln!(writer, "- {path}:{l}:{c} [{}] {}", report.name, d.message)?;
+        }
+        writeln!(writer)?;
+    }
+    if manual.is_empty() {
+        return Ok(());
+    }
+    writeln!(writer, "Fix by editing the file:\n")?;
+    if manual
+        .iter()
+        .any(|(_, _, report, _)| ["shellcheck", "ruff"].contains(&report.name))
+    {
+        writeln!(writer, "{}\n", lib::NIX_ESCAPING)?;
+    }
+    writeln!(
+        writer,
+        "Change only what each finding points at and keep what the code does the same. \
+Afterwards re-run `statix fix {path}` and `statix check -o agent {path}` until nothing is left.\n"
+    )?;
+    for (i, (l, c, report, d)) in manual.iter().enumerate() {
+        let severity = match report.severity {
+            Severity::Error => "error",
+            Severity::Warn => "warning",
+            Severity::Hint => "hint",
+        };
+        writeln!(
+            writer,
+            "## {}. {path}:{l}:{c} [{}] {}\n",
+            i + 1,
+            report.name,
+            d.message
+        )?;
+        writeln!(writer, "Severity: {severity}\n")?;
+        match (&d.help, lint_docs(report.code)) {
+            (Some(help), _) => writeln!(writer, "How to fix: {help}\n")?,
+            (None, Some(docs)) => writeln!(writer, "{docs}\n")?,
+            (None, None) => writeln!(writer, "How to fix: {}.\n", report.note)?,
+        }
+        match &d.external {
+            Some(e) => {
+                let text = std::fs::read_to_string(&e.path).unwrap_or_default();
+                let ext_lines: Vec<&str> = text.lines().collect();
+                writeln!(
+                    writer,
+                    "In `{}:{}:{}` (referenced from {path}:{l}):\n",
+                    e.path.display(),
+                    e.line,
+                    e.column
+                )?;
+                write_context(writer, "", &ext_lines, e.line)?;
+            }
+            None => write_context(writer, "nix", &lines, *l)?,
+        }
+    }
+    Ok(())
+}
+
+fn write_context<T: Write>(
+    writer: &mut T,
+    lang: &str,
+    lines: &[&str],
+    line: usize,
+) -> io::Result<()> {
+    const CONTEXT: usize = 2;
+    writeln!(writer, "```{lang}")?;
+    let first = line.saturating_sub(CONTEXT).max(1);
+    let last = (line + CONTEXT).min(lines.len());
+    for n in first..=last {
+        let marker = if n == line { ">" } else { " " };
+        writeln!(writer, "{marker}{n:>5} | {}", lines[n - 1])?;
+    }
+    writeln!(writer, "```\n")
+}
+
+/// The "Why is this bad?" and "Example" parts of a lint's documentation.
+fn lint_docs(code: u32) -> Option<String> {
+    let docs = crate::utils::lint_map()
+        .values()
+        .flatten()
+        .find(|l| l.code() == code)?
+        .explanation();
+    let why = docs.find("## Why is this bad?")?;
+    Some(docs[why..].replace("## ", "### ").trim().to_string())
+}
+
 mod json {
     use crate::lint::LintResult;
 
@@ -151,6 +279,19 @@ mod json {
         at: JsonSpan,
         message: &'μ String,
         suggestion: Option<JsonSuggestion>,
+        fixable: bool,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        help: Option<&'μ String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        external: Option<JsonExternal<'μ>>,
+    }
+
+    /// The finding is in another file (a referenced script).
+    #[derive(Serialize)]
+    struct JsonExternal<'μ> {
+        file: &'μ std::path::Path,
+        line: usize,
+        column: usize,
     }
 
     #[derive(Serialize)]
@@ -212,6 +353,13 @@ mod json {
                         suggestion: d.suggestion.as_ref().map(|s| JsonSuggestion {
                             at: JsonSpan::from_textrange(s.at, src),
                             fix: s.fix.to_string(),
+                        }),
+                        fixable: d.is_fixable(),
+                        help: d.help.as_ref(),
+                        external: d.external.as_ref().map(|e| JsonExternal {
+                            file: &e.path,
+                            line: e.line,
+                            column: e.column,
                         }),
                     })
                     .collect::<Vec<_>>();

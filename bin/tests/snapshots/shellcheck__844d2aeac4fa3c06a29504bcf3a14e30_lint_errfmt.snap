@@ -1,0 +1,11 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ tasks."a:b".exec = ''
+  read name
+  export VERSION=$(${pkgs.git}/bin/git describe)
+  echo "$name $VERSION"
+''; }
+---
+<temp_file_path>>2:3:W:28:[shellcheck] SC2162: read without -r will mangle backslashes.
+<temp_file_path>>3:10:W:28:[shellcheck] SC2155: Declare and assign separately to avoid masking return values.

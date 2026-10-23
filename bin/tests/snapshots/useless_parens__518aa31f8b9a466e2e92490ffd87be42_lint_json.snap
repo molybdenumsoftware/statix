@@ -36,7 +36,8 @@ let h = ({ inherit (builtins) map; }); in null
               }
             },
             "fix": "{ inherit (builtins) map; }"
-          }
+          },
+          "fixable": true
         }
       ]
     }
