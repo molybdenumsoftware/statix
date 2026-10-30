@@ -28,7 +28,8 @@ source: bin/tests/repeated_keys.rs
             }
           },
           "message": "The key `foo` is first assigned here ...",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false
         },
         {
           "at": {
@@ -42,7 +43,8 @@ source: bin/tests/repeated_keys.rs
             }
           },
           "message": "... repeated here ...",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false
         },
         {
           "at": {
@@ -56,7 +58,8 @@ source: bin/tests/repeated_keys.rs
             }
           },
           "message": "... and here. Try `foo = { bar=...; baz.\"hello\"=...; again=...; }` instead.",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false
         }
       ]
     }

@@ -24,7 +24,8 @@ builtins.toPath x
             }
           },
           "message": "`builtins.toPath` is deprecated, see `:doc builtins.toPath` within the REPL for more",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false
         }
       ]
     }

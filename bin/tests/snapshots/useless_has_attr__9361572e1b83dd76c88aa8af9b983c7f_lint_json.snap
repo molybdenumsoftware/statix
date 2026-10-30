@@ -36,7 +36,8 @@ if x ? a then x.a else if b then c else d
               }
             },
             "fix": "x.a or (if b then c else d)"
-          }
+          },
+          "fixable": true
         }
       ]
     }

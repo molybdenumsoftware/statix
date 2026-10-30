@@ -1,0 +1,6 @@
+---
+source: bin/tests/devenv_pre_commit.rs
+---
+{ pre-commit = { hooks.nixfmt.enable = true; }; }
+---
+<temp_file_path>>1:3:W:25:[devenv_pre_commit] `pre-commit` is deprecated in devenv, use `git-hooks`

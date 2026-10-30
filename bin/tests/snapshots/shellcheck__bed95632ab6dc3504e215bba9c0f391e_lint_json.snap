@@ -1,0 +1,47 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.hello.exec = ''
+  echo $1
+''; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Hint",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 8
+            },
+            "to": {
+              "line": 2,
+              "column": 10
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 24
+              },
+              "to": {
+                "line": 3,
+                "column": 3
+              }
+            },
+            "fix": "''\n  echo \"$1\"\n''"
+          },
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

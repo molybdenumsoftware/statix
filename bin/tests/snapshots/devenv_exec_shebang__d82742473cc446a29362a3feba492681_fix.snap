@@ -1,0 +1,5 @@
+---
+source: bin/tests/devenv_exec_shebang.rs
+---
+{ foo.bar.exec = "#!/bin/sh"; }
+---

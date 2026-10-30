@@ -1,0 +1,17 @@
+---
+source: bin/tests/ruff.rs
+---
+pkgs.writers.writePython3Bin "hello" { } ''
+  import os
+  print("hello")
+''
+---
+[ruff] Warning: ruff found issues in an inline Python script
+   ╭─[ <temp_file_path>:2:3 ]
+   │
+ 2 │   import os
+   │   ────┬───┬  
+   │       ╰────── I001: Import block is un-sorted or un-formatted
+   │           │  
+   │           ╰── F401: os imported but unused
+───╯

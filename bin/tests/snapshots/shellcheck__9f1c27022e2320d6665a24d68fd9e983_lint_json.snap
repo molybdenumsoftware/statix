@@ -1,0 +1,78 @@
+---
+source: bin/tests/shellcheck.rs
+---
+stdenv.mkDerivation { installPhase = ''
+  mkdir -p $out/bin
+  cp $src/tool $out/bin/
+''; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Hint",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 12
+            },
+            "to": {
+              "line": 2,
+              "column": 16
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 38
+              },
+              "to": {
+                "line": 4,
+                "column": 3
+              }
+            },
+            "fix": "''\n  mkdir -p \"$out\"/bin\n  cp \"$src\"/tool \"$out\"/bin/\n''"
+          },
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 6
+            },
+            "to": {
+              "line": 3,
+              "column": 10
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": null,
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 16
+            },
+            "to": {
+              "line": 3,
+              "column": 20
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": null,
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

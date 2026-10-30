@@ -3,6 +3,8 @@
   lib,
   clippy,
   gitMinimal,
+  shellcheck,
+  ruff,
 }:
 rustPlatform.buildRustPackage {
   pname = "statix";
@@ -26,7 +28,11 @@ rustPlatform.buildRustPackage {
 
   nativeBuildInputs = [ clippy ];
 
-  nativeCheckInputs = [ gitMinimal ];
+  nativeCheckInputs = [
+    gitMinimal
+    shellcheck
+    ruff
+  ];
 
   checkPhase = ''
     runHook preCheck
