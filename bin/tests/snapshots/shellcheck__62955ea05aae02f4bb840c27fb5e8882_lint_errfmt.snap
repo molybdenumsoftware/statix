@@ -1,0 +1,6 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ tasks."app:run".exec = "${pkgs.hello}/bin/hello $ARGS"; }
+---
+<temp_file_path>>1:51:I:28:[shellcheck] SC2086: Double quote to prevent globbing and word splitting.

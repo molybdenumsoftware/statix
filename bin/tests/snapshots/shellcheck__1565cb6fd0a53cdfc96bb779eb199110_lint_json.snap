@@ -1,0 +1,78 @@
+---
+source: bin/tests/shellcheck.rs
+---
+runCommand "x" { } ''
+  touch $out
+  cd $TMPDIR
+''
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 9
+            },
+            "to": {
+              "line": 2,
+              "column": 13
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 20
+              },
+              "to": {
+                "line": 4,
+                "column": 3
+              }
+            },
+            "fix": "''\n  touch \"$out\"\n  cd $TMPDIR || exit\n''"
+          },
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 3
+            },
+            "to": {
+              "line": 3,
+              "column": 13
+            }
+          },
+          "message": "SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.",
+          "suggestion": null,
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 3,
+              "column": 6
+            },
+            "to": {
+              "line": 3,
+              "column": 13
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": null,
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

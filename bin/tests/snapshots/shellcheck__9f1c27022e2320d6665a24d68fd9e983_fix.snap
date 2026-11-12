@@ -1,0 +1,17 @@
+---
+source: bin/tests/shellcheck.rs
+---
+stdenv.mkDerivation { installPhase = ''
+  mkdir -p $out/bin
+  cp $src/tool $out/bin/
+''; }
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1,4 +1,4 @@
+ stdenv.mkDerivation { installPhase = ''
+-  mkdir -p $out/bin
+-  cp $src/tool $out/bin/
++  mkdir -p "$out"/bin
++  cp "$src"/tool "$out"/bin/
+ ''; }

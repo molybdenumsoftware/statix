@@ -36,7 +36,8 @@ source: bin/tests/empty_pattern.rs
               }
             },
             "fix": "inputs"
-          }
+          },
+          "fixable": true
         }
       ]
     }

@@ -1,9 +1,14 @@
 #![recursion_limit = "1024"]
 mod lints;
 mod make;
+mod scripts;
 mod utils;
 
 pub use lints::LINTS;
+pub use scripts::{
+    Kind, Lang, fix_text, nixstr::NIX_ESCAPING, prefetch, prefetch_scripts, referenced_files,
+    shell_scripts, with_current_file,
+};
 
 use rnix::{ParseError, SyntaxElement, SyntaxKind, TextRange};
 use std::{convert::Into, default::Default};
@@ -51,6 +56,56 @@ impl Report {
     #[allow(clippy::return_self_not_must_use)]
     pub fn diagnostic<S: AsRef<str>>(mut self, at: TextRange, message: S) -> Self {
         self.diagnostics.push(Diagnostic::new(at, message));
+        self
+    }
+    /// Add a diagnostic with instructions for fixing it by hand
+    #[allow(clippy::return_self_not_must_use)]
+    pub fn diagnostic_with_help<S: AsRef<str>>(
+        mut self,
+        at: TextRange,
+        message: S,
+        help: String,
+    ) -> Self {
+        let mut diagnostic = Diagnostic::new(at, message);
+        diagnostic.help = Some(help);
+        self.diagnostics.push(diagnostic);
+        self
+    }
+    /// Add a diagnostic about another file that `statix fix` resolves
+    #[allow(clippy::return_self_not_must_use)]
+    pub fn external_fixed_later<S: AsRef<str>>(
+        mut self,
+        at: TextRange,
+        message: S,
+        external: External,
+    ) -> Self {
+        let mut diagnostic = Diagnostic::new(at, message);
+        diagnostic.fixed_later = true;
+        diagnostic.external = Some(external);
+        self.diagnostics.push(diagnostic);
+        self
+    }
+    /// Add a diagnostic about another file, with instructions for fixing it
+    #[allow(clippy::return_self_not_must_use)]
+    pub fn external_with_help<S: AsRef<str>>(
+        mut self,
+        at: TextRange,
+        message: S,
+        help: String,
+        external: External,
+    ) -> Self {
+        let mut diagnostic = Diagnostic::new(at, message);
+        diagnostic.help = Some(help);
+        diagnostic.external = Some(external);
+        self.diagnostics.push(diagnostic);
+        self
+    }
+    /// Add a diagnostic that `statix fix` resolves in a later pass
+    #[allow(clippy::return_self_not_must_use)]
+    pub fn diagnostic_fixed_later<S: AsRef<str>>(mut self, at: TextRange, message: S) -> Self {
+        let mut diagnostic = Diagnostic::new(at, message);
+        diagnostic.fixed_later = true;
+        self.diagnostics.push(diagnostic);
         self
     }
     /// Add a diagnostic with a fix to this report
@@ -131,6 +186,20 @@ pub struct Diagnostic {
     pub at: TextRange,
     pub message: String,
     pub suggestion: Option<Suggestion>,
+    /// How to fix it by hand (or by an agent) when there is no suggestion.
+    pub help: Option<String>,
+    /// `statix fix` fixes it in a later pass although it has no suggestion yet.
+    pub fixed_later: bool,
+    /// Where the problem really is, when it's in another file.
+    pub external: Option<External>,
+}
+
+/// A position in a file other than the one being linted.
+#[derive(Debug, Clone)]
+pub struct External {
+    pub path: std::path::PathBuf,
+    pub line: usize,
+    pub column: usize,
 }
 
 impl Diagnostic {
@@ -140,6 +209,9 @@ impl Diagnostic {
             at,
             message: message.as_ref().into(),
             suggestion: None,
+            help: None,
+            fixed_later: false,
+            external: None,
         }
     }
     /// Construct a diagnostic with a fix.
@@ -148,7 +220,15 @@ impl Diagnostic {
             at,
             message: message.as_ref().into(),
             suggestion: Some(suggestion),
+            help: None,
+            fixed_later: false,
+            external: None,
         }
+    }
+    /// Whether `statix fix` takes care of it.
+    #[must_use]
+    pub fn is_fixable(&self) -> bool {
+        self.suggestion.is_some() || self.fixed_later
     }
     /// Apply a diagnostic to a source file
     pub fn apply(&self, src: &mut String) {
@@ -174,6 +254,10 @@ impl Serialize for Diagnostic {
         if let Some(suggestion) = &self.suggestion {
             s.serialize_field("suggestion", suggestion)?;
         }
+        if let Some(help) = &self.help {
+            s.serialize_field("help", help)?;
+        }
+        s.serialize_field("fixable", &self.is_fixable())?;
         s.end()
     }
 }

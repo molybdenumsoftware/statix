@@ -36,7 +36,8 @@ let double = x: x * 2; in map (x: double x) [1 2 3]
               }
             },
             "fix": "double"
-          }
+          },
+          "fixable": true
         }
       ]
     }

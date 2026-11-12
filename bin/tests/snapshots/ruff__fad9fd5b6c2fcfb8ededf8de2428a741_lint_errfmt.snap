@@ -1,0 +1,10 @@
+---
+source: bin/tests/ruff.rs
+---
+pkgs.writers.writePython3Bin "hello" { } ''
+  import os
+  print("hello")
+''
+---
+<temp_file_path>>2:3:W:29:[ruff] I001: Import block is un-sorted or un-formatted
+<temp_file_path>>2:10:W:29:[ruff] F401: `os` imported but unused

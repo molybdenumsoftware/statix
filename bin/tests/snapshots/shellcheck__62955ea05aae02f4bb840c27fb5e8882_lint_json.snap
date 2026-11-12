@@ -1,0 +1,45 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ tasks."app:run".exec = "${pkgs.hello}/bin/hello $ARGS"; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Hint",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 51
+            },
+            "to": {
+              "line": 1,
+              "column": 56
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 26
+              },
+              "to": {
+                "line": 1,
+                "column": 57
+              }
+            },
+            "fix": "\"${pkgs.hello}/bin/hello \\\"$ARGS\\\"\""
+          },
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

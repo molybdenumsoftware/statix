@@ -24,7 +24,8 @@ false != true
             }
           },
           "message": "Equality comparison between boolean literals",
-          "suggestion": null
+          "suggestion": null,
+          "fixable": false
         }
       ]
     }

@@ -36,7 +36,8 @@ if x ? a.b then x.a.b else default
               }
             },
             "fix": "x.a.b or default"
-          }
+          },
+          "fixable": true
         }
       ]
     }

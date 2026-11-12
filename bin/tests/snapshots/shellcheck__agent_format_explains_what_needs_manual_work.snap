@@ -1,0 +1,28 @@
+---
+source: bin/tests/shellcheck.rs
+expression: stdout
+---
+# statix: `<temp_file_path>`
+
+Run `statix fix <temp_file_path>` first, it fixes these automatically (and may fix more after re-running lints):
+
+- <temp_file_path>:2:8 [shellcheck] SC2086: Double quote to prevent globbing and word splitting.
+
+Fix by editing the file:
+
+`shellcheck` and `ruff` findings are in scripts written as Nix strings. Keep `${...}` interpolations as they are. In `''...''` strings write `''${` for a literal `${` and `'''` for `''`; in `"..."` strings escape `"` and `\` and write `\${` for a literal `${`.
+
+Change only what each finding points at and keep what the code does the same. Afterwards re-run `statix fix <temp_file_path>` and `statix check -o agent <temp_file_path>` until nothing is left.
+
+## 1. <temp_file_path>:3:9 [shellcheck] SC2046: Quote this to prevent word splitting.
+
+Severity: warning
+
+How to fix: Quote the command substitution ("$(cmd)") if it yields one value; if it must split into several words, read it into an array (mapfile -t arr < <(cmd)) and use "${arr[@]}". See https://www.shellcheck.net/wiki/SC2046
+
+```nix
+     1 | { scripts.hello.exec = ''
+     2 |   echo $1
+>    3 |   touch $(date +%s).log
+     4 | ''; }
+```

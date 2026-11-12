@@ -36,7 +36,8 @@ let a.b = 2; in { b = a.b; }
               }
             },
             "fix": "inherit (a) b;"
-          }
+          },
+          "fixable": true
         }
       ]
     }

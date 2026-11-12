@@ -1,0 +1,10 @@
+---
+source: bin/tests/ruff.rs
+---
+{ scripts.py = { package = pkgs.python312; exec = ''
+  import sys
+  print(${toString port})
+''; }; }
+---
+<temp_file_path>>2:3:W:29:[ruff] I001: Import block is un-sorted or un-formatted
+<temp_file_path>>2:10:W:29:[ruff] F401: `sys` imported but unused

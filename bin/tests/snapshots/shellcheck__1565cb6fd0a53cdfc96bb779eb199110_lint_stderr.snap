@@ -1,0 +1,20 @@
+---
+source: bin/tests/shellcheck.rs
+---
+runCommand "x" { } ''
+  touch $out
+  cd $TMPDIR
+''
+---
+[shellcheck] Warning: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:2:9 ]
+   │
+ 2 │   touch $out
+   │         ──┬─  
+   │           ╰─── SC2086: Double quote to prevent globbing and word splitting.
+ 3 │   cd $TMPDIR
+   │   ─────┬┬───  
+   │        ╰────── SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+   │         │     
+   │         ╰───── SC2086: Double quote to prevent globbing and word splitting.
+───╯

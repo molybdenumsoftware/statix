@@ -1,0 +1,63 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ packages = [ (pkgs.writeShellScriptBin "list" ''
+  for f in $(ls *.txt); do echo "$f"; done
+'') ]; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Error",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 12
+            },
+            "to": {
+              "line": 2,
+              "column": 23
+            }
+          },
+          "message": "SC2045: Iterating over ls output is fragile. Use globs.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 49
+              },
+              "to": {
+                "line": 3,
+                "column": 3
+              }
+            },
+            "fix": "''\n  for f in *.txt; do echo \"$f\"; done\n''"
+          },
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 17
+            },
+            "to": {
+              "line": 2,
+              "column": 18
+            }
+          },
+          "message": "SC2035: Use ./*glob* or -- *glob* so names with dashes won't become options.",
+          "suggestion": null,
+          "fixable": false,
+          "help": "See https://www.shellcheck.net/wiki/SC2035"
+        }
+      ]
+    }
+  ]
+}

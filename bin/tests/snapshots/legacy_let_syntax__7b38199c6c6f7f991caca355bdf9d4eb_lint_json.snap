@@ -40,7 +40,8 @@ let {
               }
             },
             "fix": "(rec {\n  body = x + y;\n  x = \"hello,\";\n  y = \" world!\";\n}).body"
-          }
+          },
+          "fixable": true
         }
       ]
     }

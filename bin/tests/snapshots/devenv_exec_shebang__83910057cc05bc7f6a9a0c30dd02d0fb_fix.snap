@@ -1,0 +1,8 @@
+---
+source: bin/tests/devenv_exec_shebang.rs
+---
+{ processes = { web = { exec = ''
+  #!/usr/bin/env bash
+  serve
+''; }; }; }
+---

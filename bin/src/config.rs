@@ -50,7 +50,7 @@ pub struct Check {
     unrestricted: bool,
 
     /// Output format.
-    /// Supported values: stderr, errfmt, json
+    /// Supported values: stderr, errfmt, json, agent
     #[clap(short = 'o', long, default_value_t)]
     pub format: OutFormat,
 
@@ -110,6 +110,7 @@ pub struct Fix {
     pub streaming: bool,
 }
 
+#[derive(Clone, Copy)]
 pub enum FixOut {
     Diff,
     Stream,
@@ -216,6 +217,8 @@ pub struct List {}
 pub enum OutFormat {
     Json,
     Errfmt,
+    /// Markdown for coding agents
+    Agent,
     #[default]
     StdErr,
 }
@@ -228,6 +231,7 @@ impl fmt::Display for OutFormat {
             match self {
                 Self::Json => "json",
                 Self::Errfmt => "errfmt",
+                Self::Agent => "agent",
                 Self::StdErr => "stderr",
             }
         )
@@ -241,8 +245,9 @@ impl FromStr for OutFormat {
         match value.to_ascii_lowercase().as_str() {
             "json" => Ok(Self::Json),
             "errfmt" => Ok(Self::Errfmt),
+            "agent" => Ok(Self::Agent),
             "stderr" => Ok(Self::StdErr),
-            _ => Err("unknown output format, try: json, errfmt"),
+            _ => Err("unknown output format, try: json, errfmt, agent"),
         }
     }
 }

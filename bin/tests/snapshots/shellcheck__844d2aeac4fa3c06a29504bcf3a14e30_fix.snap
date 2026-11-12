@@ -1,0 +1,20 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ tasks."a:b".exec = ''
+  read name
+  export VERSION=$(${pkgs.git}/bin/git describe)
+  echo "$name $VERSION"
+''; }
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1,5 +1,6 @@
+ { tasks."a:b".exec = ''
+-  read name
+-  export VERSION=$(${pkgs.git}/bin/git describe)
++  read -r name
++  export VERSION
++  VERSION=$(${pkgs.git}/bin/git describe)
+   echo "$name $VERSION"
+ ''; }

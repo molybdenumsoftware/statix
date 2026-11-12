@@ -36,7 +36,8 @@ if x ? a then x.a else b.c
               }
             },
             "fix": "x.a or b.c"
-          }
+          },
+          "fixable": true
         }
       ]
     }

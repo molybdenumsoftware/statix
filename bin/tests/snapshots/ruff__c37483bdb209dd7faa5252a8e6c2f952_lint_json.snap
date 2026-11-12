@@ -1,0 +1,63 @@
+---
+source: bin/tests/ruff.rs
+---
+{ scripts.py = { package = pkgs.python312; exec = ''
+  import sys
+  print(${toString port})
+''; }; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "ruff",
+      "note": "ruff found issues in an inline Python script",
+      "code": 29,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 3
+            },
+            "to": {
+              "line": 2,
+              "column": 13
+            }
+          },
+          "message": "I001: Import block is un-sorted or un-formatted",
+          "suggestion": null,
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 10
+            },
+            "to": {
+              "line": 2,
+              "column": 13
+            }
+          },
+          "message": "F401: `sys` imported but unused",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 51
+              },
+              "to": {
+                "line": 4,
+                "column": 3
+              }
+            },
+            "fix": "''\n  print(${toString port})\n''"
+          },
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

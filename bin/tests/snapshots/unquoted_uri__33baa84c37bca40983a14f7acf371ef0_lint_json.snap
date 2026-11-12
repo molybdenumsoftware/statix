@@ -36,7 +36,8 @@ github:nerdypepper/statix
               }
             },
             "fix": "\"github:nerdypepper/statix\""
-          }
+          },
+          "fixable": true
         }
       ]
     }

@@ -1,0 +1,6 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+/usr/local/bin/bash
+---
+<temp_file_path>>1:1:W:27:[impure_host_path] `/usr/local/` depends on the host system, use a package from nixpkgs instead

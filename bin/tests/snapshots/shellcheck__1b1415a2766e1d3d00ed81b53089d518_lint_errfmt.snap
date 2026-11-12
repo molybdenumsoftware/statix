@@ -1,0 +1,7 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.ok.exec = ''
+  echo "$1"
+''; }
+---

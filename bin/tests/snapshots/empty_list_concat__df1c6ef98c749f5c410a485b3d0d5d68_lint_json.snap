@@ -36,7 +36,8 @@ source: bin/tests/empty_list_concat.rs
               }
             },
             "fix": "[]"
-          }
+          },
+          "fixable": true
         }
       ]
     }

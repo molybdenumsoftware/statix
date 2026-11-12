@@ -1,0 +1,8 @@
+---
+source: bin/tests/shellcheck.rs
+---
+pkgs.writeShellApplication { name = "x"; text = ''
+  rm -rf "$DIR"/*
+''; }
+---
+<temp_file_path>>2:10:W:28:[shellcheck] SC2115: Use "${var:?}" to ensure this never expands to /* .

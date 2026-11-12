@@ -110,7 +110,52 @@ json and errfmt:
 ```shell
 statix check /path/to/dir -o json
 statix check /path/to/dir -o errfmt # singleline, easy to integrate with vim
+statix check /path/to/dir -o agent  # markdown with context and fix instructions, for coding agents
 ```
+
+### Scripts in and next to Nix code
+
+Three lints check scripts with [ShellCheck](https://www.shellcheck.net)
+and [ruff](https://docs.astral.sh/ruff) (install them, or point
+`STATIX_SHELLCHECK` / `STATIX_RUFF` at them; without them the lints do
+nothing):
+
+- `shellcheck`: shell scripts written as Nix strings: devenv `scripts`,
+  `tasks`, `processes`, `enterShell`, `enterTest`; nixpkgs
+  `writeShellScript`, `writeShellApplication`, `writers.writeBash` and
+  friends, `runCommand`, stdenv phases and hooks (`buildPhase`,
+  `postInstall`, `shellHook`...); NixOS `systemd.services.*.script`,
+  `preStart`... and `system.activationScripts`; and `let` bindings used
+  as or interpolated into those
+- `ruff`: Python scripts written as Nix strings: `writers.writePython3`,
+  `writeScript` with a Python shebang, devenv scripts with a Python
+  `package`
+- `script_file`: `.sh`, `.bash` and `.py` files (or files with such a
+  shebang) that Nix code refers to: `./deploy.sh`, `builtins.readFile
+./x.sh`, `"${./x.sh}"`, `updateScript = ./update.sh`, setup hooks, and
+  files devenv scripts run by relative path (`python scripts/x.py`)
+
+Findings are reported at their position in the `.nix` file (for
+`script_file`, at the reference, with the script's own line and column).
+
+`statix fix` applies the checkers' fixes: ShellCheck's own plus built-in
+ones for SC2045, SC2115, SC2155 and SC2162, and ruff's safe fixes. In Nix
+strings they are escaped for `''...''` and `"..."` strings and leave `${...}`
+interpolations alone; every fix is re-parsed and checked to render exactly
+the intended script before it's applied. Referenced script files are fixed
+in place (`--dry-run` shows the diff).
+
+Everything else needs a decision. `-o agent` lists it with the
+surrounding source, a hint for common codes, a link to the rule's docs
+and the Nix escaping rules, so a coding agent can finish the job:
+
+```shell
+statix fix . && statix check -o agent .
+```
+
+In `-o json` every diagnostic has `fixable` (whether `statix fix`
+handles it), `help` when it doesn't, and `external` (file, line, column)
+for findings in referenced scripts.
 
 ### Configuration
 
@@ -150,6 +195,15 @@ empty_inherit
 deprecated_to_path
 bool_simplification
 useless_has_attr
+repeated_keys
+empty_list_concat
+devenv_exec_shebang
+devenv_pre_commit
+hardcoded_store_path
+impure_host_path
+shellcheck
+ruff
+script_file
 ```
 
 All lints are enabled by default. Generate a minimal config

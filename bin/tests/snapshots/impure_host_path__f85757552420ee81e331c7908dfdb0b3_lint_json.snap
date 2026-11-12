@@ -1,0 +1,34 @@
+---
+source: bin/tests/impure_host_path.rs
+---
+"/usr/local/bin/jq . data.json"
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "impure_host_path",
+      "note": "Found path outside the Nix store",
+      "code": 27,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 2
+            },
+            "to": {
+              "line": 1,
+              "column": 19
+            }
+          },
+          "message": "`/usr/local/` depends on the host system, use a package from nixpkgs instead",
+          "suggestion": null,
+          "fixable": false,
+          "help": "If it's a program, use it from nixpkgs: `${pkgs.jq}/bin/jq` or `${lib.getExe pkgs.jq}` (in devenv, adding the package to `packages` and calling it by name also works). If it's where files are read or written, use a location the project owns, like `$DEVENV_ROOT`, `$DEVENV_STATE` or a path passed in as an argument. Don't just swap in another host path such as `/tmp`, and keep what the code does the same."
+        }
+      ]
+    }
+  ]
+}

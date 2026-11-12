@@ -1,0 +1,17 @@
+---
+source: bin/tests/ruff.rs
+---
+pkgs.writeScript "x" ''
+  #!${pkgs.python3}/bin/python3
+  x == 1
+''
+---
+[ruff] Warning: ruff found issues in an inline Python script
+   ╭─[ <temp_file_path>:3:3 ]
+   │
+ 3 │   x == 1
+   │   ┬──┬──  
+   │   ╰─────── F821: Undefined name x
+   │      │    
+   │      ╰──── B015: Pointless comparison. Did you mean to assign a value? Otherwise, prepend assert or remove it.
+───╯

@@ -1,0 +1,16 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ systemd.services.web = { script = ''
+  cd $STATE_DIRECTORY
+''; }; }
+---
+[shellcheck] Warning: ShellCheck found issues in an inline shell script
+   ╭─[ <temp_file_path>:2:3 ]
+   │
+ 2 │   cd $STATE_DIRECTORY
+   │   ─────────┬─┬───────  
+   │            ╰─────────── SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
+   │              │         
+   │              ╰───────── SC2086: Double quote to prevent globbing and word splitting.
+───╯

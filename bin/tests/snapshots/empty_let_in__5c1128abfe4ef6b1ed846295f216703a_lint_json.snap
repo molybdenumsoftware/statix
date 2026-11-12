@@ -36,7 +36,8 @@ let in null
               }
             },
             "fix": "null"
-          }
+          },
+          "fixable": true
         }
       ]
     }

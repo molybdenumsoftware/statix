@@ -1,0 +1,8 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.py = { package = pkgs.python3; exec = ''
+  print($1)
+''; }; }
+---
+<temp_file_path>>2:9:E:29:[ruff] invalid-syntax: Got unexpected token $

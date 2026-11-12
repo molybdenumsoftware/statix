@@ -1,0 +1,100 @@
+---
+source: bin/tests/shellcheck.rs
+---
+let greet = "echo $1"; setup = ''
+  cd $HOME
+''; in { scripts.greet.exec = greet; enterShell = ''
+  ${setup}
+  echo ready
+''; }
+---
+{
+  "file": "<temp_file_path>",
+  "report": [
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Hint",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 1,
+              "column": 19
+            },
+            "to": {
+              "line": 1,
+              "column": 21
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 13
+              },
+              "to": {
+                "line": 1,
+                "column": 22
+              }
+            },
+            "fix": "\"echo \\\"$1\\\"\""
+          },
+          "fixable": true
+        }
+      ]
+    },
+    {
+      "name": "shellcheck",
+      "note": "ShellCheck found issues in an inline shell script",
+      "code": 28,
+      "severity": "Warn",
+      "diagnostics": [
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 3
+            },
+            "to": {
+              "line": 2,
+              "column": 11
+            }
+          },
+          "message": "SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.",
+          "suggestion": {
+            "at": {
+              "from": {
+                "line": 1,
+                "column": 32
+              },
+              "to": {
+                "line": 3,
+                "column": 3
+              }
+            },
+            "fix": "''\n  cd $HOME || exit\n''"
+          },
+          "fixable": true
+        },
+        {
+          "at": {
+            "from": {
+              "line": 2,
+              "column": 6
+            },
+            "to": {
+              "line": 2,
+              "column": 11
+            }
+          },
+          "message": "SC2086: Double quote to prevent globbing and word splitting.",
+          "suggestion": null,
+          "fixable": true
+        }
+      ]
+    }
+  ]
+}

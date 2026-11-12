@@ -1,0 +1,7 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ scripts.py = { package = pkgs.python3; exec = ''
+  print($1)
+''; }; }
+---

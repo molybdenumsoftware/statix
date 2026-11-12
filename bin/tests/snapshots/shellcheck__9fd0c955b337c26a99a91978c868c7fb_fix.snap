@@ -1,0 +1,10 @@
+---
+source: bin/tests/shellcheck.rs
+---
+{ processes.web.exec = "cd $HOME && serve"; }
+---
+--- <temp_file_path>
++++ <temp_file_path> [fixed]
+@@ -1 +1 @@
+-{ processes.web.exec = "cd $HOME && serve"; }
++{ processes.web.exec = "cd \"$HOME\" && serve"; }

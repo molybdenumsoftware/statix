@@ -36,7 +36,8 @@ source: bin/tests/empty_inherit.rs
               }
             },
             "fix": ""
-          }
+          },
+          "fixable": true
         }
       ]
     }

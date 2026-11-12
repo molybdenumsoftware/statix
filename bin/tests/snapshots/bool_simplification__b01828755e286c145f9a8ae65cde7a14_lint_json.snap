@@ -36,7 +36,8 @@ source: bin/tests/bool_simplification.rs
               }
             },
             "fix": "a != b"
-          }
+          },
+          "fixable": true
         }
       ]
     }
