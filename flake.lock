@@ -3,11 +3,11 @@
     "files": {
       "flake": false,
       "locked": {
-        "lastModified": 1794250322,
-        "narHash": "sha256-C7Kpp7W/KwM8DWYZjg/1xu8F45lBeal/ItVi66ownek=",
+        "lastModified": 1794336589,
+        "narHash": "sha256-mT/ue3orGPYHze4NWp5QfX+DHiYLBN8ugLRSnvvcECQ=",
         "owner": "mightyiam",
         "repo": "files",
-        "rev": "a254ae195295f0818fba7da551fb2fbe68c6d470",
+        "rev": "e9b74f7f587cf111ba427794d055a7a74cfa0f99",
         "type": "github"
       },
       "original": {
