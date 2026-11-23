@@ -111,11 +111,11 @@
     "treefmt": {
       "flake": false,
       "locked": {
-        "lastModified": 1793626980,
+        "lastModified": 1795017206,
         "narHash": "sha256-WSBJcYjPRxGetDNxVzKnRPs1TQasQQlAC25W/S4W6YE=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "e6aebd817ff50ba20e9160c6904209c57389efc8",
+        "rev": "0ba5d67225c3f5c88eb134e1a665a379bfd3bea9",
         "type": "github"
       },
       "original": {
